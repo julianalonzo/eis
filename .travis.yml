@@ -1,1 +1,18 @@
+sudo: required
 language: node_js
+cache:
+  directories:
+    - node_modules
+before_install:
+  - npm i
+script: 'true'
+deploy:
+  provider: heroku
+  api_key:
+    secure: fzR0DNxlCGQGitGSAdSUwRVnYz1UYhbYztbFnANWiU+ZJNmUveXj/jL3kg43Tz+MoZgHb+N4EeLXTRNAo/UOiCDgtrR6pYZA8BlifygJGSJcz0PTtterO2/bYy5gDQC7UCseXtP99GwQjUMyWtzJabGQOVxuK7mYZP4vXtKzZ1u0yNyay9eL4u5bDm/JAJeS8lt02BVb0YCDjJeUk48I98c4kXmXt6g8avzdwJkEfqmGvKjYh+Fsk9f6wVuj5WfED6gJvhvESsGpl2oKL0yD8dx4PF6GbZdREV/Z9ikuq0PDF5IVE1MfF1PrEnSqe6WF9HLOxvbGo5kX3a3Qb+N2F7Uytkb492fZoFmk7DBKIGjRTJOlYhsy43rNg9hfH4+w1E0v33l+H1NgKmqDeBSxSYFH1BojbjGg9nkRa/9B4kL1RhW4H2t3c3I6xhcv3r52aPvRrIbFpGdgKcbOy8ywReiKCyFkw/cLX+eYcNckbfZCVdCsqPo5RpqEqqRmuvxCTICjZzEqqPqCxiehS0vTKUr7CNNY/4ZILH1o/brIrQim12UVrVxjvBRPL7oj2RM9wDsGp46agWYbiVn7R5H1dBGPmwmVP2WBpx3CloIwlkqjNPhyiDSggzQwcdAzAbgDZ+tu0VvrIODzik6cVn6SzSGXe7M9QwoR5nmxrr3pkls=
+  on: dev
+  app:
+    dev: equipment-inventory-system
+notifications:
+  email:
+    - julianaubreya@gmail.com
