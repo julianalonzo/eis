@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots Item broken 1`] = `
+<div>
+  MBP-01
+</div>
+`;
+
+exports[`Storyshots Item checked 1`] = `
+<div>
+  MBP-01
+</div>
+`;
+
+exports[`Storyshots Item default 1`] = `
+<div>
+  MBP-01
+</div>
+`;
+
+exports[`Storyshots Item missing 1`] = `
+<div>
+  MBP-01
+</div>
+`;
+
+exports[`Storyshots Item selected 1`] = `
+<div>
+  MBP-01
+</div>
+`;
+
+exports[`Storyshots Item withBrokenParts 1`] = `
+<div>
+  MBP-01
+</div>
+`;
+
+exports[`Storyshots Item withMissingParts 1`] = `
+<div>
+  MBP-01
+</div>
+`;
