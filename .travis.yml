@@ -6,3 +6,6 @@ deploy:
   on: dev
   app:
     dev: equipment-inventory-system
+notifications:
+  email:
+    - julianaubreya@gmail.com
