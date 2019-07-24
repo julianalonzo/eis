@@ -71,7 +71,8 @@ const useStyles = makeStyles({
 export default function Item({
   item: { id, thumbnail, name, category, condition, state },
   onCheckItem,
-  onSelectItem
+  onSelectItem,
+  onOpenConditionOptions
 }) {
   let conditionColor = '#9e9e9e';
   let conditionIcon = <HelpIcon />;
@@ -105,11 +106,20 @@ export default function Item({
   const classes = useStyles({ conditionColor });
 
   return (
-    <div className={classes.root}>
+    <div
+      className={classes.root}
+      onClick={() => {
+        onSelectItem(id);
+      }}
+    >
       <Checkbox
         color="default"
         checked={state === 'ITEM_CHECKED'}
         className={classes.checkbox}
+        onClick={event => {
+          event.stopPropagation();
+          onCheckItem(id);
+        }}
       />
       <div className={classes.avatarContainer}>
         <Avatar alt="Thumbnail" src={thumbnail} className={classes.thumbnail} />
@@ -121,7 +131,13 @@ export default function Item({
         {category}
       </Typography>
       <div className={classes.conditionContainer}>
-        <div className={classes.condition}>
+        <div
+          className={classes.condition}
+          onClick={event => {
+            event.stopPropagation();
+            onOpenConditionOptions(id, condition);
+          }}
+        >
           <div className={classes.conditionIconAndTextContainer}>
             <div className={classes.conditionIconContainer}>
               {conditionIcon}

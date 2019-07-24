@@ -17,7 +17,8 @@ export const item = {
 
 export const actions = {
   onCheckItem: action('onCheckItem'),
-  onSelectItem: action('onSelectItem')
+  onSelectItem: action('onSelectItem'),
+  onOpenConditionOptions: action('onOpenConditionOptions')
 };
 
 storiesOf('Item', module)
