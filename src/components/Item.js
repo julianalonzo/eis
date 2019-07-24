@@ -21,7 +21,9 @@ const useStyles = makeStyles({
     '&:hover': {
       cursor: 'pointer',
       borderLeft: '3px solid #3f51b5'
-    }
+    },
+    marginTop: '12px',
+    marginBottom: '12px'
   },
   checkbox: {
     marginRight: '24px'
@@ -36,15 +38,18 @@ const useStyles = makeStyles({
   name: {
     fontWeight: 700,
     marginRight: '24px',
-    flexGrow: 2
+    flexGrow: 2,
+    flexBasis: '20%'
   },
   category: {
     marginRight: '24px',
-    flexGrow: 2
+    flexGrow: 2,
+    flexBasis: '20%'
   },
   conditionContainer: {
     marginRight: '24px',
-    flexGrow: 3
+    flexGrow: 3,
+    flexBasis: '60%'
   },
   condition: props => ({
     width: '180px',
