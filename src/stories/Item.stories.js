@@ -35,8 +35,8 @@ storiesOf('Item', module)
     <Item item={{ ...item, condition: 'Missing' }} {...actions} />
   ))
   .add('withBrokenParts', () => (
-    <Item item={{ ...item, condition: 'With Broken Parts' }} {...actions} />
+    <Item item={{ ...item, condition: 'Broken Parts' }} {...actions} />
   ))
   .add('withMissingParts', () => (
-    <Item item={{ ...item, condition: 'With Missing Parts' }} {...actions} />
+    <Item item={{ ...item, condition: 'Missing Parts' }} {...actions} />
   ));

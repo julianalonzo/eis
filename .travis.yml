@@ -5,6 +5,7 @@ cache:
     - node_modules
 before_install:
   - npm i
+script: 'true'
 deploy:
   provider: heroku
   api_key:

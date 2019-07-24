@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.2.1",
+    "@material-ui/icons": "^4.2.1",
+    "@material-ui/styles": "^4.2.1",
     "@storybook/addon-storyshots": "^5.1.9",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
