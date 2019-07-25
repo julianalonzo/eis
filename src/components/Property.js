@@ -36,7 +36,11 @@ const useStyles = makeStyles({
   }
 });
 
-export default function Property({ property: { id, name, value } }) {
+export default function Property({
+  property: { id, name, value },
+  onOpenEditPropertyDialog,
+  onOpenDeletePropertyDialog
+}) {
   const classes = useStyles();
 
   return (
@@ -48,10 +52,21 @@ export default function Property({ property: { id, name, value } }) {
         {value}
       </Typography>
       <div className={classes.actionButtons}>
-        <IconButton size="small" className={classes.editIconButton}>
+        <IconButton
+          size="small"
+          className={classes.editIconButton}
+          onClick={() => {
+            onOpenEditPropertyDialog(id);
+          }}
+        >
           <EditIcon fontSize="small" />
         </IconButton>
-        <IconButton size="small">
+        <IconButton
+          size="small"
+          onClick={() => {
+            onOpenDeletePropertyDialog(id);
+          }}
+        >
           <DeleteIcon fontSize="small" />
         </IconButton>
       </div>
@@ -64,5 +79,7 @@ Property.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     value: PropTypes.string
-  })
+  }),
+  onOpenEditPropertyDialog: PropTypes.func.isRequired,
+  onOpenDeletePropertyDialog: PropTypes.func.isRequired
 };

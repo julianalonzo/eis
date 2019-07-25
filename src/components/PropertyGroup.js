@@ -9,10 +9,12 @@ import PropTypes from 'prop-types';
 const useStyles = makeStyles({
   root: {
     padding: '8px',
-    width: '800px'
+    width: '800px',
+    marginBottom: '24px'
   },
   propertyGroupName: {
-    fontSize: '18px',
+    letterSpacing: '1.3px',
+    textTransform: 'uppercase',
     fontWeight: 700
   },
   properties: {
@@ -21,9 +23,16 @@ const useStyles = makeStyles({
 });
 
 export default function PropertyGroup({
-  propertyGroup: { id, propertyGroupName, properties }
+  propertyGroup: { id, propertyGroupName, properties },
+  onOpenEditPropertyDialog,
+  onOpenDeletePropertyDialog
 }) {
   const classes = useStyles();
+
+  const propertyEvents = {
+    onOpenEditPropertyDialog,
+    onOpenDeletePropertyDialog
+  };
 
   return (
     <div className={classes.root}>
@@ -34,7 +43,13 @@ export default function PropertyGroup({
       </div>
       <div className={classes.properties}>
         {properties.map(property => {
-          return <Property key={property.id} property={property} />;
+          return (
+            <Property
+              key={property.id}
+              property={property}
+              {...propertyEvents}
+            />
+          );
         })}
       </div>
     </div>
@@ -42,7 +57,11 @@ export default function PropertyGroup({
 }
 
 PropertyGroup.propTypes = {
-  id: PropTypes.string.isRequired,
-  propertyGroupName: PropTypes.string.isRequired,
-  properties: PropTypes.arrayOf(Property.propTypes.property)
+  propertyGroup: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    propertyGroupName: PropTypes.string.isRequired,
+    properties: PropTypes.arrayOf(Property.propTypes.property).isRequired
+  }),
+  onOpenEditPropertyDialog: PropTypes.func.isRequired,
+  onOpenDeletePropertyDialog: PropTypes.func.isRequired
 };

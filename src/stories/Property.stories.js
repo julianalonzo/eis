@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 
 import Property from '../components/Property';
 
@@ -10,6 +11,11 @@ export const property = {
   value: '303d4dad-0bf2-4856-b593-25119ab2c36a'
 };
 
+export const actions = {
+  onOpenEditPropertyDialog: action('onOpenEditPropertyDialog'),
+  onOpenDeletePropertyDialog: action('onOpenDeletePropertyDialog')
+};
+
 storiesOf('Property', module).add('default', () => (
-  <Property property={property} />
+  <Property property={property} {...actions} />
 ));

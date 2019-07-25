@@ -2,6 +2,7 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 
+import { actions } from './Property.stories';
 import PropertyGroup from '../components/PropertyGroup';
 
 export const defaultPropertyGroups = {
@@ -27,5 +28,5 @@ export const defaultPropertyGroups = {
 };
 
 storiesOf('PropertyGroup', module).add('default', () => (
-  <PropertyGroup propertyGroup={defaultPropertyGroups} />
+  <PropertyGroup propertyGroup={defaultPropertyGroups} {...actions} />
 ));
