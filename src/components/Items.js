@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Item from './Item';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import PropTypes from 'prop-types';
 
