@@ -28,16 +28,4 @@ storiesOf('Item', module)
   ))
   .add('selected', () => (
     <Item item={{ ...item, state: 'ITEM_SELECTED' }} {...actions} />
-  ))
-  .add('broken', () => (
-    <Item item={{ ...item, condition: 'Broken' }} {...actions} />
-  ))
-  .add('missing', () => (
-    <Item item={{ ...item, condition: 'Missing' }} {...actions} />
-  ))
-  .add('withBrokenParts', () => (
-    <Item item={{ ...item, condition: 'Broken Parts' }} {...actions} />
-  ))
-  .add('withMissingParts', () => (
-    <Item item={{ ...item, condition: 'Missing Parts' }} {...actions} />
   ));
