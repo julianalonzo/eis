@@ -2,22 +2,15 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
-import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
-  formTitleContainer: {
-    marginBottom: '16px'
-  },
-  formTitle: {
-    fontWeight: 700,
-    letterSpacing: '1.3px',
-    textTransform: 'uppercase'
-  },
-  textFieldContainer: {
-    width: '600px'
+  row: {
+    marginBottom: 24
   }
 });
 
@@ -27,33 +20,34 @@ export default function TemplateDetailsForm({
   const classes = useStyles();
 
   return (
-    <div>
-      <div className={classes.formTitleContainer}>
-        <Typography className={classes.formTitle} component="span">
-          Template Details
-        </Typography>
-      </div>
-      <div className={classes.textFieldContainer}>
-        <TextField
-          label="Template Name"
-          value={templateName}
-          margin="normal"
-          variant="outlined"
-          fullWidth
-        />
-      </div>
-      <div className={classes.textFieldContainer}>
-        <TextField
-          label="Template Description"
-          value={templateDescription}
-          margin="normal"
-          variant="outlined"
-          rows={4}
-          fullWidth
-          multiline
-        />
-      </div>
-    </div>
+    <Grid container spacing={2}>
+      <Grid item xs={12} className={classes.row}>
+        <Grid container alignItems="baseline">
+          <Grid item xs={12} sm={4} md={3}>
+            <Typography>Template Name</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField variant="outlined" fullWidth />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container alignItems="baseline">
+          <Grid item xs={12} sm={4} md={3}>
+            <Typography>Template Description</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              multiline
+              rowsMax="4"
+              rows="4"
+              fullWidth
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 }
 
