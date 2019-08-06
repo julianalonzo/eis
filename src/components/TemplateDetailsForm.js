@@ -27,12 +27,7 @@ export default function TemplateDetailsForm({
             <Typography>Template Name</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              variant="outlined"
-              fullWidth
-              margin="dense"
-              className={classes.textField}
-            />
+            <TextField variant="outlined" fullWidth margin="dense" />
           </Grid>
         </Grid>
       </Grid>
@@ -49,7 +44,6 @@ export default function TemplateDetailsForm({
               rows="2"
               fullWidth
               margin="dense"
-              className={classes.textField}
             />
           </Grid>
         </Grid>
