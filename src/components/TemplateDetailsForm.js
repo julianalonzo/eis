@@ -22,17 +22,22 @@ export default function TemplateDetailsForm({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} className={classes.row}>
-        <Grid container alignItems="baseline">
+        <Grid container alignItems="flex-end">
           <Grid item xs={12} sm={4} md={3}>
             <Typography>Template Name</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField variant="outlined" fullWidth />
+            <TextField
+              variant="outlined"
+              fullWidth
+              margin="dense"
+              className={classes.textField}
+            />
           </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <Grid container alignItems="baseline">
+        <Grid container alignItems="flex-end">
           <Grid item xs={12} sm={4} md={3}>
             <Typography>Template Description</Typography>
           </Grid>
@@ -40,9 +45,11 @@ export default function TemplateDetailsForm({
             <TextField
               variant="outlined"
               multiline
-              rowsMax="4"
-              rows="4"
+              rowsMax="2"
+              rows="2"
               fullWidth
+              margin="dense"
+              className={classes.textField}
             />
           </Grid>
         </Grid>

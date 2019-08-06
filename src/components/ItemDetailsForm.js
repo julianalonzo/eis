@@ -1,63 +1,108 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-
-import Typography from '@material-ui/core/Typography';
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
+import Thumbnail from './Thumbnail';
 
 const useStyles = makeStyles({
-  formTitleContainer: {
+  row: {
     marginBottom: '16px'
   },
-  formTitle: {
-    fontWeight: 700,
-    letterSpacing: '1.3px',
-    textTransform: 'uppercase'
+  thumbnailsFormHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '8px'
   },
-  textFieldContainer: {
-    width: '600px'
+  thumbnailsHeaderText: {
+    marginRight: '48px'
   },
-  formControl: {
-    minWidth: '600px',
-    marginTop: '16px'
+  mainHeaderText: {
+    marginRight: '4px'
+  },
+  subHeaderText: {
+    fontSize: '12px',
+    color: '#9e9e9e'
+  },
+  buttonIcon: {
+    marginRight: '8px'
+  },
+  thumbnailsPreviewContainer: {
+    display: 'flex',
+    alignItems: 'center'
   }
 });
 
 export default function ItemDetailsForm({
-  itemDetailsFormData: { itemName, itemCategory, itemCondition, itemThumbnail }
+  itemDetailsFormData: { itemName, itemCategory, itemCondition, itemThumbnails }
 }) {
   const classes = useStyles();
 
   return (
-    <div>
-      <div className={classes.formTitleContainer}>
-        <Typography className={classes.formTitle} component="span">
-          Item Details
-        </Typography>
-      </div>
-      <div className={classes.textFieldContainer}>
-        <TextField
-          label="Item Name"
-          value={itemName}
-          margin="normal"
-          variant="outlined"
-          fullWidth
-        />
-      </div>
-      <div className={classes.textFieldContainer}>
-        <TextField
-          label="Category"
-          value={itemCategory}
-          margin="normal"
-          variant="outlined"
-          fullWidth
-        />
-      </div>
-      
-    </div>
+    <Grid container spacing={2}>
+      <Grid item xs={12} className={classes.row}>
+        <Grid container>
+          <Grid item xs={12} sm={8} md={6} lg={4}>
+            <TextField label="Item Name" variant="outlined" fullWidth />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12} className={classes.row}>
+        <Grid container>
+          <Grid item xs={12} sm={8} md={6} lg={4}>
+            <TextField
+              label="Item Description"
+              variant="outlined"
+              multiline
+              rowsMax={4}
+              rows={4}
+              fullWidth
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12} className={classes.row}>
+        <Grid container>
+          <Grid item xs={12} sm={8} md={6} lg={4}>
+            <TextField label="Item Condition" variant="outlined" fullWidth />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12} className={classes.row}>
+        <div className={classes.thumbnailsFormHeader}>
+          <div className={classes.thumbnailsHeaderText}>
+            <Typography component="span" className={classes.mainHeaderText}>
+              Thumbnails
+            </Typography>
+            <Typography component="span" className={classes.subHeaderText}>
+              (4 max)
+            </Typography>
+          </div>
+          {itemThumbnails.length < 4 ? (
+            <Button component="span" className={classes.button}>
+              <AddPhotoAlternateIcon className={classes.buttonIcon} />
+              Add Thumbnail/s
+            </Button>
+          ) : null}
+        </div>
+        <div className={classes.thumbnailsPreviewContainer}>
+          {itemThumbnails.map(thumbnail => {
+            return (
+              <Thumbnail
+                key={thumbnail.src}
+                thumbnail={thumbnail}
+                noMarginRight
+              />
+            );
+          })}
+        </div>
+      </Grid>
+    </Grid>
   );
 }
 
@@ -66,16 +111,21 @@ ItemDetailsForm.propTypes = {
     itemName: PropTypes.string,
     itemCategory: PropTypes.string,
     itemCondition: PropTypes.string,
-    itemThumbnail: PropTypes.string
+    itemThumbnails: PropTypes.arrayOf(
+      PropTypes.shape({
+        alt: PropTypes.string,
+        src: PropTypes.string,
+        variant: PropTypes.string
+      })
+    )
   })
 };
 
 ItemDetailsForm.defaultProps = {
   itemDetailsFormData: {
-    name: '',
-    category: '',
-    condition: 'In Stock',
-    thumbnail:
-      'https://www.google.com.ph/url?sa=i&source=images&cd=&ved=2ahUKEwjqpsGHjtTjAhULIIgKHZmNCS8QjRx6BAgBEAQ&url=https%3A%2F%2Fpngimage.net%2Fitem-png-3%2F&psig=AOvVaw2j8RocU6J3Sq8Dqk4rbAvR&ust=1564282898139938'
+    itemName: '',
+    itemCategory: '',
+    itemCondition: 'In Stock',
+    itemThumbnails: []
   }
 };
