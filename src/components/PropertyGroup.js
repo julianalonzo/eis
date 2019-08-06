@@ -1,23 +1,28 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-import Typography from '@material-ui/core/Typography';
+
+import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@material-ui/core/IconButton';
 import Property from './Property';
+import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   root: {
     padding: '8px',
-    width: '800px',
     marginBottom: '24px'
   },
+  propertyGroupNameContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '8px'
+  },
   propertyGroupName: {
-    letterSpacing: '1.3px',
-    textTransform: 'uppercase',
     fontWeight: 700
   },
-  properties: {
+  editButton: {
     marginLeft: '8px'
   }
 });
@@ -36,12 +41,15 @@ export default function PropertyGroup({
 
   return (
     <div className={classes.root}>
-      <div>
-        <Typography className={classes.propertyGroupName} component="span">
+      <div className={classes.propertyGroupNameContainer}>
+        <Typography className={classes.propertyGroupName}>
           {propertyGroupName}
         </Typography>
+        <IconButton size="small" className={classes.editButton}>
+          <EditIcon fontSize="small" />
+        </IconButton>
       </div>
-      <div className={classes.properties}>
+      <div>
         {properties.map(property => {
           return (
             <Property

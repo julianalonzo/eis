@@ -1,63 +1,56 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
+
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   root: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    width: '500px',
-    marginTop: '12px',
-    marginBottom: '12px'
+    maxWidth: '700px'
   },
-  name: {
-    fontWeight: 700,
-    marginRight: '8px',
-    flexGrow: 2,
-    flexBasis: '30%'
-  },
-  value: {
-    flexGrow: 3,
-    flexBasis: '50%'
-  },
-  actionButtons: {
-    flexGrow: 1,
-    flexBasis: '20%'
-  },
-  editIconButton: {
+  name: {},
+  editButton: {
     marginRight: '8px'
   }
 });
 
 export default function Property({
-  property: { id, name, value },
+  property: { id, name, value, state },
   onOpenEditPropertyDialog,
   onOpenDeletePropertyDialog
 }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Typography component="span" className={classes.name}>
-        {name}
-      </Typography>
-      <Typography component="span" className={classes.value}>
-        {value}
-      </Typography>
-      <div className={classes.actionButtons}>
+    <Grid
+      container
+      spacing={2}
+      alignItems="center"
+      wrap="nowrap"
+      className={classes.root}
+    >
+      <Grid item xs={4} zeroMinWidth>
+        <Typography noWrap className={classes.name}>
+          {name}
+        </Typography>
+      </Grid>
+      <Grid item xs={6} zeroMinWidth>
+        <Typography noWrap>{value}</Typography>
+      </Grid>
+      <Grid item xs={2}>
         <IconButton
           size="small"
-          className={classes.editIconButton}
           onClick={() => {
             onOpenEditPropertyDialog(id);
           }}
+          className={classes.editButton}
         >
           <EditIcon fontSize="small" />
         </IconButton>
@@ -69,8 +62,8 @@ export default function Property({
         >
           <DeleteIcon fontSize="small" />
         </IconButton>
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 }
 
