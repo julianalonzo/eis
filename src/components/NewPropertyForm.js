@@ -21,10 +21,10 @@ export default function NewPropertyForm() {
 
   return (
     <Grid container spacing={2} alignItems="center">
-      <Grid item xs={5}>
+      <Grid item xs={4}>
         <TextField label="Property Name" variant="outlined" fullWidth />
       </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={6}>
         <TextField label="Default Value" variant="outlined" fullWidth />
       </Grid>
       <Grid item xs={12}>

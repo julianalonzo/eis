@@ -14,10 +14,10 @@ export default function PropertyForm({
 }) {
   return (
     <Grid container spacing={2} alignItems="center">
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <Typography>{propertyName}</Typography>
       </Grid>
-      <Grid item xs={7}>
+      <Grid item xs={6}>
         <TextField
           label="Default Value"
           variant="outlined"

@@ -32,9 +32,18 @@ export const defaultPropertyGroupFormData = {
   ]
 };
 
-storiesOf('PropertyGroupForm', module).add('default', () => (
-  <PropertyGroupForm
-    propertyGroupFormData={defaultPropertyGroupFormData}
-    {...actions}
-  />
-));
+storiesOf('PropertyGroupForm', module)
+  .add('default', () => (
+    <PropertyGroupForm
+      propertyGroupFormData={defaultPropertyGroupFormData}
+      {...actions}
+      addingNewProperty={false}
+    />
+  ))
+  .add('addingNewProperty', () => (
+    <PropertyGroupForm
+      propertyGroupFormData={defaultPropertyGroupFormData}
+      {...actions}
+      addingNewProperty={true}
+    />
+  ));
