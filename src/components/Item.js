@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     },
     borderTopRightRadius: '25px',
     borderBottomRightRadius: '25px',
-    marginBottom: 16,
+    marginBottom: '16px',
     maxWidth: '800px'
   },
   avatarNameContainer: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     alignItems: 'center'
   },
   avatar: {
-    marginRight: 24
+    marginRight: '24px'
   },
   name: {
     fontWeight: '700'
@@ -37,21 +37,12 @@ const useStyles = makeStyles({
 
 export default function Item({
   item: { id, thumbnail, name, category, condition, state },
-  onCheckItem,
-  onSelectItem
+  onCheckItem
 }) {
   const classes = useStyles();
 
   return (
-    <Grid
-      container
-      spacing={2}
-      onClick={() => {
-        onSelectItem(id);
-      }}
-      alignItems="center"
-      className={classes.root}
-    >
+    <Grid container spacing={2} alignItems="center" className={classes.root}>
       <Hidden smDown>
         <Grid item>
           <Checkbox
@@ -66,15 +57,13 @@ export default function Item({
       </Hidden>
       <Grid item xs={5} md={4} lg={3} className={classes.avatarNameContainer}>
         <Avatar alt="Thumbnail" src={thumbnail} className={classes.avatar} />
-        <Typography component="span" className={classes.name}>
-          {name}
-        </Typography>
+        <Typography className={classes.name}>{name}</Typography>
       </Grid>
       <Grid item xs={3} lg={2}>
-        <Typography component="span">{category}</Typography>
+        <Typography>{category}</Typography>
       </Grid>
       <Grid item xs={2} lg={2}>
-        <Typography component="span">{condition}</Typography>
+        <Typography>{condition}</Typography>
       </Grid>
     </Grid>
   );
@@ -89,6 +78,5 @@ Item.propTypes = {
     condition: PropTypes.string.isRequired,
     state: PropTypes.string.isRequired
   }),
-  onCheckItem: PropTypes.func,
-  onSelectItem: PropTypes.func
+  onCheckItem: PropTypes.func
 };

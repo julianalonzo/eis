@@ -19,14 +19,23 @@ const useStyles = makeStyles({
 });
 
 export default function PropertyGroupForm({
-  propertyGroupFormData: { propertyGroupName, properties }
+  propertyGroupFormData: { propertyGroupName, properties },
+  onRemovePropertyForm
 }) {
   const classes = useStyles();
+
+  const propertyFormEvents = {
+    onRemovePropertyForm
+  };
 
   const propertyForms = properties.map(property => {
     return (
       <Grid item xs={12}>
-        <PropertyForm key={property.propertyName} propertyFormData={property} />
+        <PropertyForm
+          key={property.id}
+          propertyFormData={property}
+          {...propertyFormEvents}
+        />
       </Grid>
     );
   });

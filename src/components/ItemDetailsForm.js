@@ -1,14 +1,15 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
+
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Thumbnail from './Thumbnail';
 import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
-import Thumbnail from './Thumbnail';
 
 const useStyles = makeStyles({
   row: {
@@ -48,7 +49,12 @@ export default function ItemDetailsForm({
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12} sm={8} md={6} lg={4}>
-            <TextField label="Item Name" variant="outlined" fullWidth />
+            <TextField
+              label="Item Name"
+              variant="outlined"
+              fullWidth
+              value={itemName}
+            />
           </Grid>
         </Grid>
       </Grid>
@@ -62,6 +68,7 @@ export default function ItemDetailsForm({
               rowsMax={4}
               rows={4}
               fullWidth
+              value={itemCategory}
             />
           </Grid>
         </Grid>
@@ -69,7 +76,12 @@ export default function ItemDetailsForm({
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12} sm={8} md={6} lg={4}>
-            <TextField label="Item Condition" variant="outlined" fullWidth />
+            <TextField
+              label="Item Condition"
+              variant="outlined"
+              fullWidth
+              value={itemCondition}
+            />
           </Grid>
         </Grid>
       </Grid>
@@ -84,7 +96,7 @@ export default function ItemDetailsForm({
             </Typography>
           </div>
           {itemThumbnails.length < 4 ? (
-            <Button component="span" className={classes.button}>
+            <Button component="span">
               <AddPhotoAlternateIcon className={classes.buttonIcon} />
               Add Thumbnail/s
             </Button>

@@ -14,7 +14,6 @@ const useStyles = makeStyles({
   root: {
     maxWidth: '700px'
   },
-  name: {},
   editButton: {
     marginRight: '8px'
   }
@@ -36,9 +35,7 @@ export default function Property({
       className={classes.root}
     >
       <Grid item xs={4} zeroMinWidth>
-        <Typography noWrap className={classes.name}>
-          {name}
-        </Typography>
+        <Typography noWrap>{name}</Typography>
       </Grid>
       <Grid item xs={6} zeroMinWidth>
         <Typography noWrap>{value}</Typography>

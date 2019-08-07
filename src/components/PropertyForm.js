@@ -6,8 +6,11 @@ import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
+import PropTypes from 'prop-types';
+
 export default function PropertyForm({
-  propertyFormData: { propertyName, defaultValue }
+  propertyFormData: { id, propertyName, defaultValue },
+  onRemovePropertyForm
 }) {
   return (
     <Grid container spacing={2} alignItems="center">
@@ -23,10 +26,23 @@ export default function PropertyForm({
         />
       </Grid>
       <Grid item xs={2}>
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            onRemovePropertyForm(id);
+          }}
+        >
           <RemoveCircleOutlineIcon />
         </IconButton>
       </Grid>
     </Grid>
   );
 }
+
+PropertyForm.propTypes = {
+  propertyFormData: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    propertyName: PropTypes.string.isRequired,
+    defaultValue: PropTypes.string
+  }),
+  onRemovePropertyForm: PropTypes.func.isRequired
+};

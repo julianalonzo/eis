@@ -39,9 +39,7 @@ export const thumbnails = [
 ];
 
 storiesOf('ItemDetailsForm', module)
-  .add('default', () => (
-    <ItemDetailsForm itemDetailsFormData={defaultItemDetailsData} />
-  ))
+  .add('default', () => <ItemDetailsForm />)
   .add('withThumbnail', () => (
     <ItemDetailsForm
       itemDetailsFormData={{

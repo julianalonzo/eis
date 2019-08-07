@@ -4,13 +4,12 @@ import { makeStyles } from '@material-ui/styles';
 
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   row: {
-    marginBottom: 24
+    marginBottom: '24px'
   }
 });
 
@@ -22,28 +21,28 @@ export default function TemplateDetailsForm({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} className={classes.row}>
-        <Grid container alignItems="flex-end">
-          <Grid item xs={12} sm={4} md={3}>
-            <Typography>Template Name</Typography>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField variant="outlined" fullWidth margin="dense" />
+        <Grid container>
+          <Grid item xs={12} sm={8} md={6} lg={4}>
+            <TextField
+              label="Template Name"
+              variant="outlined"
+              fullWidth
+              value={templateName}
+            />
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <Grid container alignItems="flex-end">
-          <Grid item xs={12} sm={4} md={3}>
-            <Typography>Template Description</Typography>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+      <Grid item xs={12} className={classes.row}>
+        <Grid container>
+          <Grid item xs={12} sm={8} md={6} lg={4}>
             <TextField
+              label="Template Description"
               variant="outlined"
-              multiline
-              rowsMax="2"
-              rows="2"
               fullWidth
-              margin="dense"
+              value={templateDescription}
+              multiline
+              maxRows={4}
+              rows={4}
             />
           </Grid>
         </Grid>

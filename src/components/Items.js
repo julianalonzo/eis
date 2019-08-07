@@ -8,8 +8,7 @@ export default function Items({
   items,
   onCheckItem,
   onSelectItem,
-  onOpenConditionOptions,
-  loading
+  onOpenConditionOptions
 }) {
   const itemEvents = {
     onCheckItem,
@@ -27,7 +26,6 @@ export default function Items({
 }
 
 Items.propTypes = {
-  loading: PropTypes.bool,
   items: PropTypes.arrayOf(Item.propTypes.item).isRequired,
   onCheckItem: PropTypes.func.isRequired,
   onSelectItem: PropTypes.func.isRequired,

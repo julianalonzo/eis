@@ -14,8 +14,10 @@ const useStyles = makeStyles({
   }
 });
 
-export default function PropertyForm() {
+export default function NewPropertyForm() {
   const classes = useStyles();
+
+  // @TODO: Add form state
 
   return (
     <Grid container spacing={2} alignItems="center">

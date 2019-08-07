@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     marginBottom: '8px'
   },
   propertyGroupName: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   editButton: {
     marginLeft: '8px'
