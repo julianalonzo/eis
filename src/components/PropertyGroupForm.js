@@ -83,7 +83,7 @@ export default function PropertyGroupForm({
         ) : (
           <Button component="span">
             <AddIcon className={classes.buttonIcon} />
-            Add Thumbnail/s
+            New Property
           </Button>
         )}
       </Grid>
