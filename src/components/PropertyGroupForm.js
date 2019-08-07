@@ -10,6 +10,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import NewPropertyForm from './NewPropertyForm';
 import TextField from '@material-ui/core/TextField';
 import PropertyForm from './PropertyForm';
+import PropertyGroup from './PropertyGroup';
+
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   row: {
@@ -31,7 +34,7 @@ const useStyles = makeStyles({
 });
 
 export default function PropertyGroupForm({
-  propertyGroupFormData: { propertyGroupName, properties },
+  propertyGroupFormData: { id, propertyGroupName, properties },
   addingNewProperty,
   onRemovePropertyForm
 }) {
@@ -90,3 +93,13 @@ export default function PropertyGroupForm({
     </Grid>
   );
 }
+
+PropertyGroupForm.propTypes = {
+  propertyGroupFormData: PropertyGroup.propTypes.propertyGroup,
+  addingNewProperty: PropTypes.bool,
+  onRemovePropertyForm: PropTypes.func.isRequired
+};
+
+PropertyGroupForm.defaultProps = {
+  addingNewProperty: false
+};
