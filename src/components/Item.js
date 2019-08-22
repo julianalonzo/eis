@@ -2,10 +2,10 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
-import Avatar from '@material-ui/core/Avatar';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
+import Thumbnail from './Thumbnail';
 import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
@@ -27,9 +27,6 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center'
   },
-  avatar: {
-    marginRight: '24px'
-  },
   name: {
     fontWeight: '700'
   }
@@ -40,6 +37,12 @@ export default function Item({
   onCheckItem
 }) {
   const classes = useStyles();
+
+  const thumbnailData = {
+    src: thumbnail,
+    alt: 'Thumbnail',
+    variant: 'THUMBNAIL_DEFAULT'
+  };
 
   return (
     <Grid container spacing={2} alignItems="center" className={classes.root}>
@@ -56,7 +59,7 @@ export default function Item({
         </Grid>
       </Hidden>
       <Grid item xs={5} md={4} lg={3} className={classes.avatarNameContainer}>
-        <Avatar alt="Thumbnail" src={thumbnail} className={classes.avatar} />
+        <Thumbnail thumbnail={thumbnailData} marginRight={24} />
         <Typography className={classes.name}>{name}</Typography>
       </Grid>
       <Grid item xs={3} lg={2}>

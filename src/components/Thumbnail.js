@@ -16,7 +16,7 @@ const useStyles = makeStyles({
       cursor: 'pointer'
     },
     padding: '1px',
-    marginRight: props.noMarginRight ? '0px' : '8px'
+    marginRight: props.marginRight + 'px'
   }),
   primary: props => ({
     borderColor: '#3f51b5',
@@ -31,9 +31,9 @@ const useStyles = makeStyles({
 
 export default function Thumbnail({
   thumbnail: { alt, src, variant },
-  noMarginRight
+  marginRight = 0
 }) {
-  const classes = useStyles(noMarginRight);
+  const classes = useStyles({ marginRight });
 
   return (
     <div className={classes.root}>

@@ -108,7 +108,7 @@ export default function ItemDetailsForm({
               <Thumbnail
                 key={thumbnail.src}
                 thumbnail={thumbnail}
-                noMarginRight
+                marginRight={8}
               />
             );
           })}
