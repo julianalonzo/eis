@@ -27,7 +27,7 @@ export default function AttachmentsForm() {
           secondaryText="Upload attachments that are related to the item"
         />
         <div className={classes.actionButtonContainer}>
-          <PrimaryButton label="New Attachment" />
+          <PrimaryButton label="Add Attachments" />
         </div>
       </Grid>
       <Grid item xs={12} />
