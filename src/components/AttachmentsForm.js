@@ -1,21 +1,13 @@
 import React from 'react';
 
-import { makeStyles } from '@material-ui/styles';
-
 import Grid from '@material-ui/core/Grid';
 import IllustrationPlaceholder from './IllustrationPlaceholder';
-import PrimaryButton from './PrimaryButton';
 import UploadFileIllustration from '../assets/illustrations/upload.svg';
 
-const useStyles = makeStyles({
-  actionButtonContainer: {
-    textAlign: 'center',
-    marginTop: '32px'
-  }
-});
-
 export default function AttachmentsForm() {
-  const classes = useStyles();
+  const primaryActionData = {
+    label: 'Add attachments'
+  };
 
   return (
     <Grid container spacing={2}>
@@ -25,10 +17,8 @@ export default function AttachmentsForm() {
           alt="Upload"
           primaryText="No attachments yet"
           secondaryText="Upload attachments that are related to the item"
+          action={primaryActionData}
         />
-        <div className={classes.actionButtonContainer}>
-          <PrimaryButton label="Add Attachments" />
-        </div>
       </Grid>
       <Grid item xs={12} />
     </Grid>
