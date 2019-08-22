@@ -35,6 +35,6 @@ const defaultItems = [
   }
 ];
 
-storiesOf('Items', module).add('default', () => (
-  <Items items={defaultItems} {...actions} />
-));
+storiesOf('Items', module)
+  .add('default', () => <Items items={[]} {...actions} />)
+  .add('withItems', () => <Items items={defaultItems} {...actions} />);
