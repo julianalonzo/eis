@@ -4,6 +4,9 @@ import { makeStyles } from '@material-ui/styles';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import DefaultIllustration from '../assets/illustrations/default.svg';
+
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   centeredWrapper: {
@@ -29,7 +32,11 @@ export default function IllustrationPlaceholder({
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <div className={classes.centeredWrapper}>
-          <img src={sourceImage} alt={alt} className={classes.image} />
+          <img
+            src={sourceImage ? sourceImage : DefaultIllustration}
+            alt={alt ? alt : 'Illustration'}
+            className={classes.image}
+          />
         </div>
       </Grid>
       <Grid item xs={12}>
@@ -43,3 +50,10 @@ export default function IllustrationPlaceholder({
     </Grid>
   );
 }
+
+IllustrationPlaceholder.propTypes = {
+  sourceImage: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  primaryText: PropTypes.string,
+  secondaryText: PropTypes.string
+};
