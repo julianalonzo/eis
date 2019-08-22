@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import DefaultIllustration from '../assets/illustrations/default.svg';
+import PrimaryButton from './PrimaryButton';
 
 import PropTypes from 'prop-types';
 
@@ -17,6 +18,9 @@ const useStyles = makeStyles({
   },
   secondaryText: {
     color: '#9e9e9e'
+  },
+  actionButtonContainer: {
+    marginTop: '24px'
   }
 });
 
@@ -24,7 +28,8 @@ export default function IllustrationPlaceholder({
   sourceImage,
   alt,
   primaryText,
-  secondaryText
+  secondaryText,
+  action
 }) {
   const classes = useStyles();
 
@@ -45,6 +50,11 @@ export default function IllustrationPlaceholder({
           <Typography className={classes.secondaryText}>
             {secondaryText}
           </Typography>
+          {action ? (
+            <div className={classes.actionButtonContainer}>
+              <PrimaryButton label={action.label} />
+            </div>
+          ) : null}
         </div>
       </Grid>
     </Grid>
