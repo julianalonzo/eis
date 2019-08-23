@@ -1,4 +1,4 @@
-require('custom-env').env();
+require('dotenv').config();
 
 const path = require('path');
 
