@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const path = require('path');
 
 const express = require('express');
@@ -19,9 +17,13 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eis';
+
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(MONGO_URI, { useNewUrlParser: true })
   .then(() => {
+    console.log('Database connected at ' + MONGO_URI);
+
     const PORT = process.env.PORT || 4000;
     app.listen(PORT, () => {
       console.log('EIS server running on port ' + PORT);
