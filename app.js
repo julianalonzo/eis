@@ -14,7 +14,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
 
-const SERVER_PORT = 8080;
+const SERVER_PORT = 4000;
 app.listen(SERVER_PORT, () => {
   console.log('EIS server running on port ' + SERVER_PORT);
 });

@@ -49,5 +49,6 @@ Items.propTypes = {
 };
 
 Items.defaultProps = {
+  items: [],
   loading: false
 };

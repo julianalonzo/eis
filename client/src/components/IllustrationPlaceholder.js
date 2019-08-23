@@ -34,7 +34,7 @@ export default function IllustrationPlaceholder({
   const classes = useStyles();
 
   return (
-    <Grid container spacing={2}>
+    <Grid container>
       <Grid item xs={12}>
         <div className={classes.centeredWrapper}>
           <img
