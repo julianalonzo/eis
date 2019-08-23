@@ -1,6 +1,9 @@
-const express = require('express');
+require('custom-env').env();
 
 const path = require('path');
+
+const express = require('express');
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -16,7 +19,14 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log('EIS server running on port ' + PORT);
-});
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => {
+      console.log('EIS server running on port ' + PORT);
+    });
+  })
+  .catch(mongooseError => {
+    console.log('Database error', mongooseError);
+  });
