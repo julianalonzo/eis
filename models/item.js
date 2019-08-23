@@ -11,7 +11,8 @@ const itemSchema = new Schema({
   },
   condition: {
     type: String
-  }
+  },
+  thumbnails: [{ fileName: String, isPrimary: Boolean }]
 });
 
 module.exports = mongoose.model('Item', itemSchema);
