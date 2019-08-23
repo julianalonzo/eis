@@ -19,6 +19,8 @@ if (process.env.NODE_ENV === 'production') {
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eis';
 
+console.log('Connecting database at...', MONGO_URI);
+
 mongoose
   .connect(MONGO_URI, { useNewUrlParser: true })
   .then(() => {
