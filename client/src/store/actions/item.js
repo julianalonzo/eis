@@ -25,13 +25,10 @@ export const fetchItemsFail = error => {
 export const fetchItems = () => {
   return dispatch => {
     dispatch(fetchItemsStart());
-
     axios
       .get('/api/items')
-      .then(items => {
-        console.log('Items', items);
-
-        dispatch(fetchItemsSuccess(items));
+      .then(res => {
+        dispatch(fetchItemsSuccess(res.data.items));
       })
       .catch(error => {
         dispatch(fetchItemsFail(error));

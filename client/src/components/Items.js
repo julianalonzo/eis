@@ -34,7 +34,7 @@ export default function Items({
 
   if (items.length > 0) {
     renderedView = items.map(item => {
-      return <Item item={item} {...itemEvents} />;
+      return <Item key={item._id} item={item} {...itemEvents} />;
     });
   }
 
@@ -43,9 +43,9 @@ export default function Items({
 
 Items.propTypes = {
   items: PropTypes.arrayOf(Item.propTypes.item).isRequired,
-  onCheckItem: PropTypes.func.isRequired,
-  onSelectItem: PropTypes.func.isRequired,
-  onOpenConditionOptions: PropTypes.func.isRequired
+  onCheckItem: PropTypes.func,
+  onSelectItem: PropTypes.func,
+  onOpenConditionOptions: PropTypes.func
 };
 
 Items.defaultProps = {

@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 });
 
 export default function Item({
-  item: { id, thumbnail, name, category, condition, state },
+  item: { _id, thumbnail, name, category, condition, state },
   onCheckItem
 }) {
   const classes = useStyles();
@@ -53,7 +53,7 @@ export default function Item({
             checked={state === 'ITEM_CHECKED'}
             onClick={event => {
               event.stopPropagation();
-              onCheckItem(id);
+              onCheckItem(_id);
             }}
           />
         </Grid>
@@ -74,7 +74,7 @@ export default function Item({
 
 Item.propTypes = {
   item: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired,
     thumbnail: PropTypes.string,
     name: PropTypes.string.isRequired,
     category: PropTypes.string.isRequired,
