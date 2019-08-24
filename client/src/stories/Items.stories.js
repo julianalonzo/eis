@@ -3,7 +3,6 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 
 import Items from '../components/Items';
-import { actions } from './Item.stories';
 
 const defaultItems = [
   {
@@ -36,5 +35,5 @@ const defaultItems = [
 ];
 
 storiesOf('Items', module)
-  .add('default', () => <Items items={[]} {...actions} />)
-  .add('withItems', () => <Items items={defaultItems} {...actions} />);
+  .add('default', () => <Items items={[]} />)
+  .add('withItems', () => <Items items={defaultItems} />);
