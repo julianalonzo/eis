@@ -24,11 +24,14 @@ const useStyles = makeStyles({
     marginRight: '48px'
   },
   mainHeaderText: {
-    marginRight: '4px'
+    marginRight: '4px',
+    fontWeight: '500',
+    color: '#9e9e9e'
   },
   subHeaderText: {
     fontSize: '12px',
-    color: '#9e9e9e'
+    color: '#9e9e9e',
+    fontWeight: '500'
   },
   buttonIcon: {
     marginRight: '8px'
@@ -36,6 +39,11 @@ const useStyles = makeStyles({
   thumbnailsPreviewContainer: {
     display: 'flex',
     alignItems: 'center'
+  },
+  noThumbnailText: {
+    color: '#9e9e9e',
+    fontStyle: 'italic',
+    fontSize: '14px'
   }
 });
 
@@ -48,7 +56,7 @@ export default function ItemDetailsForm({
     <Grid container spacing={2}>
       <Grid item xs={12} className={classes.row}>
         <Grid container>
-          <Grid item xs={12} sm={8} md={6} lg={4}>
+          <Grid item xs={12}>
             <TextField
               label="Item Name"
               variant="outlined"
@@ -60,7 +68,7 @@ export default function ItemDetailsForm({
       </Grid>
       <Grid item xs={12} className={classes.row}>
         <Grid container>
-          <Grid item xs={12} sm={8} md={6} lg={4}>
+          <Grid item xs={12}>
             <TextField
               label="Item Description"
               variant="outlined"
@@ -75,7 +83,7 @@ export default function ItemDetailsForm({
       </Grid>
       <Grid item xs={12} className={classes.row}>
         <Grid container>
-          <Grid item xs={12} sm={8} md={6} lg={4}>
+          <Grid item xs={12}>
             <TextField
               label="Item Condition"
               variant="outlined"
@@ -112,6 +120,11 @@ export default function ItemDetailsForm({
               />
             );
           })}
+          {itemThumbnails.length === 0 ? (
+            <Typography className={classes.noThumbnailText}>
+              No thumbnails yet
+            </Typography>
+          ) : null}
         </div>
       </Grid>
     </Grid>
@@ -137,7 +150,7 @@ ItemDetailsForm.defaultProps = {
   itemDetailsFormData: {
     itemName: '',
     itemCategory: '',
-    itemCondition: 'In Stock',
+    itemCondition: '',
     itemThumbnails: []
   }
 };
