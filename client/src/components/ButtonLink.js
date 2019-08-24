@@ -18,11 +18,16 @@ const useStyles = makeStyles({
   })
 });
 
-export default function ButtonLink({ marginRight = 0, children }) {
+export default function ButtonLink({ marginRight = 0, action, children }) {
   const classes = useStyles({ marginRight });
 
   return (
-    <ButtonBase disableRipple disableTouchRipple className={classes.buttonLink}>
+    <ButtonBase
+      onClick={action}
+      disableRipple
+      disableTouchRipple
+      className={classes.buttonLink}
+    >
       {children}
     </ButtonBase>
   );

@@ -20,10 +20,15 @@ const useStyles = makeStyles({
   }
 });
 
-export default function PrimaryButton({ label }) {
+export default function PrimaryButton({ action, label }) {
   const classes = useStyles();
   return (
-    <ButtonBase disableRipple disableTouchRipple className={classes.button}>
+    <ButtonBase
+      onClick={action}
+      disableRipple
+      disableTouchRipple
+      className={classes.button}
+    >
       {label}
     </ButtonBase>
   );
