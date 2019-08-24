@@ -19,10 +19,10 @@ export default function TemplateDetailsForm({
   const classes = useStyles();
 
   return (
-    <Grid container spacing={2}>
+    <Grid container>
       <Grid item xs={12} className={classes.row}>
         <Grid container>
-          <Grid item xs={12} sm={8} md={6} lg={4}>
+          <Grid item xs={12}>
             <TextField
               label="Template Name"
               variant="outlined"
@@ -34,7 +34,7 @@ export default function TemplateDetailsForm({
       </Grid>
       <Grid item xs={12} className={classes.row}>
         <Grid container>
-          <Grid item xs={12} sm={8} md={6} lg={4}>
+          <Grid item xs={12}>
             <TextField
               label="Template Description"
               variant="outlined"
