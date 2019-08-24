@@ -12,7 +12,10 @@ const itemSchema = new Schema({
   condition: {
     type: String
   },
-  thumbnails: [{ fileName: String, isPrimary: Boolean }]
+  thumbnail: {
+    type: String
+  },
+  otherThumbnails: [String]
 });
 
 module.exports = mongoose.model('Item', itemSchema);
