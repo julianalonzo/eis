@@ -1,23 +1,13 @@
 import React from 'react';
 
+import Grid from '@material-ui/core/Grid';
 import Item from './Item';
 import IllustrationPlaceholder from './IllustrationPlaceholder';
 import EmptyIllustration from '../assets/illustrations/empty.svg';
 
 import PropTypes from 'prop-types';
 
-export default function Items({
-  items,
-  onCheckItem,
-  onSelectItem,
-  onOpenConditionOptions
-}) {
-  const itemEvents = {
-    onCheckItem,
-    onSelectItem,
-    onOpenConditionOptions
-  };
-
+export default function Items({ items }) {
   const primaryActionData = {
     label: 'Add items'
   };
@@ -34,7 +24,7 @@ export default function Items({
 
   if (items.length > 0) {
     renderedView = items.map(item => {
-      return <Item key={item._id} item={item} {...itemEvents} />;
+      return <Item key={item._id} item={item} />;
     });
   }
 
@@ -49,6 +39,5 @@ Items.propTypes = {
 };
 
 Items.defaultProps = {
-  items: [],
-  loading: false
+  items: []
 };

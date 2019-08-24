@@ -2,9 +2,7 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
 import Thumbnail from './Thumbnail';
 import Typography from '@material-ui/core/Typography';
 
@@ -20,8 +18,8 @@ const useStyles = makeStyles({
     },
     borderTopRightRadius: '25px',
     borderBottomRightRadius: '25px',
-    marginBottom: '16px',
-    maxWidth: '800px'
+    maxWidth: '800px',
+    padding: '8px 16px'
   },
   avatarNameContainer: {
     display: 'flex',
@@ -33,8 +31,7 @@ const useStyles = makeStyles({
 });
 
 export default function Item({
-  item: { _id, thumbnail, name, category, condition, state },
-  onCheckItem
+  item: { _id, thumbnail, name, category, condition }
 }) {
   const classes = useStyles();
 
@@ -45,19 +42,7 @@ export default function Item({
   };
 
   return (
-    <Grid container spacing={2} alignItems="center" className={classes.root}>
-      <Hidden smDown>
-        <Grid item>
-          <Checkbox
-            color="default"
-            checked={state === 'ITEM_CHECKED'}
-            onClick={event => {
-              event.stopPropagation();
-              onCheckItem(_id);
-            }}
-          />
-        </Grid>
-      </Hidden>
+    <Grid container alignItems="center" className={classes.root}>
       <Grid item xs={5} md={4} lg={3} className={classes.avatarNameContainer}>
         <Thumbnail thumbnail={thumbnailData} marginRight={24} />
         <Typography className={classes.name}>{name}</Typography>
@@ -78,8 +63,6 @@ Item.propTypes = {
     thumbnail: PropTypes.string,
     name: PropTypes.string.isRequired,
     category: PropTypes.string.isRequired,
-    condition: PropTypes.string.isRequired,
-    state: PropTypes.string.isRequired
-  }),
-  onCheckItem: PropTypes.func
+    condition: PropTypes.string.isRequired
+  })
 };
