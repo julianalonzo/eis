@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Grid from '@material-ui/core/Grid';
 import Item from './Item';
 import IllustrationPlaceholder from './IllustrationPlaceholder';
 import EmptyIllustration from '../assets/illustrations/empty.svg';

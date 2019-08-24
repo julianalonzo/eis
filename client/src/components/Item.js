@@ -43,14 +43,21 @@ export default function Item({
 
   return (
     <Grid container alignItems="center" className={classes.root}>
-      <Grid item xs={5} md={4} lg={3} className={classes.avatarNameContainer}>
+      <Grid
+        item
+        xs={6}
+        sm={4}
+        md={5}
+        lg={5}
+        className={classes.avatarNameContainer}
+      >
         <Thumbnail thumbnail={thumbnailData} marginRight={24} />
         <Typography className={classes.name}>{name}</Typography>
       </Grid>
-      <Grid item xs={3} lg={2}>
+      <Grid item xs={3} sm={2} md={4} lg={3}>
         <Typography>{category}</Typography>
       </Grid>
-      <Grid item xs={2} lg={2}>
+      <Grid item xs={3} sm={2} md={3} lg={3}>
         <Typography>{condition}</Typography>
       </Grid>
     </Grid>

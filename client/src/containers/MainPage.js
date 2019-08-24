@@ -25,10 +25,10 @@ function MainPage({ onFetchItems, items, loading }) {
 
   return (
     <Grid container>
-      <Grid item xs={3}>
+      <Grid item md={3}>
         <div className={classes.temporarySidebar} />
       </Grid>
-      <Grid item xs={9}>
+      <Grid item xs={12} md={9}>
         <Items items={items} />
       </Grid>
     </Grid>
