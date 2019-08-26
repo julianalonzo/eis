@@ -103,7 +103,7 @@ export default function IllustrationPlaceholder({
           ) : null}
           {action ? (
             <div className={classes.actionButtonContainer}>
-              <PrimaryButton label={action.label} />
+              <PrimaryButton>{action.label}</PrimaryButton>
             </div>
           ) : null}
         </div>

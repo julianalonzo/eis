@@ -98,7 +98,7 @@ export default function NewTemplatePage() {
               Back
             </ButtonLink>
           ) : null}
-          <PrimaryButton label="Continue" action={nextStepHandler} />
+          <PrimaryButton action={nextStepHandler}>Next</PrimaryButton>
         </div>
       </Grid>
     </Grid>
