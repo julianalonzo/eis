@@ -1,10 +1,14 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import { muiTheme } from 'storybook-addon-material-ui';
+
+import customTheme from '../utilities/theme';
 
 import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
 
 storiesOf('IllustrationPlaceholder', module)
+  .addDecorator(muiTheme([customTheme]))
   .add('default', () => <IllustrationPlaceholder />)
   .add('withLabelsNoAction', () => (
     <IllustrationPlaceholder

@@ -2,6 +2,9 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { muiTheme } from 'storybook-addon-material-ui';
+
+import customTheme from '../utilities/theme';
 
 import Property from '../components/Property';
 
@@ -16,6 +19,6 @@ export const actions = {
   onOpenDeletePropertyDialog: action('onOpenDeletePropertyDialog')
 };
 
-storiesOf('Property', module).add('default', () => (
-  <Property property={property} {...actions} />
-));
+storiesOf('Property', module)
+  .addDecorator(muiTheme([customTheme]))
+  .add('default', () => <Property property={property} {...actions} />);

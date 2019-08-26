@@ -47,7 +47,8 @@
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-links": "^5.1.9",
     "@storybook/addons": "^5.1.9",
-    "@storybook/react": "^5.1.9"
+    "@storybook/react": "^5.1.9",
+    "storybook-addon-material-ui": "^0.9.0-alpha.20"
   },
   "proxy": "http://localhost:4000"
 }

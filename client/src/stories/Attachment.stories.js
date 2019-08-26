@@ -1,6 +1,9 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import { muiTheme } from 'storybook-addon-material-ui';
+
+import customTheme from '../utilities/theme';
 
 import Attachment from '../components/Attachment';
 
@@ -14,6 +17,7 @@ export const defaultAttachment = {
 };
 
 storiesOf('Attachment', module)
+  .addDecorator(muiTheme([customTheme]))
   .add('default', () => <Attachment attachment={defaultAttachment} />)
   .add('upload', () => (
     <Attachment attachment={defaultAttachment} variant="upload" />

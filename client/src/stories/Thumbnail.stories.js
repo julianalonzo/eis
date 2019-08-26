@@ -1,6 +1,9 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import { muiTheme } from 'storybook-addon-material-ui';
+
+import customTheme from '../utilities/theme';
 
 import Thumbnail from '../components/Thumbnail';
 
@@ -12,6 +15,7 @@ export const thumbnail = {
 };
 
 storiesOf('Thumbnail', module)
+  .addDecorator(muiTheme([customTheme]))
   .add('default', () => <Thumbnail thumbnail={thumbnail} />)
   .add('primary', () => (
     <Thumbnail thumbnail={{ ...thumbnail, variant: 'THUMBNAIL_PRIMARY' }} />

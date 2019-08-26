@@ -1,6 +1,9 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import { muiTheme } from 'storybook-addon-material-ui';
+
+import customTheme from '../utilities/theme';
 
 import { actions } from './Property.stories';
 import Properties from '../components/Properties';
@@ -50,6 +53,8 @@ export const defaultPropertyGroups = [
   }
 ];
 
-storiesOf('Properties', module).add('default', () => (
-  <Properties propertyGroups={defaultPropertyGroups} {...actions} />
-));
+storiesOf('Properties', module)
+  .addDecorator(muiTheme([customTheme]))
+  .add('default', () => (
+    <Properties propertyGroups={defaultPropertyGroups} {...actions} />
+  ));

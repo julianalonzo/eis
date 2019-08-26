@@ -2,6 +2,10 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 
+import { muiTheme } from 'storybook-addon-material-ui';
+
+import customTheme from '../utilities/theme';
+
 import ItemDetailsForm from '../components/ItemDetailsForm';
 
 export const defaultItemDetailsData = {
@@ -39,6 +43,7 @@ export const thumbnails = [
 ];
 
 storiesOf('ItemDetailsForm', module)
+  .addDecorator(muiTheme([customTheme]))
   .add('default', () => <ItemDetailsForm />)
   .add('withThumbnail', () => (
     <ItemDetailsForm

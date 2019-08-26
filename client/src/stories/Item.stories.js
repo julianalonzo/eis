@@ -1,6 +1,9 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import { muiTheme } from 'storybook-addon-material-ui';
+
+import customTheme from '../utilities/theme';
 
 import Item from '../components/Item';
 
@@ -13,4 +16,6 @@ export const item = {
   condition: 'Working'
 };
 
-storiesOf('Item', module).add('default', () => <Item item={item} />);
+storiesOf('Item', module)
+  .addDecorator(muiTheme([customTheme]))
+  .add('default', () => <Item item={item} />);
