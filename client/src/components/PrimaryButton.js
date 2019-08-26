@@ -4,23 +4,21 @@ import { makeStyles } from '@material-ui/styles';
 
 import ButtonBase from '@material-ui/core/ButtonBase';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   button: {
-    fontSize: '14px',
-    padding: '8px 24px',
+    fontSize: theme.fontSize,
+    fontWeight: theme.fontWeight.bold,
+    padding: `${theme.space}px ${theme.space * 4}px`,
     borderRadius: '25px',
-    border: '1px solid transparent',
-    backgroundColor: '#3f51b5',
+    backgroundColor: theme.color.primary,
     color: '#ffffff',
-    textTransform: 'uppercase',
-    letterSpacing: '1.3px',
     '&:hover': {
-      backgroundColor: '#283593'
+      boxShadow: theme.shadow.subtle
     }
   }
-});
+}));
 
-export default function PrimaryButton({ action, label }) {
+export default function PrimaryButton({ action, children }) {
   const classes = useStyles();
   return (
     <ButtonBase
@@ -29,7 +27,7 @@ export default function PrimaryButton({ action, label }) {
       disableTouchRipple
       className={classes.button}
     >
-      {label}
+      {children}
     </ButtonBase>
   );
 }
