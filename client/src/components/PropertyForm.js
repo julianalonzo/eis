@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+import Property from './Property';
 import TextField from '@material-ui/core/TextField';
 
 import PropTypes from 'prop-types';
@@ -15,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PropertyForm({ name, value }) {
+export default function PropertyForm({ item: { _id, name, value } }) {
   const classes = useStyles();
 
   return (
@@ -33,6 +34,5 @@ export default function PropertyForm({ name, value }) {
 }
 
 PropertyForm.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string
+  item: PropTypes.arrayOf(Property.propTypes.property)
 };

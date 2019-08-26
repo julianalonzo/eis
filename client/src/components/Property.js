@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 });
 
 export default function Property({
-  property: { id, name, value, state },
+  property: { _id, name, value },
   onOpenEditPropertyDialog,
   onOpenDeletePropertyDialog
 }) {
@@ -44,7 +44,7 @@ export default function Property({
         <IconButton
           size="small"
           onClick={() => {
-            onOpenEditPropertyDialog(id);
+            onOpenEditPropertyDialog(_id);
           }}
           className={classes.editButton}
         >
@@ -53,7 +53,7 @@ export default function Property({
         <IconButton
           size="small"
           onClick={() => {
-            onOpenDeletePropertyDialog(id);
+            onOpenDeletePropertyDialog(_id);
           }}
         >
           <DeleteIcon fontSize="small" />
@@ -65,7 +65,7 @@ export default function Property({
 
 Property.propTypes = {
   property: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     value: PropTypes.string
   }),
