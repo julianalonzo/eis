@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-import { formatFileSize } from '../helperFunctions';
+import { formatFileSize } from '../utilities/helperFunctions';
 
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
