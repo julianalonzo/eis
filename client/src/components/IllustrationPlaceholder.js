@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import DefaultIllustration from '../assets/illustrations/default.svg';
-import PrimaryButton from './PrimaryButton';
+import Button from './Button';
 import grey from '@material-ui/core/colors/grey';
 
 import PropTypes from 'prop-types';
@@ -103,7 +103,7 @@ export default function IllustrationPlaceholder({
           ) : null}
           {action ? (
             <div className={classes.actionButtonContainer}>
-              <PrimaryButton>{action.label}</PrimaryButton>
+              <Button>{action.label}</Button>
             </div>
           ) : null}
         </div>

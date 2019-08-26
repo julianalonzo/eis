@@ -3,7 +3,11 @@ import { grey, indigo } from '@material-ui/core/colors';
 const theme = {
   color: {
     primary: indigo[500],
-    secondary: grey[500]
+    primaryLighter: indigo[200],
+    primaryDarker: indigo[700],
+    secondary: grey[500],
+    secondaryLighter: grey[200],
+    secondaryDarker: grey[700]
   },
   fontSize: 16,
   shadow: {

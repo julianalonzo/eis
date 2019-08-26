@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
 import ItemIllustration from '../assets/illustrations/item.svg';
 import ItemDetailsForm from '../components/ItemDetailsForm';
-import PrimaryButton from '../components/PrimaryButton';
+import Button from '../components/Button';
 import TemplateIllustration from '../assets/illustrations/template.svg';
 import TemplateDetailsForm from '../components/TemplateDetailsForm';
 import Stepper from '@material-ui/core/Stepper';
@@ -98,7 +98,7 @@ export default function NewTemplatePage() {
               Back
             </ButtonLink>
           ) : null}
-          <PrimaryButton action={nextStepHandler}>Next</PrimaryButton>
+          <Button action={nextStepHandler}>Next</Button>
         </div>
       </Grid>
     </Grid>
