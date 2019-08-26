@@ -1,4 +1,4 @@
-import { grey, indigo } from '@material-ui/core/colors';
+import { green, grey, indigo, red } from '@material-ui/core/colors';
 
 const theme = {
   color: {
@@ -7,7 +7,9 @@ const theme = {
     primaryDarker: indigo[700],
     secondary: grey[500],
     secondaryLighter: grey[200],
-    secondaryDarker: grey[700]
+    secondaryDarker: grey[700],
+    success: green['A700'],
+    danger: red['A700']
   },
   fontSize: 16,
   shadow: {

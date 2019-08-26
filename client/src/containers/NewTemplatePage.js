@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
+import Button from '../components/Button';
 import ButtonLink from '../components/ButtonLink';
 import Grid from '@material-ui/core/Grid';
 import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
 import ItemIllustration from '../assets/illustrations/item.svg';
 import ItemDetailsForm from '../components/ItemDetailsForm';
-import Button from '../components/Button';
+import PropertiesIllustration from '../assets/illustrations/properties.svg';
+import PropertiesForm from '../components/PropertiesForm';
 import TemplateIllustration from '../assets/illustrations/template.svg';
 import TemplateDetailsForm from '../components/TemplateDetailsForm';
 import Stepper from '@material-ui/core/Stepper';
@@ -48,7 +50,8 @@ export default function NewTemplatePage() {
 
   const formViews = [
     <TemplateDetailsForm templateDetailsData={templateDetails} />,
-    <ItemDetailsForm />
+    <ItemDetailsForm />,
+    <PropertiesForm />
   ];
 
   const formIllustration = [
@@ -61,6 +64,11 @@ export default function NewTemplatePage() {
       headerText: 'Item details',
       headerSubText: 'Name and describe your item',
       sourceImage: ItemIllustration
+    },
+    {
+      headerText: 'Properties',
+      headerSubText: 'Add custom fields for your item',
+      sourceImage: PropertiesIllustration
     }
   ];
 
