@@ -2,6 +2,7 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
+import Box from '@material-ui/core/Box';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
@@ -12,16 +13,11 @@ const useStyles = makeStyles(theme => ({
   actionButtonsContainer: {
     display: 'flex',
     alignItems: 'center'
-  },
-  addPropertyIcon: {
-    color: theme.color.success
   }
 }));
 
 export default function NewPropertyForm() {
   const classes = useStyles();
-
-  // @TODO: Add form state
 
   return (
     <Grid container spacing={2} alignItems="center">
@@ -32,14 +28,14 @@ export default function NewPropertyForm() {
         <TextField label="Default Value" variant="outlined" fullWidth />
       </Grid>
       <Grid item xs={2}>
-        <div className={classes.actionButtonsContainer}>
-          <IconButton>
-            <CheckIcon className={classes.addPropertyIcon} />
+        <Box className={classes.actionButtonsContainer}>
+          <IconButton color="primary">
+            <CheckIcon />
           </IconButton>
           <IconButton>
             <CloseIcon />
           </IconButton>
-        </div>
+        </Box>
       </Grid>
     </Grid>
   );

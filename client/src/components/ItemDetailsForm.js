@@ -3,7 +3,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
-import Button from '@material-ui/core/Button';
+import Button from './Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Thumbnail from './Thumbnail';
@@ -11,41 +11,36 @@ import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   row: {
-    marginBottom: '16px'
+    marginBottom: theme.spacing(2)
   },
   thumbnailsFormHeader: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '8px'
+    marginBottom: theme.spacing(1)
   },
   thumbnailsHeaderText: {
-    marginRight: '48px'
+    marginRight: theme.spacing(6)
   },
   mainHeaderText: {
-    marginRight: '4px',
-    fontWeight: '500',
-    color: '#9e9e9e'
+    marginRight: theme.spacing(1),
+    fontWeight: 500
   },
   subHeaderText: {
-    fontSize: '12px',
-    color: '#9e9e9e',
-    fontWeight: '500'
+    fontWeight: 500
   },
   buttonIcon: {
-    marginRight: '8px'
+    marginRight: theme.spacing(1)
   },
   thumbnailsPreviewContainer: {
     display: 'flex',
     alignItems: 'center'
   },
   noThumbnailText: {
-    color: '#9e9e9e',
-    fontStyle: 'italic',
-    fontSize: '14px'
+    fontStyle: 'italic'
   }
-});
+}));
 
 export default function ItemDetailsForm({
   itemDetailsFormData: { itemName, itemCategory, itemCondition, itemThumbnails }
@@ -96,17 +91,26 @@ export default function ItemDetailsForm({
       <Grid item xs={12} className={classes.row}>
         <div className={classes.thumbnailsFormHeader}>
           <div className={classes.thumbnailsHeaderText}>
-            <Typography component="span" className={classes.mainHeaderText}>
+            <Typography
+              display="inline"
+              className={classes.mainHeaderText}
+              color="textSecondary"
+            >
               Thumbnails
             </Typography>
-            <Typography component="span" className={classes.subHeaderText}>
+            <Typography
+              variant="subtitle2"
+              display="inline"
+              className={classes.subHeaderText}
+              color="textSecondary"
+            >
               (4 max)
             </Typography>
           </div>
           {itemThumbnails.length < 4 ? (
-            <Button component="span">
+            <Button color="secondary" variant="outlined">
               <AddPhotoAlternateIcon className={classes.buttonIcon} />
-              Add Thumbnail/s
+              Upload Thumbnail
             </Button>
           ) : null}
         </div>
@@ -121,7 +125,10 @@ export default function ItemDetailsForm({
             );
           })}
           {itemThumbnails.length === 0 ? (
-            <Typography className={classes.noThumbnailText}>
+            <Typography
+              className={classes.noThumbnailText}
+              color="textSecondary"
+            >
               No thumbnails yet
             </Typography>
           ) : null}

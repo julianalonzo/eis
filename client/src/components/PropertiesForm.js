@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
   propertyRow: {
-    marginBottom: theme.space * 2
+    marginBottom: theme.spacing(2)
   }
 }));
 

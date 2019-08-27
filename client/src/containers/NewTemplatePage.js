@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import Button from '../components/Button';
-import ButtonLink from '../components/ButtonLink';
 import Grid from '@material-ui/core/Grid';
 import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
 import ItemIllustration from '../assets/illustrations/item.svg';
@@ -16,20 +15,20 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   formContainer: {
-    padding: '24px 64px'
+    padding: theme.spacing(3, 8)
   },
   stepperContainer: {
-    marginBottom: '36px'
+    marginBottom: theme.spacing(5)
   },
   formActionButtons: {
-    marginTop: '64px',
+    marginTop: theme.spacing(8),
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center'
   }
-});
+}));
 
 export default function NewTemplatePage() {
   const classes = useStyles();
@@ -102,11 +101,13 @@ export default function NewTemplatePage() {
         {formViews[activeStep]}
         <div className={classes.formActionButtons}>
           {activeStep > 0 ? (
-            <ButtonLink marginRight={48} action={backStepHandler}>
+            <Button margin={4} onClick={backStepHandler}>
               Back
-            </ButtonLink>
+            </Button>
           ) : null}
-          <Button action={nextStepHandler}>Next</Button>
+          <Button variant="contained" color="primary" onClick={nextStepHandler}>
+            Next
+          </Button>
         </div>
       </Grid>
     </Grid>
