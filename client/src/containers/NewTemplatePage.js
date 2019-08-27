@@ -41,13 +41,7 @@ export default function NewTemplatePage() {
     templateDescription: ''
   });
 
-  const stepsLabels = [
-    'Template',
-    'Item',
-    'Properties',
-    'Attachments',
-    'Notes'
-  ];
+  const stepsLabels = ['Template', 'Item', 'Properties', 'Attachments'];
 
   const formViews = [
     <TemplateDetailsForm templateDetailsData={templateDetails} />,
@@ -113,9 +107,19 @@ export default function NewTemplatePage() {
               Back
             </Button>
           ) : null}
-          <Button variant="contained" color="primary" onClick={nextStepHandler}>
-            Next
-          </Button>
+          {activeStep < stepsLabels.length - 1 ? (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={nextStepHandler}
+            >
+              Next
+            </Button>
+          ) : (
+            <Button variant="contained" color="primary">
+              Finish
+            </Button>
+          )}
         </div>
       </Grid>
     </Grid>

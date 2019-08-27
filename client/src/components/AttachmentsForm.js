@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles(theme => ({
   uploadedAttachmentsContainer: {
-    marginBotom: theme.spacing(4)
+    marginBottom: theme.spacing(4)
   },
   cloudUploadIcon: {
     marginRight: theme.spacing(1)
@@ -21,17 +21,19 @@ export default function AttachmentsForm({ attachments = [] }) {
 
   return (
     <Grid container>
-      <Grid item xs={12} className={classes.uploadedAttachmentsContainer}>
-        <Grid container>
-          {attachments.map(attachment => {
-            return (
-              <Grid key={attachment.fileName} item xs={12}>
-                <Attachment variant="upload" attachment={attachment} />
-              </Grid>
-            );
-          })}
+      {attachments.length > 0 ? (
+        <Grid item xs={12} className={classes.uploadedAttachmentsContainer}>
+          <Grid container>
+            {attachments.map(attachment => {
+              return (
+                <Grid key={attachment.fileName} item xs={12}>
+                  <Attachment variant="upload" attachment={attachment} />
+                </Grid>
+              );
+            })}
+          </Grid>
         </Grid>
-      </Grid>
+      ) : null}
       <Grid item xs={12}>
         <Button color="secondary" variant="outlined">
           <CloudUploadIcon className={classes.cloudUploadIcon} />
