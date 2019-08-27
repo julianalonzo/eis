@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
+import AttachmentsForm from '../components/AttachmentsForm';
 import Button from '../components/Button';
 import Grid from '@material-ui/core/Grid';
 import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
@@ -11,6 +12,7 @@ import PropertiesIllustration from '../assets/illustrations/properties.svg';
 import PropertiesForm from '../components/PropertiesForm';
 import TemplateIllustration from '../assets/illustrations/template.svg';
 import TemplateDetailsForm from '../components/TemplateDetailsForm';
+import UploadIllustration from '../assets/illustrations/upload.svg';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -50,7 +52,8 @@ export default function NewTemplatePage() {
   const formViews = [
     <TemplateDetailsForm templateDetailsData={templateDetails} />,
     <ItemDetailsForm />,
-    <PropertiesForm />
+    <PropertiesForm />,
+    <AttachmentsForm />
   ];
 
   const formIllustration = [
@@ -68,6 +71,11 @@ export default function NewTemplatePage() {
       headerText: 'Properties',
       headerSubText: 'Add custom fields for your item',
       sourceImage: PropertiesIllustration
+    },
+    {
+      headerText: 'Attachments',
+      headerSubText: 'Add relevant attachments to your item',
+      sourceImage: UploadIllustration
     }
   ];
 

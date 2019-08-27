@@ -14,22 +14,21 @@ import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   flexAlignCenter: {
     display: 'flex',
     alignItems: 'center'
   },
   avatar: {
-    marginRight: '16px'
+    marginRight: theme.spacing(2)
   },
   textPrimary: {
-    fontWeight: '700'
+    fontWeight: 700
   },
   textSecondary: {
-    color: '#9e9e9e',
     fontSize: '12px'
   }
-});
+}));
 
 export default function Attachment({
   attachment: { id, fileName, filePath, type, fileSize, dateUploaded },
@@ -46,7 +45,7 @@ export default function Attachment({
           </Avatar>
           <div>
             <Typography className={classes.textPrimary}>{fileName}</Typography>
-            <Typography className={classes.textSecondary}>
+            <Typography color="textSecondary" className={classes.textSecondary}>
               {variant === 'default' ? (
                 <Moment format="MMM D, YYYY" withTitle>
                   {dateUploaded}
@@ -75,12 +74,12 @@ export default function Attachment({
 
 Attachment.propTypes = {
   attachment: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    fileName: PropTypes.string.isRequired,
-    filePath: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    fileSize: PropTypes.number.isRequired,
-    dateUploaded: PropTypes.string.isRequired
+    id: PropTypes.string,
+    fileName: PropTypes.string,
+    filePath: PropTypes.string,
+    type: PropTypes.string,
+    fileSize: PropTypes.number,
+    dateUploaded: PropTypes.string
   }),
   variant: PropTypes.string
 };

@@ -20,5 +20,5 @@ storiesOf('Attachment', module)
   .addDecorator(muiTheme([customTheme]))
   .add('default', () => <Attachment attachment={defaultAttachment} />)
   .add('upload', () => (
-    <Attachment attachment={defaultAttachment} variant="upload" />
+    <Attachment variant="upload" attachment={defaultAttachment} />
   ));
