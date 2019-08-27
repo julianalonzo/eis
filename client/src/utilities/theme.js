@@ -1,15 +1,11 @@
-import { green, grey, indigo, red } from '@material-ui/core/colors';
+import indigo from '@material-ui/core/colors/indigo';
 
 const theme = {
-  color: {
-    primary: indigo[500],
-    primaryLighter: indigo[200],
-    primaryDarker: indigo[700],
-    secondary: grey[500],
-    secondaryLighter: grey[200],
-    secondaryDarker: grey[700],
-    success: green['A700'],
-    danger: red['A700']
+  palette: {
+    primary: indigo,
+    secondary: {
+      main: '#b5a33f'
+    }
   },
   fontSize: 16,
   shadow: {
@@ -19,8 +15,7 @@ const theme = {
     bold: 500,
     bolder: 700,
     boldest: 900
-  },
-  space: 12
+  }
 };
 
 export default theme;

@@ -9,15 +9,24 @@ import Button from '../components/Button';
 
 storiesOf('Button', module)
   .addDecorator(muiTheme([customTheme]))
-  .add('default', () => <Button>Primary Button</Button>)
-  .add('secondary', () => <Button color="secondary">Secondary Button</Button>)
-  .add('outlinedPrimary', () => (
-    <Button variant="outlined" color="primary">
-      Outlined Primary
+  .add('default', () => <Button>Default Button</Button>)
+  .add('primaryContained', () => (
+    <Button variant="contained" color="primary">
+      Primary
     </Button>
   ))
-  .add('outlinedSecondary', () => (
+  .add('secondaryContained', () => (
+    <Button variant="contained" color="secondary">
+      Primary
+    </Button>
+  ))
+  .add('primaryOutlined', () => (
+    <Button variant="outlined" color="primary">
+      Primary
+    </Button>
+  ))
+  .add('secondaryOutlined', () => (
     <Button variant="outlined" color="secondary">
-      Outlined Secondary
+      Primary
     </Button>
   ));

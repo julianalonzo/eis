@@ -2,66 +2,23 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
-import ButtonBase from '@material-ui/core/ButtonBase';
+import MuiButton from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
-  button: props => {
-    let backgroundColor =
-      props.color === 'primary' ? theme.color.primary : theme.color.secondary;
-    let fontColor = 'white';
-    let borderColor = 'transparent';
-    let hoverProps = {
-      boxShadow: theme.shadow.subtle,
-      backgroundColor:
-        props.color === 'primary'
-          ? theme.color.primaryDarker
-          : theme.color.secondaryDarker
-    };
-
-    if (props.variant === 'outlined') {
-      fontColor = backgroundColor;
-      borderColor = backgroundColor;
-      hoverProps = {
-        borderColor: 'transparent',
-        color: 'white',
-        backgroundColor:
-          props.color === 'primary'
-            ? theme.color.primaryDarker
-            : theme.color.secondaryDarker
-      };
-      backgroundColor = 'transparent';
-    }
-
-    return {
-      fontSize: theme.fontSize,
-      fontWeight: theme.fontWeight.bold,
-      padding: `${theme.space}px ${theme.space * 4}px`,
-      borderRadius: '25px',
-      backgroundColor: backgroundColor,
-      color: fontColor,
-      border: '1px solid ' + borderColor,
-      '&:hover': {
-        ...hoverProps
-      }
-    };
-  }
+  button: props => ({
+    borderRadius: '25px',
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    margin: theme.spacing(0, props.margin)
+  })
 }));
 
-export default function Button({
-  variant = 'contained',
-  color = 'primary',
-  action,
-  children
-}) {
-  const classes = useStyles({ variant, color });
+export default function Button(props) {
+  const classes = useStyles({ margin: props.margin });
+
   return (
-    <ButtonBase
-      onClick={action}
-      disableRipple
-      disableTouchRipple
-      className={classes.button}
-    >
-      {children}
-    </ButtonBase>
+    <MuiButton className={classes.button} {...props}>
+      {props.children}
+    </MuiButton>
   );
 }
