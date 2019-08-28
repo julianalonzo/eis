@@ -41,17 +41,26 @@ export default function NewTemplatePage() {
     name: '',
     description: ''
   });
+  const [itemDetails, setItemDetails] = useState({
+    name: '',
+    category: '',
+    condition: '',
+    thumbnails: []
+  });
 
   const stepsLabels = ['Template', 'Item', 'Properties', 'Attachments'];
 
   const saveTemplateDetails = values => {
-    setTemplateDetails({ ...values });
-    nextStepHandler();
+    setTemplateDetails({ ...templateDetails, ...values });
   };
 
-  const formInitialState = [templateDetails];
+  const saveItemDetails = values => {
+    setItemDetails({ ...itemDetails, ...values });
+  };
 
-  const formActions = [saveTemplateDetails];
+  const formInitialState = [templateDetails, itemDetails];
+
+  const formActions = [saveTemplateDetails, saveItemDetails];
 
   const formIllustration = [
     {
@@ -89,8 +98,11 @@ export default function NewTemplatePage() {
   return (
     <Form
       initialValues={formInitialState[activeStep]}
-      onSubmit={formActions[activeStep]}
-      render={({ handleSubmit }) => {
+      onSubmit={values => {
+        formActions[activeStep](values);
+        nextStepHandler();
+      }}
+      render={({ handleSubmit, values }) => {
         return (
           <form onSubmit={handleSubmit}>
             <Grid container>
@@ -120,7 +132,13 @@ export default function NewTemplatePage() {
                 {activeStep === 3 && <AttachmentsForm />}
                 <div className={classes.formActionButtons}>
                   {activeStep > 0 ? (
-                    <Button margin={4} onClick={backStepHandler}>
+                    <Button
+                      margin={4}
+                      onClick={() => {
+                        formActions[activeStep](values);
+                        backStepHandler();
+                      }}
+                    >
                       Back
                     </Button>
                   ) : null}
@@ -129,7 +147,7 @@ export default function NewTemplatePage() {
                       Next
                     </Button>
                   ) : (
-                    <Button variant="contained" color="primary">
+                    <Button variant="contained" color="primary" type="submit">
                       Finish
                     </Button>
                   )}

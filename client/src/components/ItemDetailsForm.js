@@ -4,7 +4,9 @@ import { makeStyles } from '@material-ui/styles';
 
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 import Button from './Button';
+import { Field } from 'react-final-form';
 import Grid from '@material-ui/core/Grid';
+import { isRequired } from '../utilities/validators';
 import TextField from '@material-ui/core/TextField';
 import Thumbnail from './Thumbnail';
 import Typography from '@material-ui/core/Typography';
@@ -43,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ItemDetailsForm({
-  itemDetailsFormData: { itemName, itemCategory, itemCondition, itemThumbnails }
+  itemDetails: { name, category, condition, thumbnails }
 }) {
   const classes = useStyles();
 
@@ -52,39 +54,56 @@ export default function ItemDetailsForm({
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12}>
-            <TextField
-              label="Item Name"
-              variant="outlined"
-              fullWidth
-              value={itemName}
-            />
+            <Field name="name" validate={isRequired}>
+              {({ input, meta }) => {
+                return (
+                  <TextField
+                    label="Item Name"
+                    variant="outlined"
+                    fullWidth
+                    {...input}
+                    error={meta.error && meta.touched}
+                    helperText={meta.error && meta.touched ? meta.error : null}
+                  />
+                );
+              }}
+            </Field>
           </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12}>
-            <TextField
-              label="Item Description"
-              variant="outlined"
-              multiline
-              rowsMax={4}
-              rows={4}
-              fullWidth
-              value={itemCategory}
-            />
+            <Field name="category">
+              {({ input, meta }) => {
+                return (
+                  <TextField
+                    label="Item Category"
+                    variant="outlined"
+                    fullWidth
+                    {...input}
+                  />
+                );
+              }}
+            </Field>
           </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12}>
-            <TextField
-              label="Item Condition"
-              variant="outlined"
-              fullWidth
-              value={itemCondition}
-            />
+            <Field name="condition" validate={isRequired}>
+              {({ input, meta }) => {
+                return (
+                  <TextField
+                    label="Item Condition"
+                    variant="outlined"
+                    fullWidth
+                    {...input}
+                  />
+                );
+              }}
+            </Field>
           </Grid>
         </Grid>
       </Grid>
@@ -107,7 +126,7 @@ export default function ItemDetailsForm({
               (4 max)
             </Typography>
           </div>
-          {itemThumbnails.length < 4 ? (
+          {thumbnails.length < 4 ? (
             <Button color="secondary" variant="outlined">
               <AddPhotoAlternateIcon className={classes.buttonIcon} />
               Upload Thumbnail
@@ -115,7 +134,7 @@ export default function ItemDetailsForm({
           ) : null}
         </div>
         <div className={classes.thumbnailsPreviewContainer}>
-          {itemThumbnails.map(thumbnail => {
+          {thumbnails.map(thumbnail => {
             return (
               <Thumbnail
                 key={thumbnail.src}
@@ -124,7 +143,7 @@ export default function ItemDetailsForm({
               />
             );
           })}
-          {itemThumbnails.length === 0 ? (
+          {thumbnails.length === 0 ? (
             <Typography
               className={classes.noThumbnailText}
               color="textSecondary"
@@ -139,11 +158,11 @@ export default function ItemDetailsForm({
 }
 
 ItemDetailsForm.propTypes = {
-  itemDetailsFormData: PropTypes.shape({
-    itemName: PropTypes.string,
-    itemCategory: PropTypes.string,
-    itemCondition: PropTypes.string,
-    itemThumbnails: PropTypes.arrayOf(
+  itemDetails: PropTypes.shape({
+    name: PropTypes.string,
+    category: PropTypes.string,
+    condition: PropTypes.string,
+    thumbnails: PropTypes.arrayOf(
       PropTypes.shape({
         alt: PropTypes.string,
         src: PropTypes.string,
@@ -154,10 +173,10 @@ ItemDetailsForm.propTypes = {
 };
 
 ItemDetailsForm.defaultProps = {
-  itemDetailsFormData: {
-    itemName: '',
-    itemCategory: '',
-    itemCondition: '',
-    itemThumbnails: []
+  itemDetails: {
+    name: '',
+    category: '',
+    condition: '',
+    thumbnails: []
   }
 };
