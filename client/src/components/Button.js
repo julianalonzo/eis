@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Button(props) {
-  const classes = useStyles({ margin: props.margin });
+  const classes = useStyles({ margin: props.margin ? props.margin : 0 });
 
   return (
     <MuiButton className={classes.button} {...props}>

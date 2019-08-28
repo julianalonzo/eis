@@ -33,7 +33,7 @@ export default function AttachmentsForm({ attachments = [] }) {
             })}
           </Grid>
         </Grid>
-      ) : null}
+      ) : null }
       <Grid item xs={12}>
         <Button color="secondary" variant="outlined">
           <CloudUploadIcon className={classes.cloudUploadIcon} />
