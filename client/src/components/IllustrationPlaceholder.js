@@ -10,23 +10,23 @@ import grey from '@material-ui/core/colors/grey';
 
 import PropTypes from 'prop-types';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   headerContainer: {
     paddingTop: '10vh',
-    paddingLeft: '64px',
-    marginBottom: '36px'
+    paddingLeft: theme.spacing(8),
+    marginBottom: theme.spacing(5)
   },
   header: {
-    fontSize: '48px',
-    fontWeight: '700'
+    fontSize: theme.spacing(6),
+    fontWeight: 700
   },
   headerSubText: {
-    fontSize: '16px',
+    fontSize: theme.spacing(2),
     color: grey[500],
-    fontWeight: '500'
+    fontWeight: 500
   },
   illustrationContainer: {
-    marginBottom: '24px'
+    marginBottom: theme.spacing(3)
   },
   centeredWrapper: {
     textAlign: 'center'
@@ -38,9 +38,9 @@ const useStyles = makeStyles({
     color: '#9e9e9e'
   },
   actionButtonContainer: {
-    marginTop: '24px'
+    marginTop: theme.spacing(3)
   }
-});
+}));
 
 export default function IllustrationPlaceholder({
   sourceImage,
@@ -113,8 +113,8 @@ export default function IllustrationPlaceholder({
 }
 
 IllustrationPlaceholder.propTypes = {
-  sourceImage: PropTypes.string.isRequired,
-  alt: PropTypes.string.isRequired,
+  sourceImage: PropTypes.string,
+  alt: PropTypes.string,
   primaryText: PropTypes.string,
   secondaryText: PropTypes.string,
   size: PropTypes.string,

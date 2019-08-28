@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/styles';
 
 import AttachmentsForm from '../components/AttachmentsForm';
 import Button from '../components/Button';
+import { Form } from 'react-final-form';
 import Grid from '@material-ui/core/Grid';
 import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
 import ItemIllustration from '../assets/illustrations/item.svg';
@@ -37,18 +38,20 @@ export default function NewTemplatePage() {
 
   const [activeStep, setActiveStep] = useState(0);
   const [templateDetails, setTemplateDetails] = useState({
-    templateName: '',
-    templateDescription: ''
+    name: '',
+    description: ''
   });
 
   const stepsLabels = ['Template', 'Item', 'Properties', 'Attachments'];
 
-  const formViews = [
-    <TemplateDetailsForm templateDetailsData={templateDetails} />,
-    <ItemDetailsForm />,
-    <PropertiesForm />,
-    <AttachmentsForm />
-  ];
+  const saveTemplateDetails = values => {
+    setTemplateDetails({ ...values });
+    nextStepHandler();
+  };
+
+  const formInitialState = [templateDetails];
+
+  const formActions = [saveTemplateDetails];
 
   const formIllustration = [
     {
@@ -84,44 +87,58 @@ export default function NewTemplatePage() {
   const activeIllustrationProps = formIllustration[activeStep];
 
   return (
-    <Grid container>
-      <Grid item md={6}>
-        <IllustrationPlaceholder {...activeIllustrationProps} size="lg" />
-      </Grid>
-      <Grid item md={6} className={classes.formContainer}>
-        <div className={classes.stepperContainer}>
-          <Stepper activeStep={activeStep} alternativeLabel>
-            {stepsLabels.map(stepLabel => {
-              return (
-                <Step key={stepLabel}>
-                  <StepLabel>{stepLabel}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-        </div>
-        {formViews[activeStep]}
-        <div className={classes.formActionButtons}>
-          {activeStep > 0 ? (
-            <Button margin={4} onClick={backStepHandler}>
-              Back
-            </Button>
-          ) : null}
-          {activeStep < stepsLabels.length - 1 ? (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={nextStepHandler}
-            >
-              Next
-            </Button>
-          ) : (
-            <Button variant="contained" color="primary">
-              Finish
-            </Button>
-          )}
-        </div>
-      </Grid>
-    </Grid>
+    <Form
+      initialValues={formInitialState[activeStep]}
+      onSubmit={formActions[activeStep]}
+      render={({ handleSubmit }) => {
+        return (
+          <form onSubmit={handleSubmit}>
+            <Grid container>
+              <Grid item md={6}>
+                <IllustrationPlaceholder
+                  {...activeIllustrationProps}
+                  size="lg"
+                />
+              </Grid>
+              <Grid item md={6} className={classes.formContainer}>
+                <div className={classes.stepperContainer}>
+                  <Stepper activeStep={activeStep} alternativeLabel>
+                    {stepsLabels.map(stepLabel => {
+                      return (
+                        <Step key={stepLabel}>
+                          <StepLabel>{stepLabel}</StepLabel>
+                        </Step>
+                      );
+                    })}
+                  </Stepper>
+                </div>
+                {activeStep === 0 && (
+                  <TemplateDetailsForm templateDetails={templateDetails} />
+                )}
+                {activeStep === 1 && <ItemDetailsForm />}
+                {activeStep === 2 && <PropertiesForm />}
+                {activeStep === 3 && <AttachmentsForm />}
+                <div className={classes.formActionButtons}>
+                  {activeStep > 0 ? (
+                    <Button margin={4} onClick={backStepHandler}>
+                      Back
+                    </Button>
+                  ) : null}
+                  {activeStep < stepsLabels.length - 1 ? (
+                    <Button variant="contained" color="primary" type="submit">
+                      Next
+                    </Button>
+                  ) : (
+                    <Button variant="contained" color="primary">
+                      Finish
+                    </Button>
+                  )}
+                </div>
+              </Grid>
+            </Grid>
+          </form>
+        );
+      }}
+    />
   );
 }
