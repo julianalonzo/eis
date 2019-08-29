@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
+import arrayMutators from 'final-form-arrays';
 import AttachmentsForm from '../components/AttachmentsForm';
 import Button from '../components/Button';
 import { Form } from 'react-final-form';
@@ -48,19 +49,30 @@ export default function NewTemplatePage() {
     thumbnails: []
   });
 
+  const [properties, setProperties] = useState({
+    properties: []
+  });
+
   const stepsLabels = ['Template', 'Item', 'Properties', 'Attachments'];
 
   const saveTemplateDetails = values => {
-    setTemplateDetails({ ...templateDetails, ...values });
+    setTemplateDetails({
+      ...templateDetails,
+      ...values
+    });
   };
 
   const saveItemDetails = values => {
     setItemDetails({ ...itemDetails, ...values });
   };
 
-  const formInitialState = [templateDetails, itemDetails];
+  const saveProperties = values => {
+    setProperties({ ...properties, ...values });
+  };
 
-  const formActions = [saveTemplateDetails, saveItemDetails];
+  const formInitialState = [templateDetails, itemDetails, properties];
+
+  const formActions = [saveTemplateDetails, saveItemDetails, saveProperties];
 
   const formIllustration = [
     {
@@ -102,7 +114,14 @@ export default function NewTemplatePage() {
         formActions[activeStep](values);
         nextStepHandler();
       }}
-      render={({ handleSubmit, values }) => {
+      mutators={{ ...arrayMutators }}
+      render={({
+        handleSubmit,
+        values,
+        form: {
+          mutators: { push, pop }
+        }
+      }) => {
         return (
           <form onSubmit={handleSubmit}>
             <Grid container>
@@ -127,8 +146,10 @@ export default function NewTemplatePage() {
                 {activeStep === 0 && (
                   <TemplateDetailsForm templateDetails={templateDetails} />
                 )}
-                {activeStep === 1 && <ItemDetailsForm />}
-                {activeStep === 2 && <PropertiesForm />}
+                {activeStep === 1 && (
+                  <ItemDetailsForm itemDetails={itemDetails} />
+                )}
+                {activeStep === 2 && <PropertiesForm onPropertyAdded={push} />}
                 {activeStep === 3 && <AttachmentsForm />}
                 <div className={classes.formActionButtons}>
                   {activeStep > 0 ? (

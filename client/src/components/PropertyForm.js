@@ -3,6 +3,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import CloseIcon from '@material-ui/icons/Close';
+import { Field } from 'react-final-form';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Property from './Property';
@@ -16,16 +17,32 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PropertyForm({ item: { _id, name, value } }) {
+export default function PropertyForm({
+  fieldName,
+  fieldIndex,
+  fieldLabel,
+  onPropertyRemoved
+}) {
   const classes = useStyles();
 
   return (
-    <Grid container alignItems="center">
+    <Grid container alignItems="flex-start" spacing={2}>
       <Grid item xs={10}>
-        <TextField variant="outlined" label={name} value={value} fullWidth />
+        <Field name={`${fieldName}.value`}>
+          {({ input, meta }) => {
+            return (
+              <TextField
+                label={fieldLabel}
+                variant="outlined"
+                {...input}
+                fullWidth
+              />
+            );
+          }}
+        </Field>
       </Grid>
       <Grid item xs={2} className={classes.actionButtonContainer}>
-        <IconButton>
+        <IconButton onClick={() => onPropertyRemoved(fieldIndex)}>
           <CloseIcon />
         </IconButton>
       </Grid>

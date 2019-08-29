@@ -92,7 +92,7 @@ export default function ItemDetailsForm({
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12}>
-            <Field name="condition" validate={isRequired}>
+            <Field name="condition">
               {({ input, meta }) => {
                 return (
                   <TextField

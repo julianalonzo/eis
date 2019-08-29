@@ -21,7 +21,7 @@ export default function TemplateDetailsForm({
   const classes = useStyles();
 
   return (
-    <Grid container>
+    <Grid container spacing={2}>
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12}>
