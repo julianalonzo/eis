@@ -53,6 +53,10 @@ export default function NewTemplatePage() {
     properties: []
   });
 
+  const [attachments, setAttachments] = useState({
+    attachments: []
+  });
+
   const stepsLabels = ['Template', 'Item', 'Properties', 'Attachments'];
 
   const saveTemplateDetails = values => {
@@ -70,9 +74,39 @@ export default function NewTemplatePage() {
     setProperties({ ...properties, ...values });
   };
 
-  const formInitialState = [templateDetails, itemDetails, properties];
+  const saveAttachments = values => {
+    // This is necessary for having a consistent process in the stepper
+  };
 
-  const formActions = [saveTemplateDetails, saveItemDetails, saveProperties];
+  const addAttachments = values => {
+    setAttachments({
+      ...attachments,
+      attachments: [...attachments.attachments].concat(...values)
+    });
+  };
+
+  const removeAttachment = attachmentIndex => {
+    setAttachments({
+      ...attachments,
+      attachments: [...attachments.attachments].filter(
+        (attachment, index) => index !== attachmentIndex
+      )
+    });
+  };
+
+  const formInitialState = [
+    templateDetails,
+    itemDetails,
+    properties,
+    attachments
+  ];
+
+  const formActions = [
+    saveTemplateDetails,
+    saveItemDetails,
+    saveProperties,
+    saveAttachments
+  ];
 
   const formIllustration = [
     {
@@ -119,7 +153,8 @@ export default function NewTemplatePage() {
         handleSubmit,
         values,
         form: {
-          mutators: { push, pop }
+          mutators: { push },
+          change
         }
       }) => {
         return (
@@ -150,7 +185,14 @@ export default function NewTemplatePage() {
                   <ItemDetailsForm itemDetails={itemDetails} />
                 )}
                 {activeStep === 2 && <PropertiesForm onPropertyAdded={push} />}
-                {activeStep === 3 && <AttachmentsForm />}
+                {activeStep === 3 && (
+                  <AttachmentsForm
+                    attachments={attachments.attachments}
+                    onUploadChange={change}
+                    onAddAttachments={addAttachments}
+                    onRemoveAttachment={removeAttachment}
+                  />
+                )}
                 <div className={classes.formActionButtons}>
                   {activeStep > 0 ? (
                     <Button
