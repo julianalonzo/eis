@@ -1,18 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
 import Attachments from '../components/Attachments';
-import Button from '../components/Button';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { Field } from 'react-final-form';
-import FileUploadIllustration from '../assets/illustrations/file_upload.svg';
 import Grid from '@material-ui/core/Grid';
-import grey from '@material-ui/core/colors/grey';
-import lightGreen from '@material-ui/core/colors/lightGreen';
-import { useDropzone } from 'react-dropzone';
-import red from '@material-ui/core/colors/red';
-import Typography from '@material-ui/core/Typography';
+import UploadDropzone from './UploadDropzone';
 
 const useStyles = makeStyles(theme => ({
   uploadedAttachmentsContainer: {
@@ -20,75 +12,15 @@ const useStyles = makeStyles(theme => ({
   },
   cloudUploadIcon: {
     marginRight: theme.spacing(1)
-  },
-  uploadDropzoneContainer: {
-    marginBottom: theme.spacing(4)
-  },
-  uploadDropzone: {
-    display: 'block',
-    minHeight: '300px',
-    textAlign: 'center',
-    borderRadius: '10px'
-  },
-  fileUploadIllustration: {
-    width: '150px',
-    marginBottom: theme.spacing(2)
   }
 }));
 
-const baseStyle = {
-  outline: 'none',
-  borderRadius: '10px',
-  width: '100%',
-  border: '1px dashed transparent',
-  padding: '16px'
-};
-
-const activeStyle = {
-  border: '1px dashed ' + grey[200]
-};
-
-const acceptStyle = {
-  border: '1px dashed ' + lightGreen[200]
-};
-
-const rejectStyle = {
-  border: '1px dashed ' + red[200]
-};
-
 export default function AttachmentsForm({
   attachments,
-  onUploadChange,
   onAddAttachments,
   onRemoveAttachment
 }) {
   const classes = useStyles();
-
-  const onDrop = useCallback(
-    acceptedFiles => {
-      onUploadChange('attachments', acceptedFiles);
-      onAddAttachments(acceptedFiles);
-    },
-    [onUploadChange, onAddAttachments]
-  );
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject,
-    open
-  } = useDropzone({ onDrop: onDrop, noClick: true, noKeyboard: true });
-
-  const style = useMemo(
-    () => ({
-      ...baseStyle,
-      ...(isDragActive ? activeStyle : {}),
-      ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {})
-    }),
-    [isDragActive, isDragAccept, isDragReject]
-  );
 
   const formattedAttachments = attachments.map(attachment => {
     const formattedAttachmentData = {
@@ -102,63 +34,16 @@ export default function AttachmentsForm({
   return (
     <Grid container>
       <Grid item xs={12} className={classes.uploadDropzoneContainer}>
-        <Field name="attachments">
-          {() => {
-            return (
-              <div {...getRootProps({ style })}>
-                <input {...getInputProps()} />
-                {attachments.length === 0 ? (
-                  <div className={classes.uploadDropzone}>
-                    <img
-                      src={FileUploadIllustration}
-                      alt="File Upoad"
-                      className={classes.fileUploadIllustration}
-                    />
-                    <Typography
-                      color="textSecondary"
-                      style={{ marginBottom: '8px' }}
-                    >
-                      Drag and drop attachments here
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      style={{ marginBottom: '8px' }}
-                    >
-                      or
-                    </Typography>
-                    <Button color="secondary" variant="outlined" onClick={open}>
-                      <CloudUploadIcon className={classes.cloudUploadIcon} />
-                      Add Attachment
-                    </Button>
-                  </div>
-                ) : (
-                  <Grid container>
-                    <Grid
-                      item
-                      xs={12}
-                      className={classes.uploadedAttachmentsContainer}
-                    >
-                      <Attachments
-                        attachments={formattedAttachments}
-                        primaryAction={onRemoveAttachment}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Button
-                        color="secondary"
-                        variant="outlined"
-                        onClick={open}
-                      >
-                        <CloudUploadIcon className={classes.cloudUploadIcon} />
-                        Add Attachment
-                      </Button>
-                    </Grid>
-                  </Grid>
-                )}
-              </div>
-            );
-          }}
-        </Field>
+        <UploadDropzone
+          showPlaceholder={attachments.length === 0}
+          onAddFiles={onAddAttachments}
+          label="attachments"
+        >
+          <Attachments
+            attachments={formattedAttachments}
+            primaryAction={onRemoveAttachment}
+          />
+        </UploadDropzone>
       </Grid>
     </Grid>
   );
