@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
   },
   cloudUploadIcon: {
     marginRight: theme.spacing(1)
+  },
+  uploadedFilesContainer: {
+    marginBottom: theme.spacing(4)
   }
 }));
 

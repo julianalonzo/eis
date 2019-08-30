@@ -2,14 +2,13 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
-import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
-import Button from './Button';
 import { Field } from 'react-final-form';
 import Grid from '@material-ui/core/Grid';
 import { isRequired } from '../utilities/validators';
 import TextField from '@material-ui/core/TextField';
 import Thumbnail from './Thumbnail';
 import Typography from '@material-ui/core/Typography';
+import UploadDropzone from './UploadDropzone';
 
 import PropTypes from 'prop-types';
 
@@ -45,9 +44,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ItemDetailsForm({
-  itemDetails: { name, category, condition, thumbnails }
+  thumbnails,
+  onAddThumbnails,
+  onRemoveThumbnail
 }) {
   const classes = useStyles();
+
+  const formattedThumbnails = thumbnails.map(thumbnail => {
+    return {
+      alt: thumbnail.name,
+      src: URL.createObjectURL(thumbnail),
+      variant: 'THUMBNAIL_PRIMARY'
+    };
+  });
 
   return (
     <Grid container spacing={2}>
@@ -126,32 +135,26 @@ export default function ItemDetailsForm({
               (4 max)
             </Typography>
           </div>
-          {thumbnails.length < 4 ? (
-            <Button color="secondary" variant="outlined">
-              <AddPhotoAlternateIcon className={classes.buttonIcon} />
-              Upload Thumbnail
-            </Button>
-          ) : null}
         </div>
-        <div className={classes.thumbnailsPreviewContainer}>
-          {thumbnails.map(thumbnail => {
-            return (
-              <Thumbnail
-                key={thumbnail.src}
-                thumbnail={thumbnail}
-                marginRight={8}
-              />
-            );
-          })}
-          {thumbnails.length === 0 ? (
-            <Typography
-              className={classes.noThumbnailText}
-              color="textSecondary"
-            >
-              No thumbnails yet
-            </Typography>
-          ) : null}
-        </div>
+        <UploadDropzone
+          showPlaceholder={thumbnails.length === 0}
+          onAddFiles={onAddThumbnails}
+          label="thumbnails"
+        >
+          <div className={classes.thumbnailsPreviewContainer}>
+            {formattedThumbnails.map((thumbnail, index) => {
+              return (
+                <Thumbnail
+                  key={thumbnail.src}
+                  thumbnail={thumbnail}
+                  onRemoveThumbnail={() => {
+                    onRemoveThumbnail(index);
+                  }}
+                />
+              );
+            })}
+          </div>
+        </UploadDropzone>
       </Grid>
     </Grid>
   );

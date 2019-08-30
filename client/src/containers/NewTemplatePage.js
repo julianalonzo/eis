@@ -45,9 +45,10 @@ export default function NewTemplatePage() {
   const [itemDetails, setItemDetails] = useState({
     name: '',
     category: '',
-    condition: '',
-    thumbnails: []
+    condition: ''
   });
+
+  const [thumbnails, setThumbnails] = useState([]);
 
   const [properties, setProperties] = useState({
     properties: []
@@ -60,37 +61,61 @@ export default function NewTemplatePage() {
   const stepsLabels = ['Template', 'Item', 'Properties', 'Attachments'];
 
   const saveTemplateDetails = values => {
-    setTemplateDetails({
-      ...templateDetails,
-      ...values
+    setTemplateDetails(previousTemplateDetails => {
+      return {
+        ...previousTemplateDetails,
+        ...values
+      };
     });
   };
 
   const saveItemDetails = values => {
-    setItemDetails({ ...itemDetails, ...values });
+    setItemDetails(previousItemDetails => {
+      return { ...previousItemDetails, ...values };
+    });
   };
 
   const saveProperties = values => {
-    setProperties({ ...properties, ...values });
+    setProperties(previousProperties => {
+      return { ...previousProperties, ...values };
+    });
   };
 
   const saveAttachments = values => {
     // This is necessary for having a consistent process in the stepper
   };
 
+  const addThumbnails = values => {
+    setThumbnails(previousThumbnails => {
+      return previousThumbnails.concat(...values);
+    });
+  };
+
+  const removeThumbnail = thumbnailIndex => {
+    setThumbnails(previousThumbnails => {
+      return previousThumbnails.filter(
+        (thumbnail, index) => index !== thumbnailIndex
+      );
+    });
+  };
+
   const addAttachments = values => {
-    setAttachments({
-      ...attachments,
-      attachments: [...attachments.attachments].concat(...values)
+    setAttachments(previousAttachments => {
+      return {
+        ...previousAttachments,
+        attachments: [...previousAttachments.attachments].concat(...values)
+      };
     });
   };
 
   const removeAttachment = attachmentIndex => {
-    setAttachments({
-      ...attachments,
-      attachments: [...attachments.attachments].filter(
-        (attachment, index) => index !== attachmentIndex
-      )
+    setAttachments(previousAttachments => {
+      return {
+        ...previousAttachments,
+        attachments: [...previousAttachments.attachments].filter(
+          (attachment, index) => index !== attachmentIndex
+        )
+      };
     });
   };
 
@@ -182,7 +207,11 @@ export default function NewTemplatePage() {
                   <TemplateDetailsForm templateDetails={templateDetails} />
                 )}
                 {activeStep === 1 && (
-                  <ItemDetailsForm itemDetails={itemDetails} />
+                  <ItemDetailsForm
+                    thumbnails={thumbnails}
+                    onAddThumbnails={addThumbnails}
+                    onRemoveThumbnail={removeThumbnail}
+                  />
                 )}
                 {activeStep === 2 && <PropertiesForm onPropertyAdded={push} />}
                 {activeStep === 3 && (
