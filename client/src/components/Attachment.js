@@ -1,74 +1,56 @@
 import React from 'react';
 
-import { makeStyles } from '@material-ui/styles';
 import { formatFileSize } from '../utilities/helperFunctions';
 
 import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
 import Moment from 'react-moment';
-import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
 
-const useStyles = makeStyles(theme => ({
-  flexAlignCenter: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  avatar: {
-    marginRight: theme.spacing(2)
-  },
-  textPrimary: {
-    fontWeight: 700
-  },
-  textSecondary: {
-    fontSize: '12px'
-  }
-}));
-
 export default function Attachment({
   attachment: { id, fileName, filePath, type, fileSize, dateUploaded },
-  variant
+  variant,
+  primaryAction
 }) {
-  const classes = useStyles();
-
   return (
-    <Grid container justifyContent="space-between" alignItems="center">
-      <Grid item xs={10}>
-        <div className={classes.flexAlignCenter}>
-          <Avatar className={classes.avatar}>
-            <InsertDriveFileIcon />
-          </Avatar>
-          <div>
-            <Typography className={classes.textPrimary}>{fileName}</Typography>
-            <Typography color="textSecondary" className={classes.textSecondary}>
-              {variant === 'default' ? (
-                <Moment format="MMM D, YYYY" withTitle>
-                  {dateUploaded}
-                </Moment>
-              ) : (
-                formatFileSize(fileSize)
-              )}
-            </Typography>
-          </div>
-        </div>
-      </Grid>
-      <Grid item>
+    <ListItem>
+      <ListItemAvatar>
+        <Avatar>
+          <InsertDriveFileIcon />
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        primary={fileName}
+        secondary={
+          variant === 'default' ? (
+            <Moment format="MMM D, YYYY" withTitle>
+              {dateUploaded}
+            </Moment>
+          ) : (
+            formatFileSize(fileSize)
+          )
+        }
+      />
+      <ListItemSecondaryAction>
         {variant === 'default' ? (
-          <IconButton>
+          <IconButton onClick={primaryAction}>
             <DeleteIcon />
           </IconButton>
         ) : (
-          <IconButton>
+          <IconButton onClick={primaryAction}>
             <CloseIcon />
           </IconButton>
         )}
-      </Grid>
-    </Grid>
+      </ListItemSecondaryAction>
+    </ListItem>
   );
 }
 
