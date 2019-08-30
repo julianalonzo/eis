@@ -13,6 +13,7 @@
     "moment-timezone": "^0.5.26",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-dropzone": "^10.1.8",
     "react-final-form": "^6.3.0",
     "react-final-form-arrays": "^3.1.1",
     "react-moment": "^0.9.2",
