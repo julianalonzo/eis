@@ -123,25 +123,39 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
   };
 
   const createTemplate = () => {
-    const newTemplate = {
-      name: templateDetails.name,
-      description: templateDetails.description,
-      item: {
+    const formData = new FormData();
+    formData.append('name', templateDetails.name);
+    formData.append('description', templateDetails.description);
+    formData.append(
+      'item',
+      JSON.stringify({
         name: itemDetails.name,
         category: itemDetails.category,
-        condition: itemDetails.condition,
-        thumbnails: thumbnails
-      },
-      properties: properties.properties.map(property => {
-        return {
-          name: property.name,
-          value: property.value ? property.value : ''
-        };
-      }),
-      attachments: attachments.attachments
-    };
+        condition: itemDetails.condition
+      })
+    );
 
-    onCreateTemplate(newTemplate);
+    for (let i = 0; i < thumbnails.length; i++) {
+      formData.append('thumbnails', thumbnails[i]);
+    }
+
+    for (let i = 0; i < properties.properties.length; i++) {
+      formData.append(
+        'properties',
+        JSON.stringify({
+          name: properties.properties[i].name,
+          value: properties.properties[i].value
+            ? properties.properties[i].value
+            : ''
+        })
+      );
+    }
+
+    for (let i = 0; i < attachments.attachments.length; i++) {
+      formData.append('attachments', attachments.attachments[i]);
+    }
+
+    onCreateTemplate(formData);
   };
 
   const formInitialState = [
