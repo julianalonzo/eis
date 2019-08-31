@@ -2,14 +2,12 @@ const path = require('path');
 
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 const itemRoutes = require('./routes/item');
+const templateRoutes = require('./routes/template');
 
 const app = express();
-
-app.get('/api/test', (req, res, next) => {
-  res.send('API');
-});
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client', 'build')));
@@ -19,7 +17,10 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+app.use(bodyParser.json());
+
 app.use('/api/items', itemRoutes);
+app.use('/api/templates', templateRoutes);
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eis';
 
