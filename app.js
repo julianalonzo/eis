@@ -3,11 +3,14 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const itemRoutes = require('./routes/item');
 const templateRoutes = require('./routes/template');
 
 const app = express();
+
+app.use(cors());
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client', 'build')));
