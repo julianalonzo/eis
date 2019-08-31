@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+import { connect } from 'react-redux';
+import * as actions from '../store/actions/index';
+
 import { makeStyles } from '@material-ui/styles';
 
 import arrayMutators from 'final-form-arrays';
@@ -34,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NewTemplatePage() {
+function NewTemplatePage({ onCreateTemplate, loading }) {
   const classes = useStyles();
 
   const [activeStep, setActiveStep] = useState(0);
@@ -119,6 +122,28 @@ export default function NewTemplatePage() {
     });
   };
 
+  const createTemplate = () => {
+    const newTemplate = {
+      name: templateDetails.name,
+      description: templateDetails.description,
+      item: {
+        name: itemDetails.name,
+        category: itemDetails.category,
+        condition: itemDetails.condition,
+        thumbnails: thumbnails
+      },
+      properties: properties.properties.map(property => {
+        return {
+          name: property.name,
+          value: property.value ? property.value : ''
+        };
+      }),
+      attachments: attachments.attachments
+    };
+
+    onCreateTemplate(newTemplate);
+  };
+
   const formInitialState = [
     templateDetails,
     itemDetails,
@@ -170,8 +195,12 @@ export default function NewTemplatePage() {
     <Form
       initialValues={formInitialState[activeStep]}
       onSubmit={values => {
-        formActions[activeStep](values);
-        nextStepHandler();
+        if (activeStep < stepsLabels.length - 1) {
+          formActions[activeStep](values);
+          nextStepHandler();
+        } else {
+          createTemplate();
+        }
       }}
       mutators={{ ...arrayMutators }}
       render={({
@@ -252,3 +281,22 @@ export default function NewTemplatePage() {
     />
   );
 }
+
+const mapStateToProps = state => {
+  return {
+    loading: state.template.loading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onCreateTemplate: template => {
+      dispatch(actions.createTemplate(template));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NewTemplatePage);

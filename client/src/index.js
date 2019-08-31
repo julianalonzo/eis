@@ -9,6 +9,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import itemReducer from './store/reducers/itemReducer';
+import templateReducer from './store/reducers/templateReducer';
 
 const composeEnhancers =
   process.env.NODE_ENV === 'development'
@@ -16,7 +17,8 @@ const composeEnhancers =
     : null || compose;
 
 const rootReducer = combineReducers({
-  item: itemReducer
+  item: itemReducer,
+  template: templateReducer
 });
 
 const store = createStore(
