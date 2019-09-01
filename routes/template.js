@@ -4,6 +4,8 @@ const upload = require('../util/fileStorage');
 
 const templateController = require('../controllers/template');
 
+router.get('/', templateController.getTemplates);
+
 const createTemplateUpload = upload.fields([
   { name: 'thumbnails' },
   { name: 'attachments' }

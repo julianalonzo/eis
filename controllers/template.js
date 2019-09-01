@@ -1,5 +1,15 @@
 const Template = require('../models/template');
 
+exports.getTemplates = (req, res, next) => {
+  Template.find()
+    .then(templates => {
+      res.status(200).json(templates);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
 exports.createTemplate = (req, res, next) => {
   // @TODO: Add validation
   const template = new Template({
