@@ -20,16 +20,26 @@ const templateSchema = new Schema({
     condition: {
       type: String
     },
-    thumbnails: {
-      type: [String]
-    }
-  },
-  properties: {
-    type: [
-      { name: { type: String, isRequired: true }, value: { type: String } }
+    thumbnails: [
+      {
+        originalname: { type: String, isRequired: true },
+        mimetype: { type: String, isRequired: true },
+        filename: { type: String, isRequired: true },
+        path: { type: String, isRequired: true }
+      }
     ]
   },
-  attachments: [String]
+  properties: [
+    { name: { type: String, isRequired: true }, value: { type: String } }
+  ],
+  attachments: [
+    {
+      originalname: { type: String, isRequired: true },
+      mimetype: { type: String, isRequired: true },
+      filename: { type: String, isRequired: true },
+      path: { type: String, isRequired: true }
+    }
+  ]
 });
 
 module.exports = mongoose.model('Template', templateSchema);

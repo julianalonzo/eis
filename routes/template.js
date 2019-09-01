@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../util/fileStorage');
 
 const templateController = require('../controllers/template');
 
-router.post('/new', templateController.createTemplate);
+const createTemplateUpload = upload.fields([
+  { name: 'thumbnails' },
+  { name: 'attachments' }
+]);
+router.post('/new', createTemplateUpload, templateController.createTemplate);
 
 module.exports = router;
