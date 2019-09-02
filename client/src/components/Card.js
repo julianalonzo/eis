@@ -4,14 +4,16 @@ import { makeStyles } from '@material-ui/styles/';
 
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
+import IconButton from '@material-ui/core/IconButton';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Paper from '@material-ui/core/Paper';
 import Truncate from 'react-truncate';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    padding: theme.spacing(4, 2),
-    maxWidth: '250px',
+    padding: theme.spacing(3),
+    maxWidth: '300px',
     width: '100%',
     boxShadow:
       '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -24,28 +26,27 @@ const useStyles = makeStyles(theme => ({
   avatarContainer: {
     marginBottom: theme.spacing(2),
     display: 'flex',
-    justifyContent: 'center'
+    alignItems: 'flex-start',
+    justifyContent: 'space-between'
   },
   avatar: {
-    width: '80px',
-    height: '80px',
+    width: '50px',
+    height: '50px',
     border: '1px solid #eaeaea'
   },
   titleContainer: {
-    textAlign: 'center',
-    padding: theme.spacing(0, 2),
-    minHeight: '40px',
-    maxHeight: '40px'
+    marginBottom: theme.spacing(1)
   },
   title: {
-    fontSize: theme.fontSize * 1.5,
-    fontWeight: theme.fontWeight.bolder
+    fontSize: '18px',
+    fontWeight: theme.fontWeight.bolder,
+    maxWidth: '250px'
   },
   subtitleContainer: {
-    textAlign: 'center',
-    padding: theme.spacing(0, 2),
-    minHeight: '100px',
-    maxHeight: '100px'
+    maxWidth: '250px'
+  },
+  subtitle: {
+    lineHeight: '1.3'
   }
 }));
 
@@ -56,6 +57,9 @@ export default function Card({ title, subtitle, image }) {
     <Paper className={classes.paper}>
       <Box className={classes.avatarContainer}>
         <Avatar className={classes.avatar} src={image} alt={title} />
+        <IconButton size="small">
+          <MoreHorizIcon />
+        </IconButton>
       </Box>
       <Box className={classes.titleContainer}>
         <Typography className={classes.title} noWrap={true}>
