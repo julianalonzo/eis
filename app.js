@@ -7,6 +7,7 @@ const cors = require('cors');
 
 const itemRoutes = require('./routes/item');
 const templateRoutes = require('./routes/template');
+const filesRoutes = require('./routes/files');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(bodyParser.json());
 
 app.use('/api/items', itemRoutes);
 app.use('/api/templates', templateRoutes);
+app.use('/api/files', filesRoutes);
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eis';
 
