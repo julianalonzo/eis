@@ -15,39 +15,33 @@ exports.createTemplate = (req, res, next) => {
 
   let thumbnails = [];
   if (req.files.thumbnails) {
-    thumbnails = [
-      ...req.files.thumbnails.map(thumbnail => {
-        return {
-          originalname: thumbnail.originalname,
-          mimetype: thumbnail.mimetype,
-          filename: thumbnail.filename,
-          path: thumbnail.path
-        };
-      })
-    ];
+    thumbnails = req.files.thumbnails.map(thumbnail => {
+      return {
+        originalname: thumbnail.originalname,
+        mimetype: thumbnail.mimetype,
+        filename: thumbnail.filename,
+        path: thumbnail.path
+      };
+    });
   }
 
   let properties = [];
   if (req.body.properties) {
-    properties = [
-      ...req.body.properties.map(property => {
-        return JSON.parse(property);
-      })
-    ];
+    properties = req.body.properties.map(property => {
+      return JSON.parse(property);
+    });
   }
 
   let attachments = [];
   if (req.files.attachments) {
-    attachments = [
-      ...req.files.attachments.map(attachment => {
-        return {
-          originalname: attachment.originalname,
-          mimetype: attachment.mimetype,
-          filename: attachment.filename,
-          path: attachment.path
-        };
-      })
-    ];
+    req.files.attachments.map(attachment => {
+      return {
+        originalname: attachment.originalname,
+        mimetype: attachment.mimetype,
+        filename: attachment.filename,
+        path: attachment.path
+      };
+    });
   }
 
   const template = new Template({
