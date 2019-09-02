@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(3),
     maxWidth: '300px',
-    width: '100%',
+    width: '300px',
     boxShadow:
       '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
     '&:hover': {
@@ -34,15 +34,23 @@ const useStyles = makeStyles(theme => ({
     height: '50px',
     border: '1px solid #eaeaea'
   },
+  textAvatar: {
+    width: '50px',
+    height: '50px',
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.secondary.contrastText
+  },
   titleContainer: {
     marginBottom: theme.spacing(1)
   },
   title: {
     fontSize: '18px',
     fontWeight: theme.fontWeight.bolder,
+    minWidth: '250px',
     maxWidth: '250px'
   },
   subtitleContainer: {
+    minWidth: '250px',
     maxWidth: '250px'
   },
   subtitle: {
@@ -56,7 +64,11 @@ export default function Card({ title, subtitle, image }) {
   return (
     <Paper className={classes.paper}>
       <Box className={classes.avatarContainer}>
-        <Avatar className={classes.avatar} src={image} alt={title} />
+        {image ? (
+          <Avatar className={classes.avatar} src={image} alt={title} />
+        ) : (
+          <Avatar className={classes.textAvatar}>{title[0]}</Avatar>
+        )}
         <IconButton size="small">
           <MoreHorizIcon />
         </IconButton>
