@@ -103,7 +103,9 @@ export default function IllustrationPlaceholder({
           ) : null}
           {action ? (
             <div className={classes.actionButtonContainer}>
-              <Button>{action.label}</Button>
+              <Button color="primary" variant="contained">
+                {action.label}
+              </Button>
             </div>
           ) : null}
         </div>
