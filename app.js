@@ -13,19 +13,19 @@ const app = express();
 
 app.use(cors());
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client', 'build')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-  });
-}
-
 app.use(bodyParser.json());
 
 app.use('/api/items', itemRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/files', filesRoutes);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client', 'build')));
+
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eis';
 
