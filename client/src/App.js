@@ -9,6 +9,7 @@ import customTheme from './utilities/theme';
 import Container from '@material-ui/core/Container';
 import NewTemplatePage from './containers/NewTemplatePage';
 import MainPage from './containers/MainPage';
+import TemplatesPage from './containers/TemplatesPage';
 
 const theme = createMuiTheme({
   ...customTheme
@@ -20,6 +21,7 @@ function App() {
       <Container maxWidth="lg">
         <HashRouter>
           <Switch>
+            <Route path="/templates" component={TemplatesPage} />
             <Route path="/new-template" component={NewTemplatePage} />
             <Route exact path="/" component={MainPage} />
           </Switch>

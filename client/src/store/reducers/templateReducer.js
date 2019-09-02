@@ -3,7 +3,28 @@ import { updateObject } from '../utility';
 
 const initialState = {
   templates: [],
-  creatingTemplate: false
+  creatingTemplate: false,
+  fetchingTemplates: false,
+  fetchingTemplatesErrors: null
+};
+
+const fetchTemplatesStart = (state, action) => {
+  return updateObject(state, { fetchingTemplates: true });
+};
+
+const fetchTemplatesFail = (state, action) => {
+  return updateObject(state, {
+    fetchingTemplatesErrors: action.error,
+    fetchingTemplates: false
+  });
+};
+
+const fetchTemplatesSuccess = (state, action) => {
+  return updateObject(state, {
+    templates: action.templates,
+    fetchingTemplates: false,
+    fetchingTemplatesErrors: null
+  });
 };
 
 const createTemplateStart = (state, action) => {
@@ -25,6 +46,12 @@ const createTemplateSuccess = (state, action) => {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.FETCH_TEMPLATES_START:
+      return fetchTemplatesStart(state, action);
+    case actionTypes.FETCH_TEMPLATES_SUCCESS:
+      return fetchTemplatesSuccess(state, action);
+    case actionTypes.FETCH_TEMPLATES_FAIL:
+      return fetchTemplatesFail(state, action);
     case actionTypes.CREATE_TEMPLATE_START:
       return createTemplateStart(state, action);
     case actionTypes.CREATE_TEMPLATE_SUCCESS:

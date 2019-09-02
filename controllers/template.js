@@ -3,7 +3,7 @@ const Template = require('../models/template');
 exports.getTemplates = (req, res, next) => {
   Template.find()
     .then(templates => {
-      res.status(200).json(templates);
+      res.status(200).json({ templates: templates });
     })
     .catch(err => {
       console.log(err);
