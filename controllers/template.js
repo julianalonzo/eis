@@ -14,7 +14,7 @@ exports.createTemplate = (req, res, next) => {
   // @TODO: Add validation
 
   let thumbnails = [];
-  if (req.body.thumbnails) {
+  if (req.files.thumbnails) {
     thumbnails = [
       ...req.files.thumbnails.map(thumbnail => {
         return {
@@ -37,7 +37,7 @@ exports.createTemplate = (req, res, next) => {
   }
 
   let attachments = [];
-  if (req.body.attachments) {
+  if (req.files.attachments) {
     attachments = [
       ...req.files.attachments.map(attachment => {
         return {
@@ -64,7 +64,7 @@ exports.createTemplate = (req, res, next) => {
   template
     .save()
     .then(savedTemplate => {
-      res.status(201).json(savedTemplate);
+      res.status(201).json({ template: savedTemplate });
     })
     .catch(err => {
       console.log(err);
