@@ -19,7 +19,11 @@ function TemplatesPage({
 
   return (
     <React.Fragment>
-      <Templates templates={templates} />
+      {fetchingTemplates ? (
+        <p>Fetching templates...</p>
+      ) : (
+        <Templates templates={templates} />
+      )}
     </React.Fragment>
   );
 }
