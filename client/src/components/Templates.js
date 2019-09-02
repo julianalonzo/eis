@@ -22,6 +22,12 @@ export default function Templates({ templates }) {
       {templates.length > 0 ? (
         <Grid container spacing={4}>
           {templates.map(template => {
+            let thumbnailUrl = null;
+
+            if (template.item.thumbnails.length > 0) {
+              thumbnailUrl = `${window.location.protocol}//${window.location.host}/api/files/${template.item.thumbnails[0].filename}`;
+            }
+
             return (
               <Grid
                 key={template._id}
@@ -34,7 +40,7 @@ export default function Templates({ templates }) {
                 <Card
                   title={template.name}
                   subtitle={template.description}
-                  image={template.item.thumbnails[0]}
+                  image={thumbnailUrl}
                 />
               </Grid>
             );

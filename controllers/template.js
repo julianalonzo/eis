@@ -12,28 +12,33 @@ exports.getTemplates = (req, res, next) => {
 
 exports.createTemplate = (req, res, next) => {
   // @TODO: Add validation
-  const template = new Template({
-    name: req.body.name,
-    description: req.body.description,
-    item: {
-      ...JSON.parse(req.body.item),
-      thumbnails: [
-        ...req.files.thumbnails.map(thumbnail => {
-          return {
-            originalname: thumbnail.originalname,
-            mimetype: thumbnail.mimetype,
-            filename: thumbnail.filename,
-            path: thumbnail.path
-          };
-        })
-      ]
-    },
-    properties: [
+
+  let thumbnails = [];
+  if (req.body.thumbnails) {
+    thumbnails = [
+      ...req.files.thumbnails.map(thumbnail => {
+        return {
+          originalname: thumbnail.originalname,
+          mimetype: thumbnail.mimetype,
+          filename: thumbnail.filename,
+          path: thumbnail.path
+        };
+      })
+    ];
+  }
+
+  let properties = [];
+  if (req.body.properties) {
+    properties = [
       ...req.body.properties.map(property => {
         return JSON.parse(property);
       })
-    ],
-    attachments: [
+    ];
+  }
+
+  let attachments = [];
+  if (req.body.attachments) {
+    attachments = [
       ...req.files.attachments.map(attachment => {
         return {
           originalname: attachment.originalname,
@@ -42,7 +47,18 @@ exports.createTemplate = (req, res, next) => {
           path: attachment.path
         };
       })
-    ]
+    ];
+  }
+
+  const template = new Template({
+    name: req.body.name,
+    description: req.body.description,
+    item: {
+      ...JSON.parse(req.body.item),
+      thumbnails: thumbnails
+    },
+    properties: properties,
+    attachments: attachments
   });
 
   template
