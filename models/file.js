@@ -1,0 +1,12 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const fileSchema = new Schema({
+  originalname: { type: String, isRequired: true },
+  mimetype: { type: String, isRequired: true },
+  filename: { type: String, isRequired: true },
+  path: { type: String, isRequired: true },
+  type: { type: String, isRequired: true }
+});
+
+module.exports = mongoose.model('File', fileSchema);
