@@ -22,10 +22,8 @@ const templateSchema = new Schema({
     },
     thumbnails: [
       {
-        originalname: { type: String, isRequired: true },
-        mimetype: { type: String, isRequired: true },
-        filename: { type: String, isRequired: true },
-        path: { type: String, isRequired: true }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'File'
       }
     ]
   },
@@ -34,10 +32,8 @@ const templateSchema = new Schema({
   ],
   attachments: [
     {
-      originalname: { type: String, isRequired: true },
-      mimetype: { type: String, isRequired: true },
-      filename: { type: String, isRequired: true },
-      path: { type: String, isRequired: true }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File'
     }
   ]
 });
