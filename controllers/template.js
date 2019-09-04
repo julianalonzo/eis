@@ -5,7 +5,10 @@ const Template = require('../models/template');
 
 exports.getTemplates = async (req, res, next) => {
   try {
-    const templates = await Template.find();
+    const templates = await Template.find()
+      .populate('item.thumbnails')
+      .populate('item.attachments');
+      
     res.status(200).json({ templates: templates });
   } catch (err) {
     console.log(err);
