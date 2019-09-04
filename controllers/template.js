@@ -38,7 +38,18 @@ exports.createTemplate = async (req, res, next) => {
       });
     }
 
-    // @TODO: Process attachments
+    // Ensure that an array is passed to the Template's attachments field
+    let attachments = [];
+    if (req.files.attachments) {
+      const uploadedAttachments = await saveFiles(
+        'attachment',
+        req.files.attachments
+      );
+
+      attachments = uploadedAttachments.map(uploadedAttachment => {
+        return uploadedAttachment.id;
+      });
+    }
 
     const template = new Template({
       name: req.body.name,
@@ -47,6 +58,7 @@ exports.createTemplate = async (req, res, next) => {
         ...JSON.parse(req.body.item),
         thumbnails: thumbnails
       },
+      attachments: attachments,
       properties: properties
     });
 
