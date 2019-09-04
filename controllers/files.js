@@ -1,36 +1,51 @@
+const { toArray } = require('../util/helperFunctions');
 const path = require('path');
 
 const File = require('../models/file');
 
 // Route to create thumbnails
-exports.createThumbnails = (req, res, next) => {
+exports.createThumbnails = async (req, res, next) => {
   const uploadedThumbnails = [];
   if (req.files.thumbnails) {
-    uploadedThumbnails = req.files.thumbnails;
+    uploadedThumbnails = await this.saveFiles(
+      'thumbnails',
+      req.files.thumbnails
+    );
   }
 
-  const savedThumbnails = saveThumbnail(uploadedThumbnails);
-
-  res.status(201).json({ thumbnails: savedThumbnails });
+  res.status(201).json({ thumbnails: uploadedThumbnails });
 };
 
-// Function to save a thumbnail to the database
-exports.saveThumbnail = async uploadedThumbnail => {
-  const thumbnail = new File({
-    type: 'thumbnail',
-    originalname: uploadedThumbnail.originalname,
-    mimetype: uploadedThumbnail.mimetype,
-    filename: uploadedThumbnail.filename,
-    path: uploadedThumbnail.path
+// Function to save a file to the database. The type parameter must be thumbnail
+// or attachment
+exports.saveFile = async (type, uploadedFile) => {
+  const file = new File({
+    type: type,
+    originalname: uploadedFile.originalname,
+    mimetype: uploadedFile.mimetype,
+    filename: uploadedFile.filename,
+    path: uploadedFile.path
   });
 
   try {
-    const savedThumbnail = await thumbnail.save();
+    const savedFile = await file.save();
 
-    return savedThumbnail;
+    return savedFile;
   } catch (err) {
     console.log(err);
   }
+};
+
+exports.saveFiles = async (type, uploadedFiles) => {
+  const savedFiles = [];
+
+  processedFiles = toArray(uploadedFiles);
+  for (let i = 0; i < processedFiles.length; i++) {
+    const savedFile = await this.saveFile(type, processedFiles[i]);
+    savedFiles.push(savedFile);
+  }
+
+  return savedFiles;
 };
 
 exports.getFile = (req, res, next) => {
