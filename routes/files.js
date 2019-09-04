@@ -11,6 +11,13 @@ router.post(
   filesController.createThumbnails
 );
 
+const createAttachmentsUpload = upload.array('attachments');
+router.post(
+  '/new-attachments',
+  createAttachmentsUpload,
+  filesController.createAttachments
+);
+
 router.get('/:filename', filesController.getFile);
 
 module.exports = router;
