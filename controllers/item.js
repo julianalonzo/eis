@@ -1,11 +1,11 @@
 const Item = require('../models/item');
 
-exports.getItems = (req, res, next) => {
-  Item.find()
-    .then(items => {
-      res.status(200).json({ items: items });
-    })
-    .catch(error => {
-      console.log('Error', error);
-    });
+exports.getItems = async (req, res, next) => {
+  try {
+    const items = await Item.find();
+
+    res.status(200).json({ items: items });
+  } catch (err) {
+    console.log(err);
+  }
 };
