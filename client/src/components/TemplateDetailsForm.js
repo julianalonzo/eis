@@ -7,17 +7,13 @@ import Grid from '@material-ui/core/Grid';
 import { isRequired } from '../utilities/validators';
 import TextField from '@material-ui/core/TextField';
 
-import PropTypes from 'prop-types';
-
 const useStyles = makeStyles(theme => ({
   row: {
     marginBottom: theme.spacing(3)
   }
 }));
 
-export default function TemplateDetailsForm({
-  templateDetails: { name, description }
-}) {
+export default function TemplateDetailsForm() {
   const classes = useStyles();
 
   return (
@@ -25,7 +21,7 @@ export default function TemplateDetailsForm({
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12}>
-            <Field name="name" validate={isRequired}>
+            <Field name="templateName" validate={isRequired}>
               {({ input, meta }) => {
                 return (
                   <TextField
@@ -45,7 +41,7 @@ export default function TemplateDetailsForm({
       <Grid item xs={12} className={classes.row}>
         <Grid container>
           <Grid item xs={12}>
-            <Field name="description">
+            <Field name="templateDescription">
               {({ input, meta }) => {
                 return (
                   <TextField
@@ -66,10 +62,3 @@ export default function TemplateDetailsForm({
     </Grid>
   );
 }
-
-TemplateDetailsForm.propTypes = {
-  templateDetailsData: PropTypes.shape({
-    templateName: PropTypes.string.isRequired,
-    templateDescription: PropTypes.string.isRequired
-  })
-};

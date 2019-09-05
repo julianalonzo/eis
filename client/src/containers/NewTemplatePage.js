@@ -42,13 +42,13 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
 
   const [activeStep, setActiveStep] = useState(0);
   const [templateDetails, setTemplateDetails] = useState({
-    name: '',
-    description: ''
+    templateName: '',
+    templateDescription: ''
   });
   const [itemDetails, setItemDetails] = useState({
-    name: '',
-    category: '',
-    condition: ''
+    itemName: '',
+    itemCategory: '',
+    itemCondition: ''
   });
 
   const [thumbnails, setThumbnails] = useState([]);
@@ -124,14 +124,14 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
 
   const createTemplate = () => {
     const formData = new FormData();
-    formData.append('name', templateDetails.name);
-    formData.append('description', templateDetails.description);
+    formData.append('name', templateDetails.templateName);
+    formData.append('description', templateDetails.templateDescription);
     formData.append(
       'item',
       JSON.stringify({
-        name: itemDetails.name,
-        category: itemDetails.category,
-        condition: itemDetails.condition
+        name: itemDetails.itemName,
+        category: itemDetails.itemCategory,
+        condition: itemDetails.itemCondition
       })
     );
 
@@ -157,13 +157,6 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
 
     onCreateTemplate(formData);
   };
-
-  const formInitialState = [
-    templateDetails,
-    itemDetails,
-    properties,
-    attachments
-  ];
 
   const formActions = [
     saveTemplateDetails,
@@ -207,7 +200,6 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
 
   return (
     <Form
-      initialValues={formInitialState[activeStep]}
       onSubmit={values => {
         if (activeStep < stepsLabels.length - 1) {
           formActions[activeStep](values);
@@ -219,10 +211,8 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
       mutators={{ ...arrayMutators }}
       render={({
         handleSubmit,
-        values,
         form: {
-          mutators: { push },
-          change
+          mutators: { push }
         }
       }) => {
         return (
@@ -246,9 +236,7 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
                     })}
                   </Stepper>
                 </div>
-                {activeStep === 0 && (
-                  <TemplateDetailsForm templateDetails={templateDetails} />
-                )}
+                {activeStep === 0 && <TemplateDetailsForm />}
                 {activeStep === 1 && (
                   <ItemDetailsForm
                     thumbnails={thumbnails}
@@ -260,7 +248,6 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
                 {activeStep === 3 && (
                   <AttachmentsForm
                     attachments={attachments.attachments}
-                    onUploadChange={change}
                     onAddAttachments={addAttachments}
                     onRemoveAttachment={removeAttachment}
                   />
@@ -270,7 +257,6 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
                     <Button
                       margin={4}
                       onClick={() => {
-                        formActions[activeStep](values);
                         backStepHandler();
                       }}
                     >

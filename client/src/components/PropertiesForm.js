@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
@@ -6,7 +6,6 @@ import AddIcon from '@material-ui/icons/Add';
 import Button from './Button';
 import { FieldArray } from 'react-final-form-arrays';
 import Grid from '@material-ui/core/Grid';
-import NewPropertyForm from './NewPropertyForm';
 import PropertyForm from './PropertyForm';
 import Property from './Property';
 
@@ -26,16 +25,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function PropertiesForm({ onPropertyAdded }) {
   const classes = useStyles();
-
-  const [isAdding, setIsAdding] = useState(false);
-
-  const showNewPropertyFormHandler = () => {
-    setIsAdding(true);
-  };
-
-  const hideNewPropertyFormHandler = () => {
-    setIsAdding(false);
-  };
 
   return (
     <FieldArray name="properties">
@@ -66,20 +55,15 @@ export default function PropertiesForm({ onPropertyAdded }) {
               </Grid>
             ) : null}
             <Grid item xs={12}>
-              {isAdding ? (
-                <NewPropertyForm
-                  onPropertyAdded={onPropertyAdded}
-                  onHideNewPropertyForm={hideNewPropertyFormHandler}
-                />
-              ) : (
-                <Button
-                  onClick={showNewPropertyFormHandler}
-                  variant="outlined"
-                  color="secondary"
-                >
-                  <AddIcon className={classes.buttonIcon} /> New Property
-                </Button>
-              )}
+              <Button
+                onClick={() => {
+                  onPropertyAdded('properties', { name: '', value: '' });
+                }}
+                variant="outlined"
+                color="secondary"
+              >
+                <AddIcon className={classes.buttonIcon} /> New Property
+              </Button>
             </Grid>
           </Grid>
         );
