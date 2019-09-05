@@ -12,10 +12,21 @@ const itemSchema = new Schema({
   condition: {
     type: String
   },
-  thumbnail: {
-    type: String
-  },
-  otherThumbnails: [String]
+  thumbnails: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File'
+    }
+  ],
+  properties: [
+    { name: { type: String, isRequired: true }, value: { type: String } }
+  ],
+  attachments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File'
+    }
+  ]
 });
 
 module.exports = mongoose.model('Item', itemSchema);
