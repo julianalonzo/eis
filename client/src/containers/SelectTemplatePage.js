@@ -3,7 +3,11 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/index';
 
+import { withRouter } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/styles';
+
+import { HOST } from '../utilities/constants';
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Box from '@material-ui/core/Box';
@@ -56,7 +60,8 @@ const useStyles = makeStyles(theme => ({
 function SelectTemplatePage({
   templates,
   fetchingTemplates,
-  onFetchTemplates
+  onFetchTemplates,
+  history
 }) {
   const classes = useStyles();
 
@@ -78,7 +83,12 @@ function SelectTemplatePage({
           <Grid item xs={12}>
             <Grid container spacing={4}>
               <Grid className={classes.gridItem} item xs={12} lg={3} md={4}>
-                <Box className={classes.noTemplateCard}>
+                <Box
+                  className={classes.noTemplateCard}
+                  onClick={() => {
+                    history.push('/new-item');
+                  }}
+                >
                   <AddCircleOutlineIcon className={classes.addIcon} />
                   <Typography className={classes.noTemplateText}>
                     No Template
@@ -89,7 +99,7 @@ function SelectTemplatePage({
                 let thumbnailUrl = null;
 
                 if (template.item.thumbnails.length > 0) {
-                  thumbnailUrl = `${window.location.protocol}//${window.location.host}/api/files/${template.item.thumbnails[0].filename}`;
+                  thumbnailUrl = `${HOST}/api/files/${template.item.thumbnails[0].filename}`;
                 }
 
                 return (
@@ -105,6 +115,9 @@ function SelectTemplatePage({
                       title={template.name}
                       subtitle={template.description}
                       image={thumbnailUrl}
+                      onClick={() => {
+                        history.push(`/new-item?template=${template._id}`);
+                      }}
                     />
                   </Grid>
                 );
@@ -134,4 +147,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SelectTemplatePage);
+)(withRouter(SelectTemplatePage));

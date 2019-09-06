@@ -58,11 +58,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Card({ title, subtitle, image }) {
+export default function Card({ title, subtitle, image, ...otherProps }) {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} {...otherProps}>
       <Box className={classes.avatarContainer}>
         {image ? (
           <Avatar className={classes.avatar} src={image} alt={title} />
