@@ -40,11 +40,14 @@ const useStyles = makeStyles(theme => ({
 function NewTemplatePage({ onCreateTemplate, loading }) {
   const classes = useStyles();
 
+  // State for form stepper
   const [activeStep, setActiveStep] = useState(0);
+
   const [templateDetails, setTemplateDetails] = useState({
     templateName: '',
     templateDescription: ''
   });
+
   const [itemDetails, setItemDetails] = useState({
     itemName: '',
     itemCategory: '',
@@ -254,12 +257,7 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
                 )}
                 <div className={classes.formActionButtons}>
                   {activeStep > 0 ? (
-                    <Button
-                      margin={4}
-                      onClick={() => {
-                        backStepHandler();
-                      }}
-                    >
+                    <Button margin={4} onClick={backStepHandler}>
                       Back
                     </Button>
                   ) : null}
