@@ -34,7 +34,8 @@ exports.saveFile = async (type, uploadedFile) => {
     originalname: uploadedFile.originalname,
     mimetype: uploadedFile.mimetype,
     filename: uploadedFile.filename,
-    path: uploadedFile.path
+    path: uploadedFile.path,
+    size: uploadedFile.size
   });
 
   try {

@@ -6,7 +6,8 @@ const fileSchema = new Schema({
   mimetype: { type: String, isRequired: true },
   filename: { type: String, isRequired: true },
   path: { type: String, isRequired: true },
-  type: { type: String, isRequired: true }
+  type: { type: String, isRequired: true },
+  size: { type: Number, isRequired: true }
 });
 
 module.exports = mongoose.model('File', fileSchema);
