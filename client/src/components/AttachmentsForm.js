@@ -23,9 +23,20 @@ export default function AttachmentsForm({
   const classes = useStyles();
 
   const formattedAttachments = attachments.map(attachment => {
+    let name = '';
+    let size = '';
+
+    if (attachment instanceof File) {
+      name = attachment.name;
+      size = attachment.size;
+    } else {
+      name = attachment.originalname;
+      size = attachment.size;
+    }
+
     const formattedAttachmentData = {
-      fileName: attachment.name,
-      fileSize: attachment.size
+      fileName: name,
+      fileSize: size
     };
 
     return formattedAttachmentData;
