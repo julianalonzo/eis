@@ -12,4 +12,6 @@ const createTemplateUpload = upload.fields([
 ]);
 router.post('/new', createTemplateUpload, templateController.createTemplate);
 
+router.get('/:templateId', templateController.getTemplate);
+
 module.exports = router;

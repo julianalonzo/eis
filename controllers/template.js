@@ -13,6 +13,20 @@ exports.getTemplates = async (req, res, next) => {
   }
 };
 
+exports.getTemplate = async (req, res, next) => {
+  try {
+    const templateId = req.params.templateId || '';
+
+    const template = await Template.findOne({ _id: templateId }).populate(
+      'item.thumbnails'
+    );
+
+    res.status(200).json({ template: template });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.createTemplate = async (req, res, next) => {
   // @TODO: Add validation
 
