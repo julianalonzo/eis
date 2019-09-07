@@ -3,18 +3,22 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import arrayMutators from 'final-form-arrays';
+import { Form } from 'react-final-form';
+
 import Box from '@material-ui/core/Box';
 import Button from './Button';
-import { Form } from 'react-final-form';
 import Grid from '@material-ui/core/Grid';
-import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+
+import AttachmentsForm from './AttachmentsForm';
+import AttachmentsIllustration from '../assets/illustrations/upload.svg';
 import ItemDetailsForm from './ItemDetailsForm';
 import ItemIllustration from '../assets/illustrations/item.svg';
 import PropertiesForm from '../components/PropertiesForm';
 import PropertiesIllustration from '../assets/illustrations/properties.svg';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
+import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -47,6 +51,10 @@ export default function NewItemForm({ initialValues, onSubmit }) {
     initialValues.item.thumbnails || []
   );
 
+  const [attachments, setAttachments] = useState(
+    initialValues.attachments || []
+  );
+
   const addThumbnailsHandler = thumbnails => {
     setThumbnails(previousThumbnails => {
       return previousThumbnails.concat(thumbnails);
@@ -61,6 +69,20 @@ export default function NewItemForm({ initialValues, onSubmit }) {
     });
   };
 
+  const addAttachmentsHandler = attachments => {
+    setAttachments(previousAttachments => {
+      return previousAttachments.concat(attachments);
+    });
+  };
+
+  const removeAttachmentHandler = attachmentIndex => {
+    setAttachments(previousAttachments => {
+      return previousAttachments.filter(
+        (attachment, index) => index !== attachmentIndex
+      );
+    });
+  };
+
   const formIllustrations = [
     {
       headerText: 'Item details',
@@ -71,6 +93,11 @@ export default function NewItemForm({ initialValues, onSubmit }) {
       headerText: 'Properties',
       headerSubText: 'Add custom fields for your item',
       sourceImage: PropertiesIllustration
+    },
+    {
+      headerText: 'Attachments',
+      headerSubText: 'Add relevant attachments to your item',
+      sourceImage: AttachmentsIllustration
     }
   ];
 
@@ -141,6 +168,13 @@ export default function NewItemForm({ initialValues, onSubmit }) {
                 )}
                 {stepperActiveStep === 1 && (
                   <PropertiesForm onPropertyAdded={push} />
+                )}
+                {stepperActiveStep === 2 && (
+                  <AttachmentsForm
+                    attachments={attachments}
+                    onAddAttachments={addAttachmentsHandler}
+                    onRemoveAttachment={removeAttachmentHandler}
+                  />
                 )}
                 <Box className={classes.formActionContainer}>
                   {stepperActiveStep > 0 && (
