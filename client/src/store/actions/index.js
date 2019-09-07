@@ -1,3 +1,3 @@
 export { fetchItems } from './item';
 
-export { fetchTemplates, createTemplate } from './template';
+export { fetchTemplates, fetchTemplate, createTemplate } from './template';

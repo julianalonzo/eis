@@ -36,6 +36,40 @@ export const fetchTemplates = () => {
   };
 };
 
+export const fetchTemplateStart = () => {
+  return {
+    type: actionTypes.FETCH_TEMPLATE_START
+  };
+};
+
+export const fetchTemplateSuccess = template => {
+  return {
+    type: actionTypes.FETCH_TEMPLATE_SUCCESS,
+    template: template
+  };
+};
+
+export const fetchTemplateFail = error => {
+  return {
+    type: actionTypes.FETCH_TEMPLATE_FAIL,
+    error: error
+  };
+};
+
+export const fetchTemplate = templateId => {
+  return dispatch => {
+    dispatch(fetchTemplateStart());
+    axios
+      .get(`/api/templates/${templateId}`)
+      .then(res => {
+        dispatch(fetchTemplateSuccess(res.data.template));
+      })
+      .catch(error => {
+        dispatch(fetchTemplateFail(error));
+      });
+  };
+};
+
 export const createTemplateStart = () => {
   return {
     type: actionTypes.CREATE_TEMPLATE_START

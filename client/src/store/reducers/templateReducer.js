@@ -5,7 +5,21 @@ const initialState = {
   templates: [],
   creatingTemplate: false,
   fetchingTemplates: false,
-  fetchingTemplatesErrors: null
+  fetchingTemplatesErrors: null,
+  template: {
+    name: '',
+    description: '',
+    item: {
+      name: '',
+      description: '',
+      category: '',
+      thumbnails: []
+    },
+    properties: [],
+    attachments: []
+  },
+  fetchingTemplate: false,
+  fetchingTemplateErrors: null
 };
 
 const fetchTemplatesStart = (state, action) => {
@@ -24,6 +38,25 @@ const fetchTemplatesSuccess = (state, action) => {
     templates: action.templates,
     fetchingTemplates: false,
     fetchingTemplatesErrors: null
+  });
+};
+
+const fetchTemplateStart = (state, action) => {
+  return updateObject(state, { fetchingTemplate: true });
+};
+
+const fetchTemplateFail = (state, action) => {
+  return updateObject(state, {
+    fetchingTemplateErrors: action.error,
+    fetchingTemplate: false
+  });
+};
+
+const fetchTemplateSuccess = (state, action) => {
+  return updateObject(state, {
+    template: action.template,
+    fetchingTemplate: false,
+    fetchingTemplateError: null
   });
 };
 
@@ -52,6 +85,12 @@ const reducer = (state = initialState, action) => {
       return fetchTemplatesSuccess(state, action);
     case actionTypes.FETCH_TEMPLATES_FAIL:
       return fetchTemplatesFail(state, action);
+    case actionTypes.FETCH_TEMPLATE_START:
+      return fetchTemplateStart(state, action);
+    case actionTypes.FETCH_TEMPLATE_SUCCESS:
+      return fetchTemplateSuccess(state, action);
+    case actionTypes.FETCH_TEMPLATE_FAIL:
+      return fetchTemplateFail(state, action);
     case actionTypes.CREATE_TEMPLATE_START:
       return createTemplateStart(state, action);
     case actionTypes.CREATE_TEMPLATE_SUCCESS:
