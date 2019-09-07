@@ -116,7 +116,7 @@ function SelectTemplatePage({
                       subtitle={template.description}
                       image={thumbnailUrl}
                       onClick={() => {
-                        history.push(`/new-item?template=${template._id}`);
+                        history.push(`/new-item?templateId=${template._id}`);
                       }}
                     />
                   </Grid>
