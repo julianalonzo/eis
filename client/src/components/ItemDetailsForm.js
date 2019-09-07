@@ -2,6 +2,8 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
+import { HOST } from '../utilities/constants';
+
 import { Field } from 'react-final-form';
 import Grid from '@material-ui/core/Grid';
 import { isRequired } from '../utilities/validators';
@@ -51,9 +53,20 @@ export default function ItemDetailsForm({
   const classes = useStyles();
 
   const formattedThumbnails = thumbnails.map(thumbnail => {
+    let name = '';
+    let src = '';
+
+    if (thumbnail instanceof File) {
+      name = thumbnail.name;
+      src = URL.createObjectURL(thumbnail);
+    } else {
+      name = thumbnail.filename;
+      src = `${HOST}/api/files/${thumbnail.filename}`;
+    }
+
     return {
-      alt: thumbnail.name,
-      src: URL.createObjectURL(thumbnail),
+      alt: name,
+      src: src,
       variant: 'THUMBNAIL_PRIMARY'
     };
   });
@@ -176,10 +189,5 @@ ItemDetailsForm.propTypes = {
 };
 
 ItemDetailsForm.defaultProps = {
-  itemDetails: {
-    name: '',
-    category: '',
-    condition: '',
-    thumbnails: []
-  }
+  thumbnails: []
 };

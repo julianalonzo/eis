@@ -6,3 +6,10 @@ export const formatFileSize = rawFileSize => {
     ['B', 'kB', 'MB', 'GB', 'TB'][i]
   );
 };
+
+export const getParamValueByKey = (paramsString, key) => {
+  const params = new URLSearchParams(paramsString);
+  const value = params.get(key);
+
+  return value;
+};

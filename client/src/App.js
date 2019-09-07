@@ -10,6 +10,7 @@ import Container from '@material-ui/core/Container';
 
 import NewTemplatePage from './containers/NewTemplatePage';
 import MainPage from './containers/MainPage';
+import NewItemPage from './containers/NewItemPage';
 import SelectTemplatePage from './containers/SelectTemplatePage';
 import TemplatesPage from './containers/TemplatesPage';
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/templates" component={TemplatesPage} />
             <Route path="/new-template" component={NewTemplatePage} />
             <Route path="/select-template" component={SelectTemplatePage} />
+            <Route path="/new-item" component={NewItemPage} />
             <Route exact path="/" component={MainPage} />
           </Switch>
         </HashRouter>
