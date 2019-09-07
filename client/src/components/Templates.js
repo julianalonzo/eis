@@ -2,6 +2,8 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
+import { HOST } from '../utilities/constants';
+
 import Card from './Card';
 import EmptyTemplatesIllustration from '../assets/illustrations/empty_templates.svg';
 import Grid from '@material-ui/core/Grid';
@@ -25,7 +27,7 @@ export default function Templates({ templates }) {
             let thumbnailUrl = null;
 
             if (template.item.thumbnails.length > 0) {
-              thumbnailUrl = `${window.location.protocol}//${window.location.host}/api/files/${template.item.thumbnails[0].filename}`;
+              thumbnailUrl = `${HOST}/api/files/${template.item.thumbnails[0].filename}`;
             }
 
             return (
