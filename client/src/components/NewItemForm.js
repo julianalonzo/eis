@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
+import arrayMutators from 'final-form-arrays';
 import Box from '@material-ui/core/Box';
 import Button from './Button';
 import { Form } from 'react-final-form';
@@ -9,6 +10,8 @@ import Grid from '@material-ui/core/Grid';
 import IllustrationPlaceholder from '../components/IllustrationPlaceholder';
 import ItemDetailsForm from './ItemDetailsForm';
 import ItemIllustration from '../assets/illustrations/item.svg';
+import PropertiesForm from '../components/PropertiesForm';
+import PropertiesIllustration from '../assets/illustrations/properties.svg';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -16,6 +19,9 @@ import StepLabel from '@material-ui/core/StepLabel';
 const useStyles = makeStyles(theme => ({
   formContainer: {
     padding: theme.spacing(3, 8)
+  },
+  stepperContainer: {
+    marginBottom: theme.spacing(5)
   },
   formActionContainer: {
     marginTop: theme.spacing(8),
@@ -25,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NewItemForm({ initialValues }) {
+export default function NewItemForm({ initialValues, onSubmit }) {
   const classes = useStyles();
 
   const [stepperActiveStep, setStepperActiveStep] = useState(0);
@@ -33,7 +39,8 @@ export default function NewItemForm({ initialValues }) {
   const [formValues, setFormValues] = useState({
     itemName: initialValues.item.name || '',
     itemCategory: initialValues.item.category || '',
-    itemCondition: initialValues.item.condition || ''
+    itemCondition: initialValues.item.condition || '',
+    properties: initialValues.properties || []
   });
 
   const [thumbnails, setThumbnails] = useState(
@@ -59,6 +66,11 @@ export default function NewItemForm({ initialValues }) {
       headerText: 'Item details',
       headerSubText: 'Name and describe your item',
       sourceImage: ItemIllustration
+    },
+    {
+      headerText: 'Properties',
+      headerSubText: 'Add custom fields for your item',
+      sourceImage: PropertiesIllustration
     }
   ];
 
@@ -66,11 +78,39 @@ export default function NewItemForm({ initialValues }) {
 
   const lastStep = stepLabels.length - 1;
 
+  const nextStepHandler = () => {
+    setStepperActiveStep(previousStepperActiveStep => {
+      return previousStepperActiveStep + 1;
+    });
+  };
+
+  const backStepHandler = () => {
+    setStepperActiveStep(previousStepperActiveStep => {
+      return previousStepperActiveStep - 1;
+    });
+  };
+
+  const submitHandler = values => {
+    if (stepperActiveStep === lastStep) {
+      onSubmit(values);
+    } else {
+      nextStepHandler();
+    }
+  };
+
   return (
     <Form
       initialValues={{ ...formValues }}
-      onSubmit={values => {}}
-      render={({ handleSubmit }) => {
+      onSubmit={values => {
+        submitHandler(values);
+      }}
+      mutators={{ ...arrayMutators }}
+      render={({
+        handleSubmit,
+        form: {
+          mutators: { push }
+        }
+      }) => {
         return (
           <form onSubmit={handleSubmit}>
             <Grid container>
@@ -81,7 +121,7 @@ export default function NewItemForm({ initialValues }) {
                 />
               </Grid>
               <Grid item md={6} className={classes.formContainer}>
-                <Box>
+                <Box className={classes.stepperContainer}>
                   <Stepper activeStep={stepperActiveStep} alternativeLabel>
                     {stepLabels.map(stepLabel => {
                       return (
@@ -99,8 +139,15 @@ export default function NewItemForm({ initialValues }) {
                     onRemoveThumbnail={removeThumbnailHandler}
                   />
                 )}
+                {stepperActiveStep === 1 && (
+                  <PropertiesForm onPropertyAdded={push} />
+                )}
                 <Box className={classes.formActionContainer}>
-                  {stepperActiveStep > 0 && <Button margin={4}>Back</Button>}
+                  {stepperActiveStep > 0 && (
+                    <Button onClick={backStepHandler} margin={4}>
+                      Back
+                    </Button>
+                  )}
                   <Button variant="contained" color="primary" type="submit">
                     {stepperActiveStep < lastStep ? 'Next' : 'Finish'}
                   </Button>
