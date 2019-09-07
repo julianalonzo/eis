@@ -17,9 +17,10 @@ exports.getTemplate = async (req, res, next) => {
   try {
     const templateId = req.params.templateId || '';
 
-    const template = await Template.findOne({ _id: templateId }).populate(
-      'item.thumbnails'
-    );
+    const template = await Template.findOne({ _id: templateId })
+      .populate('item.thumbnails')
+      .populate('attachments')
+      .exec();
 
     res.status(200).json({ template: template });
   } catch (err) {
