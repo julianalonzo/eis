@@ -2,6 +2,8 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
+import { HOST } from '../utilities/constants';
+
 import Grid from '@material-ui/core/Grid';
 import Thumbnail from './Thumbnail';
 import Typography from '@material-ui/core/Typography';
@@ -31,15 +33,14 @@ const useStyles = makeStyles({
 });
 
 export default function Item({
-  item: { _id, thumbnail, name, category, condition }
+  item: { _id, thumbnails, name, category, condition }
 }) {
   const classes = useStyles();
 
-  const thumbnailData = {
-    src: thumbnail,
-    alt: 'Thumbnail',
-    variant: 'THUMBNAIL_DEFAULT'
-  };
+  const thumbnailSrc =
+    thumbnails.length > 0
+      ? `${HOST}/api/files/${thumbnails[0].filename}`
+      : null;
 
   return (
     <Grid container alignItems="center" className={classes.root}>
@@ -51,7 +52,9 @@ export default function Item({
         lg={5}
         className={classes.avatarNameContainer}
       >
-        <Thumbnail thumbnail={thumbnailData} marginRight={24} />
+        <Thumbnail alt={name} src={thumbnailSrc} marginRight={3}>
+          {!thumbnailSrc && name[0]}
+        </Thumbnail>
         <Typography className={classes.name}>{name}</Typography>
       </Grid>
       <Grid item xs={3} sm={2} md={4} lg={3}>
