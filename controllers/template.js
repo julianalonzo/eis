@@ -1,5 +1,4 @@
-const { toArray } = require('../util/helperFunctions');
-const { saveFiles } = require('../controllers/files');
+const { generateItemData } = require('./item');
 
 const Template = require('../models/template');
 
@@ -32,53 +31,44 @@ exports.createTemplate = async (req, res, next) => {
   // @TODO: Add validation
 
   try {
-    // Ensure that an array is passed to the Template's properties field
-    let properties = [];
-    if (req.body.properties) {
-      properties = toArray(req.body.properties);
-      properties = properties.map(property => {
-        return JSON.parse(property);
-      });
-    }
+    const templateName = req.body.name || '';
+    const templateDescription = req.body.description || '';
+    const rawItemData = req.body.item
+      ? JSON.parse(req.body.item)
+      : { name: '', category: '', condition: '' };
+    const itemName = rawItemData.name || '';
+    const itemCategory = rawItemData.category || '';
+    const itemCondition = rawItemData.condition || '';
+    const properties = req.body.properties || [];
+    const fileThumbnails = req.files.fileThumbnails || [];
+    const fileAttachments = req.files.fileAttachments || [];
 
-    // Ensure that an array is passed to the Template's thumbnails field
-    let thumbnails = [];
-    if (req.files.thumbnails) {
-      const uploadedThumbnails = await saveFiles(
-        'thumbnail',
-        req.files.thumbnails
-      );
-
-      thumbnails = uploadedThumbnails.map(uploadedThumbnail => {
-        return uploadedThumbnail.id;
-      });
-    }
-
-    // Ensure that an array is passed to the Template's attachments field
-    let attachments = [];
-    if (req.files.attachments) {
-      const uploadedAttachments = await saveFiles(
-        'attachment',
-        req.files.attachments
-      );
-
-      attachments = uploadedAttachments.map(uploadedAttachment => {
-        return uploadedAttachment.id;
-      });
-    }
+    const itemData = await generateItemData(
+      itemName,
+      itemCategory,
+      itemCondition,
+      properties,
+      [],
+      fileThumbnails,
+      [],
+      fileAttachments
+    );
 
     const template = new Template({
-      name: req.body.name,
-      description: req.body.description ? req.body.description : '',
+      name: templateName,
+      description: templateDescription,
       item: {
-        ...JSON.parse(req.body.item),
-        thumbnails: thumbnails
+        name: itemData.name,
+        category: itemData.category,
+        condition: itemData.condition,
+        thumbnails: itemData.thumbnails
       },
-      attachments: attachments,
-      properties: properties
+      attachments: itemData.attachments,
+      properties: itemData.properties
     });
 
     const savedTemplate = await template.save();
+
     res.status(201).json({ template: savedTemplate });
   } catch (err) {
     console.log(err);

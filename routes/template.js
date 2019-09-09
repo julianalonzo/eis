@@ -7,8 +7,8 @@ const templateController = require('../controllers/template');
 router.get('/', templateController.getTemplates);
 
 const createTemplateUpload = upload.fields([
-  { name: 'thumbnails' },
-  { name: 'attachments' }
+  { name: 'fileThumbnails' },
+  { name: 'fileAttachments' }
 ]);
 router.post('/new', createTemplateUpload, templateController.createTemplate);
 

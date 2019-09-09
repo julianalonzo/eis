@@ -139,7 +139,7 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
     );
 
     for (let i = 0; i < thumbnails.length; i++) {
-      formData.append('thumbnails', thumbnails[i]);
+      formData.append('fileThumbnails', thumbnails[i]);
     }
 
     for (let i = 0; i < properties.properties.length; i++) {
@@ -155,7 +155,7 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
     }
 
     for (let i = 0; i < attachments.attachments.length; i++) {
-      formData.append('attachments', attachments.attachments[i]);
+      formData.append('fileAttachments', attachments.attachments[i]);
     }
 
     onCreateTemplate(formData);
