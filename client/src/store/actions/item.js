@@ -35,3 +35,36 @@ export const fetchItems = () => {
       });
   };
 };
+
+export const createItemsStart = () => {
+  return {
+    type: actionTypes.CREATE_ITEMS_START
+  };
+};
+
+export const createItemsSuccess = items => {
+  return {
+    type: actionTypes.CREATE_ITEMS_SUCCESS,
+    items: items
+  };
+};
+
+export const createItemsFail = error => {
+  return {
+    type: actionTypes.CREATE_ITEMS_FAIL
+  };
+};
+
+export const createItems = item => {
+  return dispatch => {
+    dispatch(createItemsStart());
+    axios
+      .post('/api/items/new', item)
+      .then(response => {
+        dispatch(createItemsSuccess(response.data.item));
+      })
+      .catch(error => {
+        dispatch(createItemsFail(error));
+      });
+  };
+};
