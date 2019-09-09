@@ -2,11 +2,11 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/styles/';
 
-import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Paper from '@material-ui/core/Paper';
+import Thumbnail from './Thumbnail';
 import Truncate from 'react-truncate';
 import Typography from '@material-ui/core/Typography';
 
@@ -65,9 +65,13 @@ export default function Card({ title, subtitle, image, ...otherProps }) {
     <Paper className={classes.paper} {...otherProps}>
       <Box className={classes.avatarContainer}>
         {image ? (
-          <Avatar className={classes.avatar} src={image} alt={title} />
+          <Thumbnail
+            alt={title || ''}
+            src={image}
+            variant="THUMBNAIL_PRIMARY"
+          />
         ) : (
-          <Avatar className={classes.textAvatar}>{title[0]}</Avatar>
+          <Thumbnail variant="THUMBNAIL_PRIMARY">{title[0]}</Thumbnail>
         )}
         <IconButton size="small">
           <MoreHorizIcon />

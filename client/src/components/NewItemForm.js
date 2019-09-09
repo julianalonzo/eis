@@ -40,7 +40,7 @@ export default function NewItemForm({ initialValues, onSubmit }) {
 
   const [stepperActiveStep, setStepperActiveStep] = useState(0);
 
-  const [formValues, setFormValues] = useState({
+  const [formValues] = useState({
     itemName: initialValues.item.name || '',
     itemCategory: initialValues.item.category || '',
     itemCondition: initialValues.item.condition || '',
