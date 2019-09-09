@@ -6,27 +6,27 @@ import Avatar from '@material-ui/core/Avatar';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: props => ({
     display: 'flex',
-    marginRight: props.marginRight + 'px',
+    marginRight: theme.spacing(props.marginRight),
     alignItems: 'flex-end'
   }),
-  avatarContainer: {
+  avatarContainer: props => ({
     borderRadius: '50%',
     border: '2px solid #bdbdbd',
     '&:hover': {
-      borderColor: '#424242',
-      cursor: 'pointer'
+      borderColor: props.onClick ? '#424242' : '',
+      cursor: props.onClick ? 'pointer' : 'inherit'
     },
     padding: '1px'
-  },
-  primary: {
-    borderColor: '#3f51b5',
+  }),
+  primary: props => ({
+    borderColor: theme.palette.primary[500],
     '&:hover': {
-      borderColor: '#3f51b5'
+      borderColor: theme.palette.primary[500]
     }
-  },
+  }),
   avatar: {
     border: '1px solid #bdbdbd'
   },
@@ -35,14 +35,18 @@ const useStyles = makeStyles({
     left: '-8px',
     top: '8px'
   }
-});
+}));
 
 export default function Thumbnail({
-  thumbnail: { alt, src, variant },
+  alt,
+  src,
+  variant,
   marginRight = 0,
-  onRemoveThumbnail
+  children,
+  onRemoveThumbnail = null,
+  onClick
 }) {
-  const classes = useStyles({ marginRight });
+  const classes = useStyles({ marginRight, onClick });
 
   return (
     <div className={classes.root}>
@@ -52,13 +56,17 @@ export default function Thumbnail({
           (variant === 'THUMBNAIL_PRIMARY' ? `${classes.primary}` : '')
         }
       >
-        <Avatar alt={alt} src={src} className={classes.avatar} />
+        <Avatar alt={alt} src={src} className={classes.avatar}>
+          {children}
+        </Avatar>
       </div>
-      <div className={classes.removeIcon}>
-        <IconButton size="small" onClick={onRemoveThumbnail}>
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </div>
+      {onRemoveThumbnail && (
+        <div className={classes.removeIcon}>
+          <IconButton size="small" onClick={onRemoveThumbnail}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </div>
+      )}
     </div>
   );
 }
