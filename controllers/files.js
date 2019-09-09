@@ -1,4 +1,4 @@
-const { toArray } = require('../util/helperFunctions');
+const { toArray, parseElementsToJSON } = require('../util/helperFunctions');
 const path = require('path');
 
 const File = require('../models/file');
@@ -26,6 +26,23 @@ exports.createAttachments = async (req, res, next) => {
   res.status(201).json({ attachments: savedAttachments });
 };
 
+// Route to get a file
+exports.getFile = (req, res, next) => {
+  res.sendFile(path.join(__dirname, '..', 'uploads', req.params.filename));
+};
+
+exports.saveFiles = async (type, uploadedFiles) => {
+  const savedFiles = [];
+
+  processedFiles = toArray(uploadedFiles);
+  for (let i = 0; i < processedFiles.length; i++) {
+    const savedFile = await this.saveFile(type, processedFiles[i]);
+    savedFiles.push(savedFile);
+  }
+
+  return savedFiles;
+};
+
 // Function to save a file to the database. The type parameter must be thumbnail
 // or attachment
 exports.saveFile = async (type, uploadedFile) => {
@@ -47,18 +64,22 @@ exports.saveFile = async (type, uploadedFile) => {
   }
 };
 
-exports.saveFiles = async (type, uploadedFiles) => {
-  const savedFiles = [];
+exports.extractIdsFromExistingFiles = (type, existingFiles) => {
+  const idsOfExistingFiles = existingFiles
+    ? parseElementsToJSON(existingFiles).map(existingFile => {
+        return existingFile._id;
+      })
+    : [];
 
-  processedFiles = toArray(uploadedFiles);
-  for (let i = 0; i < processedFiles.length; i++) {
-    const savedFile = await this.saveFile(type, processedFiles[i]);
-    savedFiles.push(savedFile);
-  }
-
-  return savedFiles;
+  return idsOfExistingFiles;
 };
 
-exports.getFile = (req, res, next) => {
-  res.sendFile(path.join(__dirname, '..', 'uploads', req.params.filename));
+exports.extractIdsFromNewFiles = async (type, newFiles) => {
+  const savedFiles = await this.saveFiles(type, newFiles);
+
+  const idsOfSavedFiles = savedFiles.map(savedFile => {
+    return savedFile.id;
+  });
+
+  return idsOfSavedFiles;
 };
