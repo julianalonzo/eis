@@ -14,7 +14,8 @@ function NewItemPage({
   onFetchTemplate,
   template,
   fetchingTemplate,
-  fetchingTemplateError
+  fetchingTemplateError,
+  onCreateItems
 }) {
   const templateId = getParamValueByKey(location.search, 'templateId');
 
@@ -24,12 +25,48 @@ function NewItemPage({
     }
   }, [templateId, onFetchTemplate]);
 
+  const createItemsHandler = itemData => {
+    const formData = new FormData();
+
+    formData.append('name', itemData.itemName || '');
+    formData.append('category', itemData.itemCategory || '');
+    formData.append('condition', itemData.itemCondition || '');
+
+    for (const thumbnail of itemData.thumbnails) {
+      if (thumbnail instanceof File) {
+        formData.append('fileThumbnails', thumbnail);
+      } else {
+        formData.append('templateThumbnails', JSON.stringify(thumbnail));
+      }
+    }
+
+    for (const property of itemData.properties) {
+      formData.append(
+        'properties',
+        JSON.stringify({
+          name: property.name,
+          value: property.value
+        })
+      );
+    }
+
+    for (const attachment of itemData.attachments) {
+      if (attachment instanceof File) {
+        formData.append('fileAttachments', attachment);
+      } else {
+        formData.append('templateAttachments', JSON.stringify(attachment));
+      }
+    }
+
+    onCreateItems(formData);
+  };
+
   return (
     <React.Fragment>
       {fetchingTemplate ? (
         <p>Fetching template...</p>
       ) : (
-        <NewItemForm initialValues={template} />
+        <NewItemForm initialValues={template} onSubmit={createItemsHandler} />
       )}
     </React.Fragment>
   );
@@ -45,7 +82,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchTemplate: templateId => dispatch(actions.fetchTemplate(templateId))
+    onFetchTemplate: templateId => dispatch(actions.fetchTemplate(templateId)),
+    onCreateItems: item => dispatch(actions.createItems(item))
   };
 };
 

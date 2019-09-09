@@ -119,7 +119,13 @@ export default function NewItemForm({ initialValues, onSubmit }) {
 
   const submitHandler = values => {
     if (stepperActiveStep === lastStep) {
-      onSubmit(values);
+      const itemData = {
+        ...values,
+        thumbnails,
+        attachments
+      };
+
+      onSubmit(itemData);
     } else {
       nextStepHandler();
     }
