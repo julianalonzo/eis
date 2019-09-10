@@ -10,27 +10,28 @@ import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     borderLeft: '3px solid transparent',
     '&:hover': {
       cursor: 'pointer',
-      backgroundColor: '#e8eaf6',
-      borderLeft: '3px solid #3f51b5'
+      backgroundColor: theme.palette.primary[50],
+      borderLeft: `3px solid ${theme.palette.primary[500]}`
     },
     borderTopRightRadius: '25px',
     borderBottomRightRadius: '25px',
     maxWidth: '800px',
-    padding: '8px 16px'
+    padding: theme.spacing(1, 2),
+    marginBottom: theme.spacing(1)
   },
   avatarNameContainer: {
     display: 'flex',
     alignItems: 'center'
   },
   name: {
-    fontWeight: '700'
+    fontWeight: theme.fontWeight.bolder
   }
-});
+}));
 
 export default function Item({
   item: { _id, thumbnails, name, category, condition }
