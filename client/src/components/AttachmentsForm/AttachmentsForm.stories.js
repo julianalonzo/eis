@@ -45,6 +45,6 @@ storiesOf('AttachmentsForm', module)
             </form>
           );
         }}
-      ></Form>
+      />
     );
   });

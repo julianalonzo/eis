@@ -1,14 +1,14 @@
 import React from 'react';
 
+import customTheme from '../../util/theme';
+
 import { storiesOf } from '@storybook/react';
-
 import { muiTheme } from 'storybook-addon-material-ui';
+import { Form } from 'react-final-form';
 
-import customTheme from '../utilities/theme';
+import ItemDetailsForm from '.';
 
-import ItemDetailsForm from '../components/ItemDetailsForm';
-
-export const defaultItemDetailsData = {
+export const defaultItemDetailsFormData = {
   itemName: 'MBP',
   itemCategory: 'Laptop',
   itemCondition: 'In Stock',
@@ -44,20 +44,28 @@ export const thumbnails = [
 
 storiesOf('ItemDetailsForm', module)
   .addDecorator(muiTheme([customTheme]))
-  .add('default', () => <ItemDetailsForm />)
-  .add('withThumbnail', () => (
-    <ItemDetailsForm
-      itemDetailsFormData={{
-        ...defaultItemDetailsData,
-        itemThumbnails: thumbnails.slice(0, 3)
+  .add('default', () => (
+    <Form
+      onSubmit={values => {}}
+      render={({ handleSubmit }) => {
+        return (
+          <form>
+            <ItemDetailsForm />
+          </form>
+        );
       }}
     />
   ))
-  .add('withMaxThumbnails', () => (
-    <ItemDetailsForm
-      itemDetailsFormData={{
-        ...defaultItemDetailsData,
-        itemThumbnails: thumbnails
+  .add('withValues', () => (
+    <Form
+      initialValues={{ ...defaultItemDetailsFormData }}
+      onSubmit={values => {}}
+      render={({ handleSubmit }) => {
+        return (
+          <form>
+            <ItemDetailsForm thumbnails={thumbnails} />
+          </form>
+        );
       }}
     />
   ));

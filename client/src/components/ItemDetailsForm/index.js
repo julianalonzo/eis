@@ -160,7 +160,8 @@ export default function ItemDetailsForm({
               return (
                 <Thumbnail
                   key={thumbnail.src}
-                  thumbnail={thumbnail}
+                  alt={thumbnail.name}
+                  src={thumbnail.src}
                   onRemoveThumbnail={() => {
                     onRemoveThumbnail(index);
                   }}
