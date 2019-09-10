@@ -35,8 +35,8 @@ export default function AttachmentsForm({
     }
 
     const formattedAttachmentData = {
-      name,
-      size
+      name: name,
+      size: size
     };
 
     return formattedAttachmentData;
