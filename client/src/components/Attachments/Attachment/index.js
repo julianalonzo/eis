@@ -17,7 +17,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 
 export default function Attachment({
-  attachment: { id, fileName, filePath, type, fileSize, dateUploaded },
+  attachment: { name, size, dateUploaded },
   variant,
   primaryAction
 }) {
@@ -29,42 +29,29 @@ export default function Attachment({
         </Avatar>
       </ListItemAvatar>
       <ListItemText
-        primary={fileName}
+        primary={name}
         secondary={
           variant === 'default' ? (
             <Moment format="MMM D, YYYY" withTitle>
               {dateUploaded}
             </Moment>
           ) : (
-            formatFileSize(fileSize)
+            formatFileSize(size)
           )
         }
       />
       <ListItemSecondaryAction>
-        {variant === 'default' ? (
-          <IconButton onClick={primaryAction}>
-            <DeleteIcon />
-          </IconButton>
-        ) : (
-          <IconButton onClick={primaryAction}>
-            <CloseIcon />
-          </IconButton>
-        )}
+        <IconButton onClick={primaryAction}>
+          {variant === 'default' ? <DeleteIcon /> : <CloseIcon />}
+        </IconButton>
       </ListItemSecondaryAction>
     </ListItem>
   );
 }
 
 Attachment.propTypes = {
-  attachment: PropTypes.shape({
-    id: PropTypes.string,
-    fileName: PropTypes.string,
-    filePath: PropTypes.string,
-    type: PropTypes.string,
-    fileSize: PropTypes.number,
-    dateUploaded: PropTypes.string
-  }),
-  variant: PropTypes.string
+  variant: PropTypes.string,
+  primaryAction: PropTypes.func.isRequired
 };
 
 Attachment.defaultProps = {

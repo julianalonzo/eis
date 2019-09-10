@@ -4,14 +4,14 @@ import Attachment from './Attachment';
 
 import List from '@material-ui/core/List';
 
-export default function Attachments({ attachments, primaryAction }) {
+export default function Attachments({ attachments, variant, primaryAction }) {
   return (
     <List>
       {attachments.map((attachment, index) => {
         return (
           <Attachment
-            key={attachment.fileName + '_' + index}
-            variant="upload"
+            key={attachment._id || attachment.name + '_' + index}
+            variant={variant}
             attachment={attachment}
             primaryAction={() => {
               primaryAction(index);

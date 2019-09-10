@@ -24,7 +24,7 @@ export default function AttachmentsForm({
 
   const formattedAttachments = attachments.map(attachment => {
     let name = '';
-    let size = '';
+    let size = 0;
 
     if (attachment instanceof File) {
       name = attachment.name;
@@ -35,8 +35,8 @@ export default function AttachmentsForm({
     }
 
     const formattedAttachmentData = {
-      fileName: name,
-      fileSize: size
+      name,
+      size
     };
 
     return formattedAttachmentData;
@@ -52,6 +52,7 @@ export default function AttachmentsForm({
         >
           <Attachments
             attachments={formattedAttachments}
+            variant="upload"
             primaryAction={onRemoveAttachment}
           />
         </UploadDropzone>
