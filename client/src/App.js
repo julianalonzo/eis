@@ -1,18 +1,18 @@
 import React from 'react';
 
+import customTheme from './util/theme';
+
 import { HashRouter, Route, Switch } from 'react-router-dom';
-
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
-import customTheme from './utilities/theme';
-
-import Container from '@material-ui/core/Container';
 
 import NewTemplatePage from './containers/NewTemplatePage';
 import MainPage from './containers/MainPage';
 import NewItemPage from './containers/NewItemPage';
 import SelectTemplatePage from './containers/SelectTemplatePage';
 import TemplatesPage from './containers/TemplatesPage';
+
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+import Container from '@material-ui/core/Container';
 
 const theme = createMuiTheme({
   ...customTheme
