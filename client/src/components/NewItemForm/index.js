@@ -31,6 +31,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center'
+  },
+  illustrationContainer: {
+    marginTop: '10vh'
   }
 }));
 
@@ -84,18 +87,18 @@ export default function NewItemForm({ initialValues, onSubmit }) {
 
   const formIllustrations = [
     {
-      headerText: 'Item details',
-      headerSubText: 'Name and describe your item',
+      title: 'Item details',
+      subtitle: 'Name and describe your item',
       sourceImage: ItemIllustration
     },
     {
-      headerText: 'Properties',
-      headerSubText: 'Add custom fields for your item',
+      title: 'Properties',
+      subtitle: 'Add custom fields for your item',
       sourceImage: PropertiesIllustration
     },
     {
-      headerText: 'Attachments',
-      headerSubText: 'Add relevant attachments to your item',
+      title: 'Attachments',
+      subtitle: 'Add relevant attachments to your item',
       sourceImage: AttachmentsIllustration
     }
   ];
@@ -146,10 +149,11 @@ export default function NewItemForm({ initialValues, onSubmit }) {
         return (
           <form onSubmit={handleSubmit}>
             <Grid container>
-              <Grid item md={6}>
+              <Grid item md={6} className={classes.illustrationContainer}>
                 <IllustrationPlaceholder
                   {...formIllustrations[stepperActiveStep]}
                   size="lg"
+                  variant="illustration"
                 />
               </Grid>
               <Grid item md={6} className={classes.formContainer}>

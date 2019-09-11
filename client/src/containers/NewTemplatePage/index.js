@@ -34,6 +34,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center'
+  },
+  illustrationContainer: {
+    marginTop: '10vh'
   }
 }));
 
@@ -170,23 +173,23 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
 
   const formIllustration = [
     {
-      headerText: 'Template details',
-      headerSubText: 'Name and describe your template',
+      title: 'Template details',
+      subtitle: 'Name and describe your template',
       sourceImage: TemplateIllustration
     },
     {
-      headerText: 'Item details',
-      headerSubText: 'Name and describe your item',
+      title: 'Item details',
+      subtitle: 'Name and describe your item',
       sourceImage: ItemIllustration
     },
     {
-      headerText: 'Properties',
-      headerSubText: 'Add custom fields for your item',
+      title: 'Properties',
+      subtitle: 'Add custom fields for your item',
       sourceImage: PropertiesIllustration
     },
     {
-      headerText: 'Attachments',
-      headerSubText: 'Add relevant attachments to your item',
+      title: 'Attachments',
+      subtitle: 'Add relevant attachments to your item',
       sourceImage: UploadIllustration
     }
   ];
@@ -221,10 +224,11 @@ function NewTemplatePage({ onCreateTemplate, loading }) {
         return (
           <form onSubmit={handleSubmit}>
             <Grid container>
-              <Grid item md={6}>
+              <Grid item md={6} className={classes.illustrationContainer}>
                 <IllustrationPlaceholder
                   {...activeIllustrationProps}
                   size="lg"
+                  variant="illustration"
                 />
               </Grid>
               <Grid item md={6} className={classes.formContainer}>

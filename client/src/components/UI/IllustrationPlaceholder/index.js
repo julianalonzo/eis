@@ -4,6 +4,7 @@ import Button from '../Button';
 import DefaultIllustration from '../../../assets/illustrations/default.svg';
 
 import { makeStyles } from '@material-ui/styles';
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
@@ -11,7 +12,6 @@ import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
   headerContainer: {
-    paddingTop: '10vh',
     paddingLeft: theme.spacing(8),
     marginBottom: theme.spacing(5)
   },
@@ -40,12 +40,11 @@ const useStyles = makeStyles(theme => ({
 export default function IllustrationPlaceholder({
   sourceImage,
   alt,
-  primaryText,
-  secondaryText,
+  title,
+  subtitle,
   action,
-  size,
-  headerText,
-  headerSubText
+  variant,
+  size
 }) {
   let illustrationSize;
 
@@ -67,42 +66,40 @@ export default function IllustrationPlaceholder({
 
   return (
     <Grid container>
-      <Grid item xs={12} className={classes.headerContainer}>
-        {headerText ? (
-          <Typography className={classes.header}>{headerText}</Typography>
-        ) : null}
-        {headerSubText ? (
-          <Typography className={classes.headerSubText} color="textSecondary">
-            {headerSubText}
-          </Typography>
-        ) : null}
-      </Grid>
+      {variant === 'illustration' ? (
+        <Grid item xs={12} className={classes.headerContainer}>
+          {title ? (
+            <Typography className={classes.header}>{title}</Typography>
+          ) : null}
+          {subtitle ? (
+            <Typography className={classes.headerSubText} color="textSecondary">
+              {subtitle}
+            </Typography>
+          ) : null}
+        </Grid>
+      ) : null}
       <Grid item xs={12} className={classes.illustrationContainer}>
-        <div className={classes.centeredWrapper}>
-          <img
-            src={sourceImage ? sourceImage : DefaultIllustration}
-            alt={alt ? alt : 'Illustration'}
-            className={classes.image}
-          />
-        </div>
+        <Box className={classes.centeredWrapper}>
+          <img src={sourceImage} alt={alt} className={classes.image} />
+        </Box>
       </Grid>
-      <Grid item xs={12}>
-        <div className={classes.centeredWrapper}>
-          {primaryText ? (
-            <Typography variant="h5">{primaryText}</Typography>
-          ) : null}
-          {secondaryText ? (
-            <Typography color="textSecondary">{secondaryText}</Typography>
-          ) : null}
-          {action ? (
-            <div className={classes.actionButtonContainer}>
-              <Button color="primary" variant="contained">
-                {action.label}
-              </Button>
-            </div>
-          ) : null}
-        </div>
-      </Grid>
+      {variant === 'placeholder' ? (
+        <Grid item xs={12}>
+          <Box className={classes.centeredWrapper}>
+            {title ? <Typography variant="h5">{title}</Typography> : null}
+            {subtitle ? (
+              <Typography color="textSecondary">{subtitle}</Typography>
+            ) : null}
+            {action ? (
+              <Box className={classes.actionButtonContainer}>
+                <Button color="primary" variant="contained">
+                  {action.label}
+                </Button>
+              </Box>
+            ) : null}
+          </Box>
+        </Grid>
+      ) : null}
     </Grid>
   );
 }
@@ -110,9 +107,15 @@ export default function IllustrationPlaceholder({
 IllustrationPlaceholder.propTypes = {
   sourceImage: PropTypes.string,
   alt: PropTypes.string,
-  primaryText: PropTypes.string,
-  secondaryText: PropTypes.string,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
   size: PropTypes.string,
-  headerText: PropTypes.string,
-  headerSubText: PropTypes.string
+  variant: PropTypes.string
+};
+
+IllustrationPlaceholder.defaultProps = {
+  sourceImage: DefaultIllustration,
+  alt: 'Illustration',
+  size: 'sm',
+  variant: 'placeholder'
 };
