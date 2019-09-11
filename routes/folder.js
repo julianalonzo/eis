@@ -5,4 +5,6 @@ const foldersController = require('../controllers/folder');
 
 router.get('/', foldersController.getFolders);
 
+router.post('/new', foldersController.createFolder);
+
 module.exports = router;
