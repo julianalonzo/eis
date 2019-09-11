@@ -31,7 +31,7 @@ storiesOf('AttachmentsForm', module)
             </form>
           );
         }}
-      ></Form>
+      />
     );
   })
   .add('withAttachments', () => {
