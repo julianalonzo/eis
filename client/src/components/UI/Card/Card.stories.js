@@ -1,13 +1,13 @@
 import React from 'react';
 
+import customTheme from '../../../util/theme';
+
 import { storiesOf } from '@storybook/react';
-
 import { muiTheme } from 'storybook-addon-material-ui';
-import customTheme from '../utilities/theme';
 
-import Card from '../components/Card';
+import Card from '.';
 
-export const defaultData = {
+export const defaultCardData = {
   title: 'Template Template Template Template',
   subtitle:
     'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ducimus omnis, nisi mollitia exercitationem aut magni deleniti expedita ea eos odit eveniet nesciunt placeat fugit vel voluptatum, nobis quo, temporibus ipsa!',
@@ -19,8 +19,15 @@ storiesOf('Card', module)
   .addDecorator(muiTheme([customTheme]))
   .add('default', () => (
     <Card
-      title={defaultData.title}
-      subtitle={defaultData.subtitle}
-      image={defaultData.image}
+      title={defaultCardData.title}
+      subtitle={defaultCardData.subtitle}
+      image={defaultCardData.image}
+    />
+  ))
+  .add('noSubtitle', () => (
+    <Card
+      title={defaultCardData.title}
+      subtitle={''}
+      image={defaultCardData.image}
     />
   ));

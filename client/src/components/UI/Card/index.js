@@ -14,7 +14,6 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(3),
-    maxWidth: '300px',
     width: '300px',
     boxShadow:
       '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -47,12 +46,12 @@ const useStyles = makeStyles(theme => ({
   title: {
     fontSize: '18px',
     fontWeight: theme.fontWeight.bolder,
-    minWidth: '250px',
-    maxWidth: '250px'
+    width: '250px',
+    height: '30px'
   },
   subtitleContainer: {
-    minWidth: '250px',
-    maxWidth: '250px'
+    width: '250px',
+    height: '60px'
   },
   subtitle: {
     lineHeight: '1.3'
