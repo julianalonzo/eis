@@ -2,7 +2,7 @@ const { parseElementsToJSON } = require('../util/helperFunctions');
 const {
   extractIdsFromExistingFiles,
   extractIdsFromNewFiles
-} = require('../controllers/files');
+} = require('./file');
 
 const Item = require('../models/item');
 

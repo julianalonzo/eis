@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../util/fileStorage');
 
-const filesController = require('../controllers/files');
+const filesController = require('../controllers/file');
 
 const createThumbnailsUpload = upload.array('thumbnails');
 router.post(

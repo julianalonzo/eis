@@ -7,7 +7,8 @@ const cors = require('cors');
 
 const itemRoutes = require('./routes/item');
 const templateRoutes = require('./routes/template');
-const filesRoutes = require('./routes/files');
+const fileRoutes = require('./routes/file');
+const folderRoutes = require('./routes/folder');
 
 const app = express();
 
@@ -17,7 +18,8 @@ app.use(bodyParser.json());
 
 app.use('/api/items', itemRoutes);
 app.use('/api/templates', templateRoutes);
-app.use('/api/files', filesRoutes);
+app.use('/api/files', fileRoutes);
+app.use('/api/folders', folderRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client', 'build')));
