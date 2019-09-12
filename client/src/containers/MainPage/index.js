@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 
 import Items from '../../components/Items';
+import FoldersTreeView from '../../components/FoldersTreeView';
 
 import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
@@ -34,9 +35,9 @@ function MainPage({
   return (
     <React.Fragment>
       {!(fetchingItems && fetchingFolders) ? (
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item md={3}>
-            <div className={classes.temporarySidebar} />
+            <FoldersTreeView folders={folders} />
           </Grid>
           <Grid item xs={12} md={9}>
             <Items items={items} />
