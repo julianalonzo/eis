@@ -16,35 +16,52 @@ const useStyles = makeStyles({
   }
 });
 
-function MainPage({ onFetchItems, items, loading }) {
+function MainPage({
+  onFetchItems,
+  items,
+  fetchingItems,
+  onFetchFolders,
+  folders,
+  fetchingFolders
+}) {
   const classes = useStyles();
 
   useEffect(() => {
     onFetchItems();
-  }, [onFetchItems]);
+    onFetchFolders();
+  }, [onFetchItems, onFetchFolders]);
 
   return (
-    <Grid container>
-      <Grid item md={3}>
-        <div className={classes.temporarySidebar} />
-      </Grid>
-      <Grid item xs={12} md={9}>
-        <Items items={items} />
-      </Grid>
-    </Grid>
+    <React.Fragment>
+      {!(fetchingItems && fetchingFolders) ? (
+        <Grid container>
+          <Grid item md={3}>
+            <div className={classes.temporarySidebar} />
+          </Grid>
+          <Grid item xs={12} md={9}>
+            <Items items={items} />
+          </Grid>
+        </Grid>
+      ) : (
+        <p>Fetching data...</p>
+      )}
+    </React.Fragment>
   );
 }
 
 const mapStateToProps = state => {
   return {
     items: state.item.items,
-    loading: state.item.loading
+    loading: state.item.loading,
+    folders: state.folder.folders,
+    fetchingFolders: state.folder.fetchingFolders
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchItems: () => dispatch(actions.fetchItems())
+    onFetchItems: () => dispatch(actions.fetchItems()),
+    onFetchFolders: () => dispatch(actions.fetchFolders())
   };
 };
 

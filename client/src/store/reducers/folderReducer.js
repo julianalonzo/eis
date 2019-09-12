@@ -7,15 +7,18 @@ const initialState = {
 };
 
 const fetchFoldersStart = (state, action) => {
-  return updateObject(state, { loading: true });
+  return updateObject(state, { fetchingFolders: true });
 };
 
 const fetchFoldersSuccess = (state, action) => {
-  return updateObject(state, { items: action.items, loading: false });
+  return updateObject(state, {
+    folders: action.folders,
+    fetchingFolders: false
+  });
 };
 
 const fetchFoldersFail = (state, action) => {
-  return updateObject(state, { loading: false });
+  return updateObject(state, { fetchingFolders: false });
 };
 
 const reducer = (state = initialState, action) => {

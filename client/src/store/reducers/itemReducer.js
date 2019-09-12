@@ -3,21 +3,21 @@ import { updateObject } from '../utility';
 
 const initialState = {
   items: [],
-  loading: false,
+  fetchingItems: false,
   creatingItems: false,
   creatingItemsError: null
 };
 
 const fetchItemsStart = (state, action) => {
-  return updateObject(state, { loading: true });
+  return updateObject(state, { fetchingItems: true });
 };
 
 const fetchItemsSuccess = (state, action) => {
-  return updateObject(state, { items: action.items, loading: false });
+  return updateObject(state, { items: action.items, fetchingItems: false });
 };
 
 const fetchItemsFail = (state, action) => {
-  return updateObject(state, { loading: false });
+  return updateObject(state, { fetchingItems: false });
 };
 
 const createItemsStart = (state, action) => {
