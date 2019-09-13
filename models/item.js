@@ -26,7 +26,11 @@ const itemSchema = new Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'File'
     }
-  ]
+  ],
+  folder: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Folder'
+  }
 });
 
 module.exports = mongoose.model('Item', itemSchema);

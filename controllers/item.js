@@ -6,6 +6,22 @@ const {
 
 const Item = require('../models/item');
 
+exports.getItemsOfFolder = async (req, res, next) => {
+  try {
+    const folderId = req.params.folderId || null;
+
+    if (folderId) {
+      const items = await Item.find({ folder: folderId }).populate(
+        'thumbnails'
+      );
+
+      res.status(200).json({ items: items });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.getItems = async (req, res, next) => {
   try {
     const items = await Item.find().populate('thumbnails');
@@ -28,6 +44,7 @@ exports.createItems = async (req, res, next) => {
     const fileThumbnails = req.files.fileAttachments || [];
     const templateAttachments = req.body.templateAttachments || [];
     const fileAttachments = req.files.fileAttachments || [];
+    const folder = req.body.folder || '';
 
     const itemData = await this.generateItemData(
       name,
@@ -41,7 +58,8 @@ exports.createItems = async (req, res, next) => {
     );
 
     const item = new Item({
-      ...itemData
+      ...itemData,
+      folder: folder
     });
 
     const savedItem = await item.save();
