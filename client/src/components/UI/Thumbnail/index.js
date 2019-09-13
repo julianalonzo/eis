@@ -1,38 +1,26 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-import Avatar from '@material-ui/core/Avatar';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles(theme => ({
   root: props => ({
-    display: 'flex',
     marginRight: theme.spacing(props.marginRight),
-    alignItems: 'flex-end'
+    border: `1px solid ${theme.palette.grey[300]}`,
+    borderRadius: '8px',
+    padding: theme.spacing(0.5),
+    width: theme.spacing(5),
+    height: theme.spacing(5),
+    backgroundImage: `url("${props.src}")`,
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover'
   }),
-  avatarContainer: props => ({
-    borderRadius: '50%',
-    border: '2px solid #bdbdbd',
-    '&:hover': {
-      borderColor: props.onClick ? '#424242' : '',
-      cursor: props.onClick ? 'pointer' : 'inherit'
-    },
-    padding: '1px'
-  }),
-  primary: props => ({
-    borderColor: theme.palette.primary[500],
-    '&:hover': {
-      borderColor: theme.palette.primary[500]
-    }
-  }),
-  avatar: {
-    border: '1px solid #bdbdbd'
-  },
   removeIcon: {
     position: 'relative',
-    left: '-8px',
-    top: '8px'
+    right: theme.spacing(-4.5),
+    top: theme.spacing(3.5)
   }
 }));
 
@@ -45,20 +33,10 @@ export default function Thumbnail({
   onRemoveThumbnail = null,
   onClick
 }) {
-  const classes = useStyles({ marginRight, onClick });
-
+  const classes = useStyles({ marginRight, src, onClick });
   return (
     <div className={classes.root}>
-      <div
-        className={
-          `${classes.avatarContainer} ` +
-          (variant === 'THUMBNAIL_PRIMARY' ? `${classes.primary}` : '')
-        }
-      >
-        <Avatar alt={alt} src={src} className={classes.avatar}>
-          {children}
-        </Avatar>
-      </div>
+      <div className={classes.thumbnail}></div>
       {onRemoveThumbnail && (
         <div className={classes.removeIcon}>
           <IconButton size="small" onClick={onRemoveThumbnail}>

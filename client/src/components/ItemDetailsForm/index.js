@@ -165,6 +165,7 @@ export default function ItemDetailsForm({
                   onRemoveThumbnail={() => {
                     onRemoveThumbnail(index);
                   }}
+                  marginRight={3}
                 />
               );
             })}
