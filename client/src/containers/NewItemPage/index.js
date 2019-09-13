@@ -14,9 +14,12 @@ function NewItemPage({
   template,
   fetchingTemplate,
   fetchingTemplateError,
-  onCreateItems
+  onCreateItems,
+  match: { params }
 }) {
   const templateId = getParamValueByKey(location.search, 'templateId');
+
+  const folderId = params.folderId || null;
 
   useEffect(() => {
     if (templateId) {
@@ -56,6 +59,8 @@ function NewItemPage({
         formData.append('templateAttachments', JSON.stringify(attachment));
       }
     }
+
+    formData.append('folder', folderId);
 
     onCreateItems(formData);
   };

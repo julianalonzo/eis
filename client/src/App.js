@@ -26,8 +26,12 @@ function App() {
           <Switch>
             <Route path="/templates" component={TemplatesPage} />
             <Route path="/new-template" component={NewTemplatePage} />
-            <Route path="/select-template" component={SelectTemplatePage} />
-            <Route path="/new-item" component={NewItemPage} />
+            <Route
+              path="/folders/:folderId/select-template"
+              component={SelectTemplatePage}
+            />
+            <Route path="/folders/:folderId/new-item" component={NewItemPage} />
+            <Route path="/folders/:folderId" component={MainPage} />
             <Route exact path="/" component={MainPage} />
           </Switch>
         </HashRouter>

@@ -92,7 +92,11 @@ export default function IllustrationPlaceholder({
             ) : null}
             {action ? (
               <Box className={classes.actionButtonContainer}>
-                <Button color="primary" variant="contained">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={action.action}
+                >
                   {action.label}
                 </Button>
               </Box>

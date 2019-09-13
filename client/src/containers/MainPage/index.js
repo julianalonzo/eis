@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
+import { withRouter } from 'react-router-dom';
 
+import EmptyItemsIllustration from '../../assets/illustrations/empty.svg';
 import Items from '../../components/Items';
+import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
 import FoldersTreeView from '../../components/FoldersTreeView';
 
 import Grid from '@material-ui/core/Grid';
@@ -14,22 +17,54 @@ function MainPage({
   fetchingItems,
   onFetchFolders,
   folders,
-  fetchingFolders
+  fetchingFolders,
+  match: { params },
+  history
 }) {
+  const [currentFolder, setCurrentFolder] = useState(params.folderId || '');
+
+  const openFolderHandler = folderId => {
+    setCurrentFolder(folderId);
+  };
+
+  const openSelectTemplatePageHandler = () => {
+    history.push(`/folders/${currentFolder}/select-template`);
+  };
+
   useEffect(() => {
-    onFetchItems();
+    if (currentFolder) {
+      history.push(`/folders/${currentFolder}`);
+      onFetchItems(currentFolder);
+    }
+
     onFetchFolders();
-  }, [onFetchItems, onFetchFolders]);
+  }, [onFetchItems, onFetchFolders, currentFolder, history]);
 
   return (
     <React.Fragment>
       {!(fetchingItems && fetchingFolders) ? (
         <Grid container spacing={4}>
           <Grid item md={3}>
-            <FoldersTreeView folders={folders} />
+            <FoldersTreeView
+              folders={folders}
+              onOpenFolder={openFolderHandler}
+            />
           </Grid>
           <Grid item xs={12} md={9}>
-            <Items items={items} />
+            {items.length > 0 ? (
+              <Items items={items} />
+            ) : (
+              <IllustrationPlaceholder
+                sourceImage={EmptyItemsIllustration}
+                alt="No Items"
+                primaryText="No items yet"
+                secondaryText="Add items from scratch or from saved templates"
+                action={{
+                  label: 'New Item',
+                  action: openSelectTemplatePageHandler
+                }}
+              />
+            )}
           </Grid>
         </Grid>
       ) : (
@@ -50,7 +85,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchItems: () => dispatch(actions.fetchItems()),
+    onFetchItems: folderId => dispatch(actions.fetchItems(folderId)),
     onFetchFolders: () => dispatch(actions.fetchFolders())
   };
 };
@@ -58,4 +93,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MainPage);
+)(withRouter(MainPage));

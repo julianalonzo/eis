@@ -60,9 +60,12 @@ function SelectTemplatePage({
   templates,
   fetchingTemplates,
   onFetchTemplates,
-  history
+  history,
+  match: { params }
 }) {
   const classes = useStyles();
+
+  const folderId = params.folderId || null;
 
   useEffect(() => {
     onFetchTemplates();
@@ -85,7 +88,7 @@ function SelectTemplatePage({
                 <Box
                   className={classes.noTemplateCard}
                   onClick={() => {
-                    history.push('/new-item');
+                    history.push(`/folders/${folderId}/new-item`);
                   }}
                 >
                   <AddCircleOutlineIcon className={classes.addIcon} />
@@ -115,7 +118,9 @@ function SelectTemplatePage({
                       subtitle={template.description}
                       image={thumbnailUrl}
                       onClick={() => {
-                        history.push(`/new-item?templateId=${template._id}`);
+                        history.push(
+                          `/folders/${folderId}/new-item?templateId=${template._id}`
+                        );
                       }}
                     />
                   </Grid>

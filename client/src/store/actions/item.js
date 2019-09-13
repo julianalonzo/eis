@@ -22,11 +22,11 @@ export const fetchItemsFail = error => {
   };
 };
 
-export const fetchItems = () => {
+export const fetchItems = folderId => {
   return dispatch => {
     dispatch(fetchItemsStart());
     axios
-      .get('/api/items')
+      .get(`/api/items/${folderId}`)
       .then(res => {
         dispatch(fetchItemsSuccess(res.data.items));
       })
