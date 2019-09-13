@@ -6,16 +6,7 @@ import * as actions from '../../store/actions';
 import Items from '../../components/Items';
 import FoldersTreeView from '../../components/FoldersTreeView';
 
-import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
-
-const useStyles = makeStyles({
-  temporarySidebar: {
-    display: 'block',
-    width: '100%',
-    height: '100vh'
-  }
-});
 
 function MainPage({
   onFetchItems,
@@ -25,8 +16,6 @@ function MainPage({
   folders,
   fetchingFolders
 }) {
-  const classes = useStyles();
-
   useEffect(() => {
     onFetchItems();
     onFetchFolders();
@@ -35,7 +24,7 @@ function MainPage({
   return (
     <React.Fragment>
       {!(fetchingItems && fetchingFolders) ? (
-        <Grid container spacing={2}>
+        <Grid container spacing={4}>
           <Grid item md={3}>
             <FoldersTreeView folders={folders} />
           </Grid>
