@@ -6,19 +6,9 @@ import Card from '../UI/Card';
 import EmptyTemplatesIllustration from '../../assets/illustrations/empty_templates.svg';
 import IllustrationPlaceholder from '../UI/IllustrationPlaceholder';
 
-import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
 
-const useStyles = makeStyles(theme => ({
-  gridItem: {
-    display: 'flex',
-    justifyContent: 'center'
-  }
-}));
-
 export default function Templates({ templates }) {
-  const classes = useStyles();
-
   return (
     <React.Fragment>
       {templates.length > 0 ? (
@@ -31,18 +21,13 @@ export default function Templates({ templates }) {
             }
 
             return (
-              <Grid
-                key={template._id}
-                item
-                xs={12}
-                lg={3}
-                md={4}
-                className={classes.gridItem}
-              >
+              <Grid key={template._id} item xs={12} lg={3} md={4}>
                 <Card
+                  variant="text-subtitle"
                   title={template.name}
                   subtitle={template.description}
                   image={thumbnailUrl}
+                  primaryChip={template.item.category}
                 />
               </Grid>
             );
