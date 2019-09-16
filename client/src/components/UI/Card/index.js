@@ -6,6 +6,7 @@ import Thumbnail from '../Thumbnail';
 
 import { makeStyles } from '@material-ui/styles/';
 import Box from '@material-ui/core/Box';
+import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Paper from '@material-ui/core/Paper';
@@ -13,13 +14,10 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    padding: theme.spacing(3),
-    width: '300px',
-    boxShadow:
-      '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+    padding: theme.spacing(2.5),
+    boxShadow: theme.shadows[1],
     '&:hover': {
-      boxShadow:
-        '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+      boxShadow: theme.shadows[2],
       cursor: 'pointer'
     }
   },
@@ -29,65 +27,91 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'flex-start',
     justifyContent: 'space-between'
   },
-  avatar: {
-    width: '50px',
-    height: '50px',
-    border: '1px solid #eaeaea'
-  },
-  textAvatar: {
-    width: '50px',
-    height: '50px',
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.secondary.contrastText
-  },
   titleContainer: {
-    marginBottom: theme.spacing(1)
+    display: 'flex',
+    alignItems: 'center',
+    width: '225px'
   },
   title: {
-    fontSize: '18px',
-    fontWeight: theme.fontWeight.bolder,
-    width: '250px',
-    height: '30px'
+    fontSize: theme.typography.fontSize * 1.25,
+    fontWeight: theme.typography.fonWeightBold
   },
   subtitleContainer: {
-    width: '250px',
-    height: '60px'
+    width: '225px',
+    height: '40px'
   },
   subtitle: {
-    lineHeight: '1.3'
+    fontFamily: theme.typography.fontFamily,
+    fontSize: theme.typography.fontSize,
+    color: theme.palette.text.hint
+  },
+  chip: {
+    marginRight: theme.spacing(1),
+    marginTop: theme.spacing(1)
   }
 }));
 
-export default function Card({ title, subtitle, image, ...otherProps }) {
+export default function Card({
+  title,
+  subtitle = '',
+  image,
+  variant = 'text-subtitle',
+  primaryChip = '',
+  secondaryChips = [],
+  ...otherProps
+}) {
   const classes = useStyles();
 
   return (
     <Paper className={classes.paper} {...otherProps}>
       <Box className={classes.avatarContainer}>
-        {image ? (
-          <Thumbnail
-            alt={title || ''}
-            src={image}
-            variant="THUMBNAIL_PRIMARY"
-          />
-        ) : (
-          <Thumbnail variant="THUMBNAIL_PRIMARY">{title[0]}</Thumbnail>
-        )}
+        <Thumbnail alt={title || ''} src={image} />
         <IconButton size="small">
           <MoreHorizIcon />
         </IconButton>
       </Box>
       <Box className={classes.titleContainer}>
-        <Typography className={classes.title} noWrap={true}>
+        <Typography className={classes.title} noWrap={true} variant="h6">
           {title}
         </Typography>
+        {primaryChip !== '' ? (
+          <Chip
+            size="small"
+            label={primaryChip}
+            style={{ marginLeft: '16px' }}
+          />
+        ) : null}
       </Box>
       <Box className={classes.subtitleContainer}>
-        <Typography className={classes.subtitle} color="textSecondary">
-          <Truncate lines={2} ellipsis="...">
+        {variant === 'text-subtitle' && subtitle !== '' ? (
+          <Truncate lines={2} ellipsis="..." className={classes.subtitle}>
             {subtitle}
           </Truncate>
-        </Typography>
+        ) : variant === 'text-subtitle' && subtitle === '' ? (
+          <Typography
+            className={classes.subtitle}
+            style={{ fontStyle: 'italic' }}
+          >
+            (No description)
+          </Typography>
+        ) : variant === 'chips-subtitle' ? (
+          <Box>
+            {secondaryChips.map((secondaryChip, index) => {
+              if (secondaryChip !== '') {
+                return (
+                  <Chip
+                    key={`${secondaryChip}_${index}`}
+                    size="small"
+                    label={secondaryChip}
+                    className={classes.chip}
+                  />
+                );
+              }
+
+              return null;
+            })}
+          </Box>
+        ) : null}
       </Box>
     </Paper>
   );
