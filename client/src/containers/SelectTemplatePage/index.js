@@ -16,22 +16,11 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   pageHeadingContainer: {
-    marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(4)
-  },
-  pageHeading: {
-    fontSize: theme.fontSize * 2,
-    fontWeight: theme.fontWeight.bolder
-  },
-  gridItem: {
-    display: 'flex',
-    justifyContent: 'center'
+    marginTop: theme.spacing(4)
   },
   noTemplateCard: {
-    minHeight: '140px',
     padding: theme.spacing(3),
-    maxWidth: '300px',
-    width: '300px',
+    height: '120px',
     border: `2px dashed ${theme.palette.primary[400]}`,
     display: 'flex',
     alignItems: 'center',
@@ -46,13 +35,11 @@ const useStyles = makeStyles(theme => ({
     }
   },
   addIcon: {
-    fontSize: theme.fontSize * 4,
     marginBottom: theme.spacing(1),
     color: 'inherit'
   },
   noTemplateText: {
-    color: 'inherit',
-    fontWeight: theme.fontWeight.bold
+    color: 'inherit'
   }
 }));
 
@@ -76,58 +63,54 @@ function SelectTemplatePage({
       {fetchingTemplates ? (
         <p>Fetching templates...</p>
       ) : (
-        <Grid container>
+        <Grid container spacing={4}>
           <Grid item xs={12} className={classes.pageHeadingContainer}>
-            <Typography className={classes.pageHeading}>
-              Choose a template to start
-            </Typography>
+            <Typography variant="h5">Choose template</Typography>
           </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={4}>
-              <Grid className={classes.gridItem} item xs={12} lg={3} md={4}>
-                <Box
-                  className={classes.noTemplateCard}
+          <Grid item xs={12} lg={3} md={4}>
+            <Box
+              className={classes.noTemplateCard}
+              onClick={() => {
+                history.push(`/folders/${folderId}/new-item`);
+              }}
+            >
+              <AddCircleOutlineIcon className={classes.addIcon} />
+              <Typography className={classes.noTemplateText}>
+                No Template
+              </Typography>
+            </Box>
+          </Grid>
+          {templates.map(template => {
+            let thumbnailUrl = null;
+
+            if (template.item.thumbnails.length > 0) {
+              thumbnailUrl = `${HOST}/api/files/${template.item.thumbnails[0].filename}`;
+            }
+
+            return (
+              <Grid
+                className={classes.gridItem}
+                item
+                xs={12}
+                lg={3}
+                md={4}
+                key={template._id}
+              >
+                <Card
+                  primaryChip={template.item.category}
+                  title={template.name}
+                  subtitle={template.description}
+                  variant="text-subtitle"
+                  image={thumbnailUrl}
                   onClick={() => {
-                    history.push(`/folders/${folderId}/new-item`);
+                    history.push(
+                      `/folders/${folderId}/new-item?templateId=${template._id}`
+                    );
                   }}
-                >
-                  <AddCircleOutlineIcon className={classes.addIcon} />
-                  <Typography className={classes.noTemplateText}>
-                    No Template
-                  </Typography>
-                </Box>
+                />
               </Grid>
-              {templates.map(template => {
-                let thumbnailUrl = null;
-
-                if (template.item.thumbnails.length > 0) {
-                  thumbnailUrl = `${HOST}/api/files/${template.item.thumbnails[0].filename}`;
-                }
-
-                return (
-                  <Grid
-                    className={classes.gridItem}
-                    item
-                    xs={12}
-                    lg={3}
-                    md={4}
-                    key={template._id}
-                  >
-                    <Card
-                      title={template.name}
-                      subtitle={template.description}
-                      image={thumbnailUrl}
-                      onClick={() => {
-                        history.push(
-                          `/folders/${folderId}/new-item?templateId=${template._id}`
-                        );
-                      }}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </Grid>
+            );
+          })}
         </Grid>
       )}
     </React.Fragment>
