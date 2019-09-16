@@ -4,6 +4,7 @@ import customTheme from './util/theme';
 
 import { HashRouter, Route, Switch } from 'react-router-dom';
 
+import AppBar from './components/UI/AppBar';
 import NewTemplatePage from './containers/NewTemplatePage';
 import MainPage from './containers/MainPage';
 import NewItemPage from './containers/NewItemPage';
@@ -13,6 +14,7 @@ import TemplatesPage from './containers/TemplatesPage';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import Container from '@material-ui/core/Container';
+import Toolbar from '@material-ui/core/Toolbar';
 
 const theme = createMuiTheme({
   ...customTheme
@@ -21,6 +23,8 @@ const theme = createMuiTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
+      <AppBar />
+      <Toolbar />
       <Container maxWidth="lg">
         <HashRouter>
           <Switch>
