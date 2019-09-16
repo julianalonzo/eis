@@ -1,24 +1,48 @@
 import React from 'react';
 
-import Item from './Item';
+import { HOST } from '../../util/constants';
+
+import Card from '../UI/Card';
+
+import Grid from '@material-ui/core/Grid';
 
 import PropTypes from 'prop-types';
 
 export default function Items({ items }) {
   return (
-    <React.Fragment>
+    <Grid container spacing={4}>
       {items.map(item => {
-        return <Item key={item._id} item={item} />;
+        let thumbnailUrl = null;
+
+        if (item.thumbnails.length > 0) {
+          thumbnailUrl = `${HOST}/api/files/${item.thumbnails[0].filename}`;
+        }
+
+        return (
+          <Grid key={item._id} item xs={12} sm={6} md={4}>
+            <Card
+              variant="chips-subtitle"
+              title={item.name}
+              image={thumbnailUrl}
+              secondaryChips={[item.category, item.condition]}
+            />
+          </Grid>
+        );
       })}
-    </React.Fragment>
+    </Grid>
   );
 }
 
 Items.propTypes = {
-  items: PropTypes.arrayOf(Item.propTypes.item).isRequired,
-  onCheckItem: PropTypes.func,
-  onSelectItem: PropTypes.func,
-  onOpenConditionOptions: PropTypes.func
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      thumbnail: PropTypes.string,
+      name: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      condition: PropTypes.string.isRequired
+    }).isRequired
+  )
 };
 
 Items.defaultProps = {
