@@ -16,12 +16,12 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(5)
   },
   header: {
-    fontSize: theme.spacing(6),
-    fontWeight: theme.fontWeight.bolder
+    fontSize: theme.typography.fontSize * 3.5,
+    fontWeight: theme.typography.fontWeightBold
   },
   headerSubText: {
-    fontSize: theme.spacing(2),
-    fontWeight: theme.fontWeight.bold
+    fontSize: theme.typography.fontSize,
+    fontWeight: theme.typography.fontWeightMedium
   },
   illustrationContainer: {
     marginBottom: theme.spacing(3)
