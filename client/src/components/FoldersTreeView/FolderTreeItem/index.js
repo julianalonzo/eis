@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import FolderIcon from '@material-ui/icons/Folder';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Typography from '@material-ui/core/Typography';
@@ -44,8 +46,18 @@ const useStyles = makeStyles(theme => ({
 export default function FolderTreeItem({ folder: { _id, name, children } }) {
   const classes = useStyles();
 
+  let expandIcon = <div style={{ width: '24px' }} />;
+  let collapseIcon = <div style={{ width: '24px' }} />;
+
+  if (children.length > 0) {
+    expandIcon = <ArrowRightIcon />;
+    collapseIcon = <ArrowDropDownIcon />;
+  }
+
   return (
     <TreeItem
+      expandIcon={expandIcon}
+      collapseIcon={collapseIcon}
       nodeId={_id}
       label={
         <div className={classes.labelRoot}>
