@@ -25,7 +25,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <AppBar />
       <Toolbar />
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <HashRouter>
           <Switch>
             <Route path="/templates" component={TemplatesPage} />

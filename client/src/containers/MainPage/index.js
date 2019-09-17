@@ -9,7 +9,30 @@ import Items from '../../components/Items';
 import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
 import FoldersTreeView from '../../components/FoldersTreeView';
 
-import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Drawer from '@material-ui/core/Drawer';
+
+const drawerWidth = 300;
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex'
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0
+  },
+  drawerPaper: {
+    width: drawerWidth,
+    backgroundColor: 'transparent',
+    borderRight: 'none'
+  },
+  content: {
+    flexGrow: 1
+  },
+  toolbar: theme.mixins.toolbar
+}));
 
 function MainPage({
   onFetchItems,
@@ -40,17 +63,25 @@ function MainPage({
     onFetchFolders();
   }, [onFetchItems, onFetchFolders, currentFolder, history]);
 
+  const classes = useStyles();
+
   return (
     <React.Fragment>
       {!(fetchingItems && fetchingFolders) ? (
-        <Grid container spacing={4}>
-          <Grid item md={3}>
+        <div className={classes.root}>
+          <CssBaseline />
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{ paper: classes.drawerPaper }}
+          >
+            <div className={classes.toolbar} />
             <FoldersTreeView
               folders={folders}
               onOpenFolder={openFolderHandler}
             />
-          </Grid>
-          <Grid item xs={12} md={9}>
+          </Drawer>
+          <main className={classes.content}>
             {items.length > 0 ? (
               <Items items={items} />
             ) : (
@@ -65,8 +96,8 @@ function MainPage({
                 }}
               />
             )}
-          </Grid>
-        </Grid>
+          </main>
+        </div>
       ) : (
         <p>Fetching data...</p>
       )}
