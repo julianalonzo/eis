@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
-import EmptyItemsIllustration from '../../assets/illustrations/empty.svg';
 import Items from '../../components/Items';
-import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
 import FoldersTreeView from '../../components/FoldersTreeView';
+import LoadingIndicator from '../../components/UI/LoadingIndicator';
 
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -55,52 +54,42 @@ function MainPage({
   };
 
   useEffect(() => {
-    if (currentFolder) {
+    if (currentFolder !== '') {
       history.push(`/folders/${currentFolder}`);
       onFetchItems(currentFolder);
     }
+  }, [onFetchItems, currentFolder, history]);
 
+  useEffect(() => {
     onFetchFolders();
-  }, [onFetchItems, onFetchFolders, currentFolder, history]);
+  }, [onFetchFolders]);
 
   const classes = useStyles();
 
   return (
     <React.Fragment>
-      {!(fetchingItems && fetchingFolders) ? (
-        <div className={classes.root}>
-          <CssBaseline />
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{ paper: classes.drawerPaper }}
-          >
-            <div className={classes.toolbar} />
+      <div className={classes.root}>
+        <CssBaseline />
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{ paper: classes.drawerPaper }}
+        >
+          <div className={classes.toolbar} />
+          {!fetchingFolders ? (
             <FoldersTreeView
               folders={folders}
               onOpenFolder={openFolderHandler}
+              currentFolder={currentFolder}
             />
-          </Drawer>
-          <main className={classes.content}>
-            {items.length > 0 ? (
-              <Items items={items} />
-            ) : (
-              <IllustrationPlaceholder
-                sourceImage={EmptyItemsIllustration}
-                alt="No Items"
-                primaryText="No items yet"
-                secondaryText="Add items from scratch or from saved templates"
-                action={{
-                  label: 'New Item',
-                  action: openSelectTemplatePageHandler
-                }}
-              />
-            )}
-          </main>
-        </div>
-      ) : (
-        <p>Fetching data...</p>
-      )}
+          ) : (
+            <LoadingIndicator />
+          )}
+        </Drawer>
+        <main className={classes.content}>
+          {!fetchingItems ? <Items items={items} /> : <LoadingIndicator />}
+        </main>
+      </div>
     </React.Fragment>
   );
 }
@@ -108,7 +97,7 @@ function MainPage({
 const mapStateToProps = state => {
   return {
     items: state.item.items,
-    loading: state.item.loading,
+    fetchingItems: state.item.fetchingItems,
     folders: state.folder.folders,
     fetchingFolders: state.folder.fetchingFolders
   };

@@ -4,7 +4,11 @@ import FolderTreeItem from './FolderTreeItem/';
 
 import TreeView from '@material-ui/lab/TreeView';
 
-export default function FoldersTreeView({ folders = [], onOpenFolder }) {
+export default function FoldersTreeView({
+  folders = [],
+  onOpenFolder,
+  currentFolder
+}) {
   return (
     <TreeView
       onNodeToggle={nodeId => {
@@ -12,7 +16,13 @@ export default function FoldersTreeView({ folders = [], onOpenFolder }) {
       }}
     >
       {folders.map(folder => {
-        return <FolderTreeItem key={folder._id} folder={folder} />;
+        return (
+          <FolderTreeItem
+            key={folder._id}
+            folder={folder}
+            isCurrentFolder={currentFolder === folder._id}
+          />
+        );
       })}
     </TreeView>
   );
