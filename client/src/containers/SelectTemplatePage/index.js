@@ -1,45 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
-import { HOST } from '../../util/constants';
+import { HOST } from "../../util/constants";
 
-import { connect } from 'react-redux';
-import * as actions from '../../store/actions';
-import { withRouter } from 'react-router-dom';
+import { connect } from "react-redux";
+import * as actions from "../../store/actions";
+import { withRouter } from "react-router-dom";
 
-import Card from '../../components/UI/Card';
+import Card from "../../components/UI/Card";
+import LoadingIndicator from "../../components/UI/LoadingIndicator";
 
-import { makeStyles } from '@material-ui/styles';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from "@material-ui/styles";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
-  pageHeadingContainer: {
-    marginTop: theme.spacing(4)
-  },
+  pageHeadingContainer: { marginTop: theme.spacing(2) },
   noTemplateCard: {
     padding: theme.spacing(3),
-    height: '120px',
+    height: "120px",
     border: `2px dashed ${theme.palette.primary[400]}`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    cursor: 'pointer',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    cursor: "pointer",
     color: theme.palette.primary[400],
-    borderRadius: '5px',
-    '&:hover': {
+    borderRadius: "5px",
+    "&:hover": {
       color: theme.palette.primary[500],
       borderColor: theme.palette.primary[500]
     }
   },
   addIcon: {
     marginBottom: theme.spacing(1),
-    color: 'inherit'
+    color: "inherit"
   },
   noTemplateText: {
-    color: 'inherit'
+    color: "inherit"
   }
 }));
 
@@ -60,9 +59,7 @@ function SelectTemplatePage({
 
   return (
     <React.Fragment>
-      {fetchingTemplates ? (
-        <p>Fetching templates...</p>
-      ) : (
+      {!fetchingTemplates ? (
         <Grid container spacing={4}>
           <Grid item xs={12} className={classes.pageHeadingContainer}>
             <Typography variant="h5">Choose template</Typography>
@@ -112,6 +109,8 @@ function SelectTemplatePage({
             );
           })}
         </Grid>
+      ) : (
+        <LoadingIndicator />
       )}
     </React.Fragment>
   );
