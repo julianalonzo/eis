@@ -7,10 +7,13 @@ import { withRouter } from 'react-router-dom';
 import Items from '../../components/Items';
 import FoldersTreeView from '../../components/FoldersTreeView';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import MenuListPopper from '../../components/UI/MenuListPopper';
 
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const drawerWidth = 300;
 
@@ -47,6 +50,15 @@ function MainPage({
   history
 }) {
   const [currentFolder, setCurrentFolder] = useState(params.folderId || '');
+  const [itemMoreActionsAnchorEl, setItemMoreActionsAnchorEl] = useState(null);
+
+  const openItemMoreActionsHandler = (event, id) => {
+    setItemMoreActionsAnchorEl(event.currentTarget);
+  };
+
+  const closeItemMoreActionsHandler = () => {
+    setItemMoreActionsAnchorEl(null);
+  };
 
   const openFolderHandler = folderId => {
     setCurrentFolder(folderId);
@@ -91,10 +103,22 @@ function MainPage({
         </Drawer>
         <main className={classes.content}>
           {!fetchingItems ? (
-            <Items
-              items={items}
-              onOpenNewItemHandler={openSelectTemplatePageHandler}
-            />
+            <React.Fragment>
+              <Items
+                items={items}
+                onOpenItemMoreActions={openItemMoreActionsHandler}
+                onOpenNewItemHandler={openSelectTemplatePageHandler}
+              />
+              <MenuListPopper
+                isOpen={Boolean(itemMoreActionsAnchorEl)}
+                anchorEl={itemMoreActionsAnchorEl}
+                onClose={closeItemMoreActionsHandler}
+              >
+                <MenuList>
+                  <MenuItem>Delete Item</MenuItem>
+                </MenuList>
+              </MenuListPopper>
+            </React.Fragment>
           ) : (
             <LoadingIndicator />
           )}

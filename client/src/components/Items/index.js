@@ -1,17 +1,21 @@
-import React from "react";
+import React from 'react';
 
-import { HOST } from "../../util/constants";
+import { HOST } from '../../util/constants';
 
-import EmptyItemsIllustration from "../../assets/illustrations/empty.svg";
+import EmptyItemsIllustration from '../../assets/illustrations/empty.svg';
 
-import Card from "../UI/Card";
-import IllustrationPlaceholder from "../UI/IllustrationPlaceholder";
+import Card from '../UI/Card';
+import IllustrationPlaceholder from '../UI/IllustrationPlaceholder';
 
-import Grid from "@material-ui/core/Grid";
+import Grid from '@material-ui/core/Grid';
 
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-export default function Items({ items = [], onOpenNewItemHandler }) {
+export default function Items({
+  items = [],
+  onOpenItemMoreActions,
+  onOpenNewItemHandler
+}) {
   return (
     <React.Fragment>
       {items.length > 0 ? (
@@ -30,6 +34,9 @@ export default function Items({ items = [], onOpenNewItemHandler }) {
                   title={item.name}
                   image={thumbnailUrl}
                   secondaryChips={[item.category, item.condition]}
+                  onOpenMoreActions={event => {
+                    onOpenItemMoreActions(event, item._id);
+                  }}
                 />
               </Grid>
             );
@@ -41,7 +48,7 @@ export default function Items({ items = [], onOpenNewItemHandler }) {
           alt="No Items"
           title="No items for this folder yet"
           subtitle="Create a new item now"
-          action={{ label: "New Item", action: onOpenNewItemHandler }}
+          action={{ label: 'New Item', action: onOpenNewItemHandler }}
         />
       )}
     </React.Fragment>

@@ -58,6 +58,7 @@ export default function Card({
   variant = 'text-subtitle',
   primaryChip = '',
   secondaryChips = [],
+  onOpenMoreActions,
   ...otherProps
 }) {
   const classes = useStyles();
@@ -66,9 +67,11 @@ export default function Card({
     <Paper className={classes.paper} {...otherProps}>
       <Box className={classes.avatarContainer}>
         <Thumbnail alt={title || ''} src={image} />
-        <IconButton size="small">
-          <MoreHorizIcon />
-        </IconButton>
+        {onOpenMoreActions ? (
+          <IconButton size="small" onClick={onOpenMoreActions}>
+            <MoreHorizIcon />
+          </IconButton>
+        ) : null}
       </Box>
       <Box className={classes.titleContainer}>
         <Typography className={classes.title} noWrap={true} variant="h6">
