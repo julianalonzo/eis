@@ -41,7 +41,7 @@ exports.createItems = async (req, res, next) => {
     const condition = req.body.condition || '';
     const properties = req.body.properties || [];
     const templateThumbnails = req.body.templateThumbnails || [];
-    const fileThumbnails = req.files.fileAttachments || [];
+    const fileThumbnails = req.files.fileThumbnails || [];
     const templateAttachments = req.body.templateAttachments || [];
     const fileAttachments = req.files.fileAttachments || [];
     const folder = req.body.folder || '';
