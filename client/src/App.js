@@ -24,7 +24,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AppBar />
-      <Toolbar />
+      <Toolbar variant="dense" style={{ marginBottom: theme.spacing(4) }} />
       <Container maxWidth="xl">
         <HashRouter>
           <Switch>
