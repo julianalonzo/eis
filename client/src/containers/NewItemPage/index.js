@@ -15,6 +15,7 @@ function NewItemPage({
   fetchingTemplate,
   fetchingTemplateError,
   onCreateItems,
+  history,
   match: { params }
 }) {
   const templateId = getParamValueByKey(location.search, 'templateId');
@@ -63,6 +64,8 @@ function NewItemPage({
     formData.append('folder', folderId);
 
     onCreateItems(formData);
+
+    history.push(`/folders/${folderId}`);
   };
 
   return (
