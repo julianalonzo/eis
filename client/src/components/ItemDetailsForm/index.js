@@ -13,12 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import PropTypes from 'prop-types';
-
 const useStyles = makeStyles(theme => ({
-  row: {
-    marginBottom: theme.spacing(2)
-  },
   thumbnailsFormHeader: {
     display: 'flex',
     alignItems: 'center',
@@ -29,10 +24,10 @@ const useStyles = makeStyles(theme => ({
   },
   mainHeaderText: {
     marginRight: theme.spacing(1),
-    fontWeight: 500
+    fontWeight: theme.typography.fontWeightMedium
   },
   subHeaderText: {
-    fontWeight: 500
+    fontWeight: theme.typography.fontWeightMedium
   },
   buttonIcon: {
     marginRight: theme.spacing(1)
@@ -43,6 +38,13 @@ const useStyles = makeStyles(theme => ({
   },
   noThumbnailText: {
     fontStyle: 'italic'
+  },
+  formInput: {
+    margin: theme.spacing(0, 3, 3, 0),
+    width: '200px'
+  },
+  itemNameField: {
+    width: '300px'
   }
 }));
 
@@ -73,64 +75,49 @@ export default function ItemDetailsForm({
   });
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} className={classes.row}>
-        <Grid container>
-          <Grid item xs={12}>
-            <Field name="itemName" validate={isRequired}>
-              {({ input, meta }) => {
-                return (
-                  <TextField
-                    label="Item Name"
-                    variant="outlined"
-                    fullWidth
-                    {...input}
-                    error={meta.error && meta.touched}
-                    helperText={meta.error && meta.touched ? meta.error : null}
-                  />
-                );
-              }}
-            </Field>
-          </Grid>
-        </Grid>
+    <Grid container>
+      <Grid item xs={12}>
+        <Field name="itemName" validate={isRequired}>
+          {({ input, meta }) => {
+            return (
+              <TextField
+                label="Item Name"
+                variant="outlined"
+                className={`${classes.formInput} ${classes.itemNameField}`}
+                {...input}
+                error={meta.error && meta.touched}
+                helperText={meta.error && meta.touched ? meta.error : null}
+              />
+            );
+          }}
+        </Field>
+        <br />
+        <Field name="itemCategory">
+          {({ input, meta }) => {
+            return (
+              <TextField
+                label="Item Category"
+                variant="outlined"
+                className={classes.formInput}
+                {...input}
+              />
+            );
+          }}
+        </Field>
+        <Field name="itemCondition">
+          {({ input, meta }) => {
+            return (
+              <TextField
+                label="Item Condition"
+                variant="outlined"
+                className={classes.formInput}
+                {...input}
+              />
+            );
+          }}
+        </Field>
       </Grid>
-      <Grid item xs={12} className={classes.row}>
-        <Grid container>
-          <Grid item xs={12}>
-            <Field name="itemCategory">
-              {({ input, meta }) => {
-                return (
-                  <TextField
-                    label="Item Category"
-                    variant="outlined"
-                    fullWidth
-                    {...input}
-                  />
-                );
-              }}
-            </Field>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12} className={classes.row}>
-        <Grid container>
-          <Grid item xs={12}>
-            <Field name="itemCondition">
-              {({ input, meta }) => {
-                return (
-                  <TextField
-                    label="Item Condition"
-                    variant="outlined"
-                    fullWidth
-                    {...input}
-                  />
-                );
-              }}
-            </Field>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12} className={classes.row}>
+      <Grid item xs={12}>
         <div className={classes.thumbnailsFormHeader}>
           <div className={classes.thumbnailsHeaderText}>
             <Typography
@@ -155,41 +142,28 @@ export default function ItemDetailsForm({
           onAddFiles={onAddThumbnails}
           label="thumbnails"
         >
-          <div className={classes.thumbnailsPreviewContainer}>
-            {formattedThumbnails.map((thumbnail, index) => {
-              return (
-                <Thumbnail
-                  key={thumbnail.src}
-                  alt={thumbnail.name}
-                  src={thumbnail.src}
-                  onRemoveThumbnail={() => {
-                    onRemoveThumbnail(index);
-                  }}
-                  marginRight={3}
-                />
-              );
-            })}
-          </div>
+          {formattedThumbnails.length > 0 ? (
+            <div className={classes.thumbnailsPreviewContainer}>
+              {formattedThumbnails.map((thumbnail, index) => {
+                return (
+                  <Thumbnail
+                    key={thumbnail.src}
+                    alt={thumbnail.name}
+                    src={thumbnail.src}
+                    onRemoveThumbnail={() => {
+                      onRemoveThumbnail(index);
+                    }}
+                    marginRight={3}
+                  />
+                );
+              })}
+            </div>
+          ) : null}
         </UploadDropzone>
       </Grid>
     </Grid>
   );
 }
-
-ItemDetailsForm.propTypes = {
-  itemDetails: PropTypes.shape({
-    name: PropTypes.string,
-    category: PropTypes.string,
-    condition: PropTypes.string,
-    thumbnails: PropTypes.arrayOf(
-      PropTypes.shape({
-        alt: PropTypes.string,
-        src: PropTypes.string,
-        variant: PropTypes.string
-      })
-    )
-  })
-};
 
 ItemDetailsForm.defaultProps = {
   thumbnails: []

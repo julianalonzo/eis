@@ -4,43 +4,29 @@ import arrayMutators from 'final-form-arrays';
 import { Form } from 'react-final-form';
 
 import AttachmentsForm from '../AttachmentsForm';
-import AttachmentsIllustration from '../../assets/illustrations/upload.svg';
 import Button from '../UI/Button';
-import IllustrationPlaceholder from '../UI/IllustrationPlaceholder';
+import FormPaper from '../UI/FormPaper';
 import ItemDetailsForm from '../ItemDetailsForm';
-import ItemIllustration from '../../assets/illustrations/item.svg';
 import PropertiesForm from '../PropertiesForm';
-import PropertiesIllustration from '../../assets/illustrations/properties.svg';
 
 import { makeStyles } from '@material-ui/styles';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  formContainer: {
-    padding: theme.spacing(3, 8)
+  pageHeading: {
+    marginBottom: theme.spacing(4)
   },
-  stepperContainer: {
-    marginBottom: theme.spacing(5)
-  },
-  formActionContainer: {
-    marginTop: theme.spacing(8),
+  actionButtonsContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
-    alignItems: 'center'
-  },
-  illustrationContainer: {
-    marginTop: '10vh'
+    margin: theme.spacing(4, 0)
   }
 }));
 
 export default function NewItemForm({ initialValues, onSubmit }) {
   const classes = useStyles();
-
-  const [stepperActiveStep, setStepperActiveStep] = useState(0);
 
   const [formValues] = useState({
     itemName: initialValues.item.name || '',
@@ -85,52 +71,14 @@ export default function NewItemForm({ initialValues, onSubmit }) {
     });
   };
 
-  const formIllustrations = [
-    {
-      title: 'Item details',
-      subtitle: 'Name and describe your item',
-      sourceImage: ItemIllustration
-    },
-    {
-      title: 'Properties',
-      subtitle: 'Add custom fields for your item',
-      sourceImage: PropertiesIllustration
-    },
-    {
-      title: 'Attachments',
-      subtitle: 'Add relevant attachments to your item',
-      sourceImage: AttachmentsIllustration
-    }
-  ];
-
-  const stepLabels = ['Item', 'Properties', 'Attachments'];
-
-  const lastStep = stepLabels.length - 1;
-
-  const nextStepHandler = () => {
-    setStepperActiveStep(previousStepperActiveStep => {
-      return previousStepperActiveStep + 1;
-    });
-  };
-
-  const backStepHandler = () => {
-    setStepperActiveStep(previousStepperActiveStep => {
-      return previousStepperActiveStep - 1;
-    });
-  };
-
   const submitHandler = values => {
-    if (stepperActiveStep === lastStep) {
-      const itemData = {
-        ...values,
-        thumbnails,
-        attachments
-      };
+    const itemData = {
+      ...values,
+      thumbnails,
+      attachments
+    };
 
-      onSubmit(itemData);
-    } else {
-      nextStepHandler();
-    }
+    onSubmit(itemData);
   };
 
   return (
@@ -149,53 +97,46 @@ export default function NewItemForm({ initialValues, onSubmit }) {
         return (
           <form onSubmit={handleSubmit}>
             <Grid container>
-              <Grid item md={6} className={classes.illustrationContainer}>
-                <IllustrationPlaceholder
-                  {...formIllustrations[stepperActiveStep]}
-                  size="lg"
-                  variant="illustration"
-                />
-              </Grid>
-              <Grid item md={6} className={classes.formContainer}>
-                <Box className={classes.stepperContainer}>
-                  <Stepper activeStep={stepperActiveStep} alternativeLabel>
-                    {stepLabels.map(stepLabel => {
-                      return (
-                        <Step key={stepLabel}>
-                          <StepLabel>{stepLabel}</StepLabel>
-                        </Step>
-                      );
-                    })}
-                  </Stepper>
-                </Box>
-                {stepperActiveStep === 0 && (
+              <Grid item md={2} />
+              <Grid item xs={12} md={8} className={classes.formContainer}>
+                <Typography variant="h5" className={classes.pageHeading}>
+                  New Item
+                </Typography>
+                <FormPaper
+                  title="Item Details"
+                  subtitle="Item details describes the general information of an item. You can
+          adopt your own naming system so that items can be distinguished from
+          one another."
+                >
                   <ItemDetailsForm
                     thumbnails={thumbnails}
                     onAddThumbnails={addThumbnailsHandler}
                     onRemoveThumbnail={removeThumbnailHandler}
                   />
-                )}
-                {stepperActiveStep === 1 && (
+                </FormPaper>
+                <FormPaper
+                  title="Properties"
+                  subtitle="Properties are custom fields that describes attributes of an item. For example, a laptop may have properties such as processor, storage capacity, and price. There's no one stopping you from adding any property you like, so go ahead!"
+                >
                   <PropertiesForm onPropertyAdded={push} />
-                )}
-                {stepperActiveStep === 2 && (
+                </FormPaper>
+                <FormPaper
+                  title="Attachments"
+                  subtitle="Attachments are relevant files of an item. These files may be software license, receipts, and images."
+                >
                   <AttachmentsForm
                     attachments={attachments}
                     onAddAttachments={addAttachmentsHandler}
                     onRemoveAttachment={removeAttachmentHandler}
                   />
-                )}
-                <Box className={classes.formActionContainer}>
-                  {stepperActiveStep > 0 && (
-                    <Button onClick={backStepHandler} margin={4}>
-                      Back
-                    </Button>
-                  )}
-                  <Button variant="contained" color="primary" type="submit">
-                    {stepperActiveStep < lastStep ? 'Next' : 'Finish'}
+                </FormPaper>
+                <Box className={classes.actionButtonsContainer}>
+                  <Button type="submit" variant="contained" color="primary">
+                    Save Item
                   </Button>
                 </Box>
               </Grid>
+              <Grid item md={2} />
             </Grid>
           </form>
         );

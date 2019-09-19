@@ -50,11 +50,13 @@ export default function AttachmentsForm({
           onAddFiles={onAddAttachments}
           label="attachments"
         >
-          <Attachments
-            attachments={formattedAttachments}
-            variant="upload"
-            primaryAction={onRemoveAttachment}
-          />
+          {formattedAttachments.length > 0 ? (
+            <Attachments
+              attachments={formattedAttachments}
+              variant="upload"
+              primaryAction={onRemoveAttachment}
+            />
+          ) : null}
         </UploadDropzone>
       </Grid>
     </Grid>
