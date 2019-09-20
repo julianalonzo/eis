@@ -12,6 +12,7 @@ import MenuListPopper from '../../components/UI/MenuListPopper';
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
@@ -86,22 +87,24 @@ function MainPage({
     <React.Fragment>
       <div className={classes.root}>
         <CssBaseline />
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{ paper: classes.drawerPaper }}
-        >
-          <div className={classes.toolbar} />
-          {!fetchingFolders ? (
-            <FoldersTreeView
-              folders={folders}
-              onOpenFolder={openFolderHandler}
-              currentFolder={currentFolder}
-            />
-          ) : (
-            <LoadingIndicator />
-          )}
-        </Drawer>
+        <Hidden smDown>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{ paper: classes.drawerPaper }}
+          >
+            <div className={classes.toolbar} />
+            {!fetchingFolders ? (
+              <FoldersTreeView
+                folders={folders}
+                onOpenFolder={openFolderHandler}
+                currentFolder={currentFolder}
+              />
+            ) : (
+              <LoadingIndicator />
+            )}
+          </Drawer>
+        </Hidden>
         <main className={classes.content}>
           {!fetchingItems ? (
             <React.Fragment>
