@@ -15,7 +15,6 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
-import Typography from '@material-ui/core/Typography';
 
 const drawerWidth = 300;
 
@@ -119,9 +118,7 @@ function MainPage({
                 onClose={closeItemMoreActionsHandler}
               >
                 <MenuList>
-                  <MenuItem dense={true}>
-                    <Typography variant="body2">Delete Item</Typography>
-                  </MenuItem>
+                  <MenuItem>Delete Item</MenuItem>
                 </MenuList>
               </MenuListPopper>
             </React.Fragment>
