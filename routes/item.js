@@ -15,4 +15,6 @@ const createItemsUpload = upload.fields([
 ]);
 router.post('/new', createItemsUpload, itemController.createItems);
 
+router.post('/remove', itemController.removeItem);
+
 module.exports = router;
