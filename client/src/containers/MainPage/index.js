@@ -87,7 +87,7 @@ function MainPage({
     <React.Fragment>
       <div className={classes.root}>
         <CssBaseline />
-        <Hidden>
+        <Hidden smDown>
           <Drawer
             className={classes.drawer}
             variant="permanent"
