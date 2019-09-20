@@ -15,6 +15,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography';
 
 const drawerWidth = 300;
 
@@ -86,7 +87,7 @@ function MainPage({
     <React.Fragment>
       <div className={classes.root}>
         <CssBaseline />
-        <Hidden smDown>
+        <Hidden>
           <Drawer
             className={classes.drawer}
             variant="permanent"
@@ -118,7 +119,9 @@ function MainPage({
                 onClose={closeItemMoreActionsHandler}
               >
                 <MenuList>
-                  <MenuItem>Delete Item</MenuItem>
+                  <MenuItem dense={true}>
+                    <Typography variant="body2">Delete Item</Typography>
+                  </MenuItem>
                 </MenuList>
               </MenuListPopper>
             </React.Fragment>
