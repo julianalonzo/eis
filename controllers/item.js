@@ -11,7 +11,7 @@ exports.getItemsOfFolder = async (req, res, next) => {
     const folderId = req.params.folderId || null;
 
     if (folderId) {
-      const items = await Item.find({ folder: folderId }).populate(
+      const items = await Item.find({ folder: folderId, shown: true }).populate(
         'thumbnails'
       );
 
@@ -59,6 +59,7 @@ exports.createItems = async (req, res, next) => {
 
     const item = new Item({
       ...itemData,
+      shown: true,
       folder: folder
     });
 

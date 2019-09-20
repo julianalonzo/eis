@@ -27,6 +27,10 @@ const itemSchema = new Schema({
       ref: 'File'
     }
   ],
+  shown: {
+    type: Boolean,
+    isRequired: true
+  },
   folder: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Folder'
