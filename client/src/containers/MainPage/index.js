@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
+import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
 import Items from '../../components/Items';
 import FoldersTreeView from '../../components/FoldersTreeView';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import MenuListPopper from '../../components/UI/MenuListPopper';
+import SelectFolderIllustration from '../../assets/illustrations/select_folder.svg';
 
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -83,6 +85,39 @@ function MainPage({
 
   const classes = useStyles();
 
+  let renderedView = (
+    <IllustrationPlaceholder
+      sourceImage={SelectFolderIllustration}
+      title="You haven't selected a folder yet"
+      subtitle="Choose a folder to view its items and subfolders"
+    />
+  );
+
+  if (currentFolder !== '' && !fetchingItems) {
+    renderedView = (
+      <React.Fragment>
+        <Items
+          items={items}
+          onOpenItemMoreActions={openItemMoreActionsHandler}
+          onOpenNewItemHandler={openSelectTemplatePageHandler}
+        />
+        <MenuListPopper
+          isOpen={Boolean(itemMoreActionsAnchorEl)}
+          anchorEl={itemMoreActionsAnchorEl}
+          onClose={closeItemMoreActionsHandler}
+        >
+          <MenuList>
+            <MenuItem dense={true}>
+              <Typography variant="body2">Delete Item</Typography>
+            </MenuItem>
+          </MenuList>
+        </MenuListPopper>
+      </React.Fragment>
+    );
+  } else if (fetchingItems) {
+    renderedView = <LoadingIndicator />;
+  }
+
   return (
     <React.Fragment>
       <div className={classes.root}>
@@ -105,30 +140,7 @@ function MainPage({
             )}
           </Drawer>
         </Hidden>
-        <main className={classes.content}>
-          {!fetchingItems ? (
-            <React.Fragment>
-              <Items
-                items={items}
-                onOpenItemMoreActions={openItemMoreActionsHandler}
-                onOpenNewItemHandler={openSelectTemplatePageHandler}
-              />
-              <MenuListPopper
-                isOpen={Boolean(itemMoreActionsAnchorEl)}
-                anchorEl={itemMoreActionsAnchorEl}
-                onClose={closeItemMoreActionsHandler}
-              >
-                <MenuList>
-                  <MenuItem dense={true}>
-                    <Typography variant="body2">Delete Item</Typography>
-                  </MenuItem>
-                </MenuList>
-              </MenuListPopper>
-            </React.Fragment>
-          ) : (
-            <LoadingIndicator />
-          )}
-        </main>
+        <main className={classes.content}>{renderedView}</main>
       </div>
     </React.Fragment>
   );
