@@ -15,6 +15,7 @@ function NewItemPage({
   fetchingTemplate,
   fetchingTemplateError,
   onCreateItems,
+  creatingItem,
   history,
   match: { params }
 }) {
@@ -28,7 +29,7 @@ function NewItemPage({
     }
   }, [templateId, onFetchTemplate]);
 
-  const createItemsHandler = itemData => {
+  const createItemsHandler = async itemData => {
     const formData = new FormData();
 
     formData.append('name', itemData.itemName || '');
@@ -63,7 +64,7 @@ function NewItemPage({
 
     formData.append('folder', folderId);
 
-    onCreateItems(formData);
+    await onCreateItems(formData);
 
     history.push(`/folders/${folderId}`);
   };
@@ -73,7 +74,11 @@ function NewItemPage({
       {fetchingTemplate ? (
         <p>Fetching template...</p>
       ) : (
-        <NewItemForm initialValues={template} onSubmit={createItemsHandler} />
+        <NewItemForm
+          initialValues={template}
+          onSubmit={createItemsHandler}
+          submitting={creatingItem}
+        />
       )}
     </React.Fragment>
   );
@@ -83,6 +88,7 @@ const mapStateToProps = state => {
   return {
     template: state.template.template,
     fetchingTemplate: state.template.fetchingTemplate,
+    creatingItem: state.item.creatingItem,
     fetchingTemplateError: state.template.fetchingTemplateError
   };
 };

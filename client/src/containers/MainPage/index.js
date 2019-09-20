@@ -85,39 +85,6 @@ function MainPage({
 
   const classes = useStyles();
 
-  let renderedView = (
-    <IllustrationPlaceholder
-      sourceImage={SelectFolderIllustration}
-      title="You haven't selected a folder yet"
-      subtitle="Choose a folder to view its items and subfolders"
-    />
-  );
-
-  if (currentFolder !== '' && !fetchingItems) {
-    renderedView = (
-      <React.Fragment>
-        <Items
-          items={items}
-          onOpenItemMoreActions={openItemMoreActionsHandler}
-          onOpenNewItemHandler={openSelectTemplatePageHandler}
-        />
-        <MenuListPopper
-          isOpen={Boolean(itemMoreActionsAnchorEl)}
-          anchorEl={itemMoreActionsAnchorEl}
-          onClose={closeItemMoreActionsHandler}
-        >
-          <MenuList>
-            <MenuItem dense={true}>
-              <Typography variant="body2">Delete Item</Typography>
-            </MenuItem>
-          </MenuList>
-        </MenuListPopper>
-      </React.Fragment>
-    );
-  } else if (fetchingItems) {
-    renderedView = <LoadingIndicator />;
-  }
-
   return (
     <React.Fragment>
       <div className={classes.root}>
@@ -140,7 +107,35 @@ function MainPage({
             )}
           </Drawer>
         </Hidden>
-        <main className={classes.content}>{renderedView}</main>
+        <main className={classes.content}>
+          {currentFolder !== '' ? (
+            <React.Fragment>
+              <Items
+                items={items}
+                loading={fetchingItems}
+                onOpenItemMoreActions={openItemMoreActionsHandler}
+                onOpenNewItemHandler={openSelectTemplatePageHandler}
+              />
+              <MenuListPopper
+                isOpen={Boolean(itemMoreActionsAnchorEl)}
+                anchorEl={itemMoreActionsAnchorEl}
+                onClose={closeItemMoreActionsHandler}
+              >
+                <MenuList>
+                  <MenuItem dense={true}>
+                    <Typography variant="body2">Delete Item</Typography>
+                  </MenuItem>
+                </MenuList>
+              </MenuListPopper>
+            </React.Fragment>
+          ) : (
+            <IllustrationPlaceholder
+              sourceImage={SelectFolderIllustration}
+              title="You haven't selected a folder yet"
+              subtitle="Choose a folder to view its items and subfolders"
+            />
+          )}
+        </main>
       </div>
     </React.Fragment>
   );

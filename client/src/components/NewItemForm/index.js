@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NewItemForm({ initialValues, onSubmit }) {
+export default function NewItemForm({ initialValues, onSubmit, submitting }) {
   const classes = useStyles();
 
   const [formValues] = useState({
@@ -131,8 +131,13 @@ export default function NewItemForm({ initialValues, onSubmit }) {
                   />
                 </FormPaper>
                 <Box className={classes.actionButtonsContainer}>
-                  <Button type="submit" variant="contained" color="primary">
-                    Save Item
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={submitting}
+                  >
+                    {submitting ? 'Saving Item...' : 'Save Item'}
                   </Button>
                 </Box>
               </Grid>

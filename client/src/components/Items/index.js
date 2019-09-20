@@ -3,6 +3,7 @@ import React from 'react';
 import { HOST } from '../../util/constants';
 
 import EmptyItemsIllustration from '../../assets/illustrations/empty.svg';
+import LoadingIndicator from '../UI/LoadingIndicator';
 
 import Card from '../UI/Card';
 import IllustrationPlaceholder from '../UI/IllustrationPlaceholder';
@@ -13,9 +14,14 @@ import PropTypes from 'prop-types';
 
 export default function Items({
   items = [],
+  loading,
   onOpenItemMoreActions,
   onOpenNewItemHandler
 }) {
+  if (loading) {
+    return <LoadingIndicator />;
+  }
+
   return (
     <React.Fragment>
       {items.length > 0 ? (

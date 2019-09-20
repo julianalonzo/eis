@@ -42,10 +42,10 @@ export const createItemsStart = () => {
   };
 };
 
-export const createItemsSuccess = items => {
+export const createItemsSuccess = item => {
   return {
     type: actionTypes.CREATE_ITEMS_SUCCESS,
-    items: items
+    item: item
   };
 };
 
@@ -56,15 +56,14 @@ export const createItemsFail = error => {
 };
 
 export const createItems = item => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(createItemsStart());
-    axios
-      .post('/api/items/new', item)
-      .then(response => {
-        dispatch(createItemsSuccess(response.data.item));
-      })
-      .catch(error => {
-        dispatch(createItemsFail(error));
-      });
+
+    try {
+      const response = await axios.post('api/items/new', item);
+      dispatch(createItemsSuccess(response.data.item));
+    } catch (err) {
+      dispatch(createItemsFail(err));
+    }
   };
 };

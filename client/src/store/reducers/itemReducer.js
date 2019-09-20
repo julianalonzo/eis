@@ -4,7 +4,7 @@ import { updateObject } from '../utility';
 const initialState = {
   items: [],
   fetchingItems: false,
-  creatingItems: false,
+  creatingItem: false,
   creatingItemsError: null
 };
 
@@ -21,18 +21,18 @@ const fetchItemsFail = (state, action) => {
 };
 
 const createItemsStart = (state, action) => {
-  return updateObject(state, { creatingItems: true });
+  return updateObject(state, { creatingItem: true });
 };
 
 const createItemsFail = (state, action) => {
-  return updateObject(state, { creatingItems: false });
+  return updateObject(state, { creatingItem: false });
 };
 
 const createItemsSuccess = (state, action) => {
-  const newItems = action.items;
+  const newItems = action.item;
 
   return updateObject(state, {
-    creatingItems: false,
+    creatingItem: false,
     items: state.items.concat(newItems)
   });
 };
