@@ -127,12 +127,11 @@ exports.generateItemData = async (
 
 exports.removeItem = async (req, res, next) => {
   const itemId = req.body.itemId;
-
   try {
     if (itemId) {
       await Item.updateOne({ _id: itemId }, { $set: { shown: false } });
 
-      res.status(202).json({ updatedItemId: itemId });
+      res.status(202).json({ removedItemId: itemId });
     }
   } catch (err) {
     console.log(err);

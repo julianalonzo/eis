@@ -67,3 +67,35 @@ export const createItems = item => {
     }
   };
 };
+
+export const removeItemStart = () => {
+  return {
+    type: actionTypes.REMOVE_ITEM_START
+  };
+};
+
+export const removeItemFail = error => {
+  return {
+    type: actionTypes.REMOVE_ITEM_FAIL
+  };
+};
+
+export const removeItemSuccess = removedItemId => {
+  return {
+    type: actionTypes.REMOVE_ITEM_SUCCESS,
+    removedItemId: removedItemId
+  };
+};
+
+export const removeItem = itemId => {
+  return async dispatch => {
+    dispatch(removeItemStart());
+
+    try {
+      const response = await axios.post('api/items/remove', { itemId: itemId });
+      dispatch(removeItemSuccess(response.data.removedItemId));
+    } catch (err) {
+      dispatch(removeItemFail(err));
+    }
+  };
+};

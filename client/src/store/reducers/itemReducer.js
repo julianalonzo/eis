@@ -5,7 +5,9 @@ const initialState = {
   items: [],
   fetchingItems: false,
   creatingItem: false,
-  creatingItemsError: null
+  creatingItemsError: null,
+  removingItem: false,
+  removingItemError: null
 };
 
 const fetchItemsStart = (state, action) => {
@@ -37,6 +39,24 @@ const createItemsSuccess = (state, action) => {
   });
 };
 
+const removeItemStart = (state, action) => {
+  return updateObject(state, { removingItem: true });
+};
+
+const removeItemFail = (state, action) => {
+  return updateObject(state, {
+    removingItem: false,
+    removingItemError: action.error
+  });
+};
+
+const removeItemSuccess = (state, action) => {
+  return updateObject(state, {
+    removingItem: false,
+    items: state.items.filter(item => item._id !== action.removedItemId)
+  });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_ITEMS_START:
@@ -51,6 +71,12 @@ const reducer = (state = initialState, action) => {
       return createItemsSuccess(state, action);
     case actionTypes.CREATE_ITEMS_FAIL:
       return createItemsFail(state, action);
+    case actionTypes.REMOVE_ITEM_START:
+      return removeItemStart(state, action);
+    case actionTypes.REMOVE_ITEM_FAIL:
+      return removeItemFail(state, action);
+    case actionTypes.REMOVE_ITEM_SUCCESS:
+      return removeItemSuccess(state, action);
     default:
       return state;
   }

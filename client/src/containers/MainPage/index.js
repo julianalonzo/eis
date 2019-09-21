@@ -47,6 +47,7 @@ function MainPage({
   onFetchItems,
   items,
   fetchingItems,
+  onRemoveItem,
   onFetchFolders,
   folders,
   fetchingFolders,
@@ -55,13 +56,16 @@ function MainPage({
 }) {
   const [currentFolder, setCurrentFolder] = useState(params.folderId || '');
   const [itemMoreActionsAnchorEl, setItemMoreActionsAnchorEl] = useState(null);
+  const [currentItem, setCurrentItem] = useState(null);
 
   const openItemMoreActionsHandler = (event, id) => {
     setItemMoreActionsAnchorEl(event.currentTarget);
+    setCurrentItem(id);
   };
 
   const closeItemMoreActionsHandler = () => {
     setItemMoreActionsAnchorEl(null);
+    setCurrentItem(null);
   };
 
   const openFolderHandler = folderId => {
@@ -122,7 +126,13 @@ function MainPage({
                 onClose={closeItemMoreActionsHandler}
               >
                 <MenuList>
-                  <MenuItem dense={true}>
+                  <MenuItem
+                    dense={true}
+                    onClick={() => {
+                      onRemoveItem(currentItem);
+                      closeItemMoreActionsHandler();
+                    }}
+                  >
                     <Typography variant="body2">Delete Item</Typography>
                   </MenuItem>
                 </MenuList>
@@ -153,6 +163,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchItems: folderId => dispatch(actions.fetchItems(folderId)),
+    onRemoveItem: itemId => dispatch(actions.removeItem(itemId)),
     onFetchFolders: () => dispatch(actions.fetchFolders())
   };
 };
