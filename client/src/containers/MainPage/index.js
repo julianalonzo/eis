@@ -60,6 +60,8 @@ function MainPage({
   fetchingItems,
   onRemoveItem,
   onFetchFolders,
+  onCreateFolder,
+  creatingFolder,
   folders,
   fetchingFolders,
   match: { params },
@@ -195,6 +197,9 @@ function MainPage({
               <NewFolderDialog
                 isOpen={isNewFolderDialogOpen}
                 onClose={closeNewFolderDialogHandler}
+                currentFolder={currentFolder}
+                submitting={creatingFolder}
+                onSubmit={onCreateFolder}
               />
             </React.Fragment>
           ) : (
@@ -215,7 +220,8 @@ const mapStateToProps = state => {
     items: state.item.items,
     fetchingItems: state.item.fetchingItems,
     folders: state.folder.folders,
-    fetchingFolders: state.folder.fetchingFolders
+    fetchingFolders: state.folder.fetchingFolders,
+    creatingFolder: state.folder.creatingFolder
   };
 };
 
@@ -223,7 +229,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onFetchItems: folderId => dispatch(actions.fetchItems(folderId)),
     onRemoveItem: itemId => dispatch(actions.removeItem(itemId)),
-    onFetchFolders: () => dispatch(actions.fetchFolders())
+    onFetchFolders: () => dispatch(actions.fetchFolders()),
+    onCreateFolder: folder => dispatch(actions.createFolder(folder))
   };
 };
 

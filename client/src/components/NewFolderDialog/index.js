@@ -12,21 +12,40 @@ import DialogTitle from '../UI/Dialog/DialogTitle';
 
 import TextField from '@material-ui/core/TextField';
 
-export default function NewFolderDialog({ isOpen, onClose }) {
+export default function NewFolderDialog({
+  isOpen,
+  onClose,
+  currentFolder,
+  onSubmit,
+  submitting
+}) {
+  const submitHandler = async (folderName, parentId) => {
+    const folderData = {
+      parent: parentId || null,
+      name: folderName
+    };
+
+    await onSubmit(folderData);
+
+    onClose();
+  };
+
   return (
     <Form
-      onSubmit={values => {}}
+      onSubmit={values => {
+        submitHandler(values.folderName, currentFolder || '');
+      }}
       render={({ handleSubmit }) => {
         return (
-          <Dialog
-            isOpen={isOpen}
-            onClose={onClose}
-            maxWidth="sm"
-            fullWidth={true}
-          >
-            <DialogTitle onClose={onClose}>New Folder</DialogTitle>
-            <DialogContent>
-              <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
+            <Dialog
+              isOpen={isOpen}
+              onClose={onClose}
+              maxWidth="sm"
+              fullWidth={true}
+            >
+              <DialogTitle onClose={onClose}>New Folder</DialogTitle>
+              <DialogContent>
                 <Field name="folderName" validate={isRequired}>
                   {({ input, meta }) => {
                     return (
@@ -43,13 +62,17 @@ export default function NewFolderDialog({ isOpen, onClose }) {
                     );
                   }}
                 </Field>
-              </form>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={onClose}>Cancel</Button>
-              <Button color="primary">Create Folder</Button>
-            </DialogActions>
-          </Dialog>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={onClose} disabled={submitting}>
+                  Cancel
+                </Button>
+                <Button type="submit" color="primary" disabled={submitting}>
+                  {submitting ? 'Creating Folder...' : 'Create Folder'}
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </form>
         );
       }}
     />
