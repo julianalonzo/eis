@@ -40,6 +40,36 @@ exports.findChildren = async folderId => {
   return childFoldersWithChildren;
 };
 
+exports.getFolderHierarchy = async (req, res, next) => {
+  const folderHierarchy = [];
+
+  // Push the first folder (i.e., in the request body) to the folder heirarchy
+  folderHierarchy.push(await Folder.findById(req.body.folderId));
+
+  let isFolderHierarchyComplete = false;
+  let currentFolderId = req.body.folderId;
+
+  while (!isFolderHierarchyComplete) {
+    const parentFolder = await this.findParent(currentFolderId);
+
+    if (parentFolder !== null) {
+      folderHierarchy.push(parentFolder);
+      currentFolderId = parentFolder.id;
+    } else {
+      isFolderHierarchyComplete = true;
+    }
+  }
+
+  res.status(200).json({ folderHierarchy: folderHierarchy.reverse() });
+};
+
+exports.findParent = async folderId => {
+  const folder = await Folder.findById(folderId);
+  const folderParent = (await Folder.findById(folder.parent)) || null;
+
+  return folderParent;
+};
+
 exports.createFolder = async (req, res, next) => {
   try {
     const folderName = req.body.name || '';
