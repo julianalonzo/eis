@@ -8,15 +8,18 @@ import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder
 import Items from '../../components/Items';
 import FoldersTreeView from '../../components/FoldersTreeView';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import MainPageToolBar from '../../components/MainPageToolBar';
 import MenuListPopper from '../../components/UI/MenuListPopper';
 import SelectFolderIllustration from '../../assets/illustrations/select_folder.svg';
 
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
+import FolderIcon from '@material-ui/icons/Folder';
 import Hidden from '@material-ui/core/Hidden';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
+import ItemIcon from '@material-ui/icons/Style';
 import Typography from '@material-ui/core/Typography';
 
 const drawerWidth = 300;
@@ -40,6 +43,13 @@ const useStyles = makeStyles(theme => ({
   toolbar: {
     ...theme.mixins.toolbar,
     marginBottom: theme.spacing(2)
+  },
+  menuList: {
+    width: '120px'
+  },
+  menuItemIcon: {
+    color: theme.palette.text.secondary,
+    marginRight: theme.spacing(2)
   }
 }));
 
@@ -55,8 +65,17 @@ function MainPage({
   history
 }) {
   const [currentFolder, setCurrentFolder] = useState(params.folderId || '');
+  const [newButtonAnchorEl, setNewButtonAnchorEl] = useState(null);
   const [itemMoreActionsAnchorEl, setItemMoreActionsAnchorEl] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
+
+  const openNewButtonHandler = event => {
+    setNewButtonAnchorEl(event.currentTarget);
+  };
+
+  const closeNewButtonHandler = event => {
+    setNewButtonAnchorEl(null);
+  };
 
   const openItemMoreActionsHandler = (event, id) => {
     setItemMoreActionsAnchorEl(event.currentTarget);
@@ -114,6 +133,27 @@ function MainPage({
         <main className={classes.content}>
           {currentFolder !== '' ? (
             <React.Fragment>
+              {items.length > 0 ? (
+                <React.Fragment>
+                  <MainPageToolBar onOpenNewButtonMenu={openNewButtonHandler} />
+                  <MenuListPopper
+                    isOpen={Boolean(newButtonAnchorEl)}
+                    anchorEl={newButtonAnchorEl}
+                    onClose={closeNewButtonHandler}
+                  >
+                    <MenuList className={classes.menuList}>
+                      <MenuItem onClick={openSelectTemplatePageHandler}>
+                        <ItemIcon className={classes.menuItemIcon} />
+                        <Typography>Item</Typography>
+                      </MenuItem>
+                      <MenuItem>
+                        <FolderIcon className={classes.menuItemIcon} />
+                        <Typography>Folder</Typography>
+                      </MenuItem>
+                    </MenuList>
+                  </MenuListPopper>
+                </React.Fragment>
+              ) : null}
               <Items
                 items={items}
                 loading={fetchingItems}
