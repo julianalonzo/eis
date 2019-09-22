@@ -21,6 +21,7 @@ import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import ItemIcon from '@material-ui/icons/Style';
 import Typography from '@material-ui/core/Typography';
+import NewFolderDialog from '../../components/NewFolderDialog';
 
 const drawerWidth = 300;
 
@@ -68,6 +69,7 @@ function MainPage({
   const [newButtonAnchorEl, setNewButtonAnchorEl] = useState(null);
   const [itemMoreActionsAnchorEl, setItemMoreActionsAnchorEl] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
+  const [isNewFolderDialogOpen, setIsNewFolderDialogOpen] = useState(false);
 
   const openNewButtonHandler = event => {
     setNewButtonAnchorEl(event.currentTarget);
@@ -93,6 +95,14 @@ function MainPage({
 
   const openSelectTemplatePageHandler = () => {
     history.push(`/folders/${currentFolder}/select-template`);
+  };
+
+  const openNewFolderDialogHandler = () => {
+    setIsNewFolderDialogOpen(true);
+  };
+
+  const closeNewFolderDialogHandler = () => {
+    setIsNewFolderDialogOpen(false);
   };
 
   useEffect(() => {
@@ -146,7 +156,12 @@ function MainPage({
                         <ItemIcon className={classes.menuItemIcon} />
                         <Typography>Item</Typography>
                       </MenuItem>
-                      <MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          closeNewButtonHandler();
+                          openNewFolderDialogHandler();
+                        }}
+                      >
                         <FolderIcon className={classes.menuItemIcon} />
                         <Typography>Folder</Typography>
                       </MenuItem>
@@ -177,6 +192,10 @@ function MainPage({
                   </MenuItem>
                 </MenuList>
               </MenuListPopper>
+              <NewFolderDialog
+                isOpen={isNewFolderDialogOpen}
+                onClose={closeNewFolderDialogHandler}
+              />
             </React.Fragment>
           ) : (
             <IllustrationPlaceholder
