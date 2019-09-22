@@ -35,3 +35,35 @@ export const fetchFolders = () => {
       });
   };
 };
+
+export const createFolderStart = () => {
+  return {
+    type: actionTypes.CREATE_FOLDER_START
+  };
+};
+
+export const createFolderSuccess = folder => {
+  return {
+    type: actionTypes.CREATE_FOLDER_SUCCESS,
+    folder: folder
+  };
+};
+
+export const createFolderFail = error => {
+  return {
+    type: actionTypes.CREATE_FOLDER_FAIL
+  };
+};
+
+export const createFolder = folder => {
+  return async dispatch => {
+    dispatch(createFolderStart());
+
+    try {
+      const response = await axios.post('api/folders/new', folder);
+      dispatch(createFolderSuccess(response.data.folder));
+    } catch (err) {
+      dispatch(createFolderFail(err));
+    }
+  };
+};

@@ -1,9 +1,11 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
+import { createFolderFail } from '../actions/folder';
 
 const initialState = {
   folders: [],
-  fetchingFolders: false
+  fetchingFolders: false,
+  creatingFolder: false
 };
 
 const fetchFoldersStart = (state, action) => {
@@ -21,6 +23,15 @@ const fetchFoldersFail = (state, action) => {
   return updateObject(state, { fetchingFolders: false });
 };
 
+const createFolderStart = (state, action) => {
+  return updateObject(state, { creatingFolder: true });
+};
+
+const createFolderSuccess = (state, action) => {
+  // @TODO Update folder state
+  return updateObject(state, { creatingFolder: false });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_FOLDERS_START:
@@ -29,6 +40,12 @@ const reducer = (state = initialState, action) => {
       return fetchFoldersSuccess(state, action);
     case actionTypes.FETCH_FOLDERS_FAIL:
       return fetchFoldersFail(state, action);
+    case actionTypes.CREATE_FOLDER_START:
+      return createFolderStart(state, action);
+    case actionTypes.CREATE_FOLDER_SUCCESS:
+      return createFolderSuccess(state, action);
+    case actionTypes.CREATE_FOLDER_FAIL:
+      return createFolderFail(state, action);
     default:
       return state;
   }
