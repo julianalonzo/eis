@@ -150,10 +150,12 @@ function MainPage({
                     onClose={closeNewButtonHandler}
                   >
                     <MenuList className={classes.menuList}>
-                      <MenuItem onClick={openSelectTemplatePageHandler}>
-                        <ItemIcon className={classes.menuItemIcon} />
-                        <Typography>Item</Typography>
-                      </MenuItem>
+                      {currentFolder !== '' ? (
+                        <MenuItem onClick={openSelectTemplatePageHandler}>
+                          <ItemIcon className={classes.menuItemIcon} />
+                          <Typography>Item</Typography>
+                        </MenuItem>
+                      ) : null}
                       <MenuItem
                         onClick={() => {
                           closeNewButtonHandler();
@@ -165,29 +167,33 @@ function MainPage({
                       </MenuItem>
                     </MenuList>
                   </MenuListPopper>
-                  <Items
-                    items={items}
-                    loading={fetchingItems}
-                    onOpenItemMoreActions={openItemMoreActionsHandler}
-                    onOpenNewItemHandler={openSelectTemplatePageHandler}
-                  />
-                  <MenuListPopper
-                    isOpen={Boolean(itemMoreActionsAnchorEl)}
-                    anchorEl={itemMoreActionsAnchorEl}
-                    onClose={closeItemMoreActionsHandler}
-                  >
-                    <MenuList>
-                      <MenuItem
-                        dense={true}
-                        onClick={() => {
-                          onRemoveItem(currentItem);
-                          closeItemMoreActionsHandler();
-                        }}
+                  {currentFolder !== '' ? (
+                    <React.Fragment>
+                      <Items
+                        items={items}
+                        loading={fetchingItems}
+                        onOpenItemMoreActions={openItemMoreActionsHandler}
+                        onOpenNewItemHandler={openSelectTemplatePageHandler}
+                      />
+                      <MenuListPopper
+                        isOpen={Boolean(itemMoreActionsAnchorEl)}
+                        anchorEl={itemMoreActionsAnchorEl}
+                        onClose={closeItemMoreActionsHandler}
                       >
-                        <Typography variant="body2">Delete Item</Typography>
-                      </MenuItem>
-                    </MenuList>
-                  </MenuListPopper>
+                        <MenuList>
+                          <MenuItem
+                            dense={true}
+                            onClick={() => {
+                              onRemoveItem(currentItem);
+                              closeItemMoreActionsHandler();
+                            }}
+                          >
+                            <Typography variant="body2">Delete Item</Typography>
+                          </MenuItem>
+                        </MenuList>
+                      </MenuListPopper>
+                    </React.Fragment>
+                  ) : null}
                 </React.Fragment>
               </main>
             </div>
@@ -202,13 +208,15 @@ function MainPage({
               }}
             />
           )}
-          <NewFolderDialog
-            isOpen={isNewFolderDialogOpen}
-            onClose={closeNewFolderDialogHandler}
-            currentFolder={currentFolder}
-            submitting={creatingFolder}
-            onSubmit={onCreateFolder}
-          />
+          {isNewFolderDialogOpen ? (
+            <NewFolderDialog
+              isOpen={isNewFolderDialogOpen}
+              onClose={closeNewFolderDialogHandler}
+              currentFolder={currentFolder}
+              submitting={creatingFolder}
+              onSubmit={onCreateFolder}
+            />
+          ) : null}
         </React.Fragment>
       ) : (
         <LoadingIndicator />
