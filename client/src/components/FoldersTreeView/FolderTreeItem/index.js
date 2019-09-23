@@ -43,11 +43,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function FolderTreeItem({ folder: { _id, name, children } }) {
+export default function FolderTreeItem({ folders, folder: { _id, name } }) {
   const classes = useStyles();
 
   let expandIcon = <div style={{ width: '24px' }} />;
   let collapseIcon = <div style={{ width: '24px' }} />;
+
+  const children = folders.filter(f => f.parent === _id);
 
   if (children.length > 0) {
     expandIcon = <ArrowRightIcon />;
@@ -78,7 +80,9 @@ export default function FolderTreeItem({ folder: { _id, name, children } }) {
       }}
     >
       {children.map(child => {
-        return <FolderTreeItem key={child._id} folder={child} />;
+        return (
+          <FolderTreeItem key={child._id} folders={folders} folder={child} />
+        );
       })}
     </TreeItem>
   );

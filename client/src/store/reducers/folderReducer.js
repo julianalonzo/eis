@@ -28,8 +28,10 @@ const createFolderStart = (state, action) => {
 };
 
 const createFolderSuccess = (state, action) => {
-  // @TODO Update folder state
-  return updateObject(state, { creatingFolder: false });
+  return updateObject(state, {
+    creatingFolder: false,
+    folders: state.folders.concat(action.folder)
+  });
 };
 
 const reducer = (state = initialState, action) => {

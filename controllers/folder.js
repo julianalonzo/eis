@@ -2,21 +2,9 @@ const Folder = require('../models/folder');
 
 exports.getFolders = async (req, res, next) => {
   try {
-    const folders = await Folder.find({ parent: null });
+    const folders = await Folder.find();
 
-    const foldersWithChildren = [];
-    for (const folder of folders) {
-      const folderWithChildren = {
-        _id: folder.id,
-        name: folder.name,
-        parent: folder.parent,
-        children: (await this.findChildren(folder.id)) || []
-      };
-
-      foldersWithChildren.push(folderWithChildren);
-    }
-
-    res.status(200).json({ folders: foldersWithChildren });
+    res.status(200).json({ folders: folders });
   } catch (err) {
     console.log(err);
   }
