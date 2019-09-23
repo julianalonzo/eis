@@ -12,12 +12,7 @@ import Grid from '@material-ui/core/Grid';
 
 import PropTypes from 'prop-types';
 
-export default function Items({
-  items = [],
-  loading,
-  onOpenItemMoreActions,
-  onOpenNewItemHandler
-}) {
+export default function Items({ items = [], loading, onOpenItemMoreActions }) {
   if (loading) {
     return <LoadingIndicator />;
   }
@@ -54,7 +49,6 @@ export default function Items({
           alt="No Items"
           title="No items for this folder yet"
           subtitle="Create a new item now"
-          action={{ label: 'New Item', action: onOpenNewItemHandler }}
         />
       )}
     </React.Fragment>

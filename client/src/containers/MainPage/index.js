@@ -10,7 +10,7 @@ import FoldersTreeView from '../../components/FoldersTreeView';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import MainPageToolBar from '../../components/MainPageToolBar';
 import MenuListPopper from '../../components/UI/MenuListPopper';
-import SelectFolderIllustration from '../../assets/illustrations/select_folder.svg';
+import NoFoldersllustration from '../../assets/illustrations/select_folder.svg';
 
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -122,30 +122,26 @@ function MainPage({
 
   return (
     <React.Fragment>
-      <div className={classes.root}>
-        <CssBaseline />
-        <Hidden smDown>
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{ paper: classes.drawerPaper }}
-          >
-            <div className={classes.toolbar} />
-            {!fetchingFolders ? (
-              <FoldersTreeView
-                folders={folders}
-                onOpenFolder={openFolderHandler}
-                currentFolder={currentFolder}
-              />
-            ) : (
-              <LoadingIndicator />
-            )}
-          </Drawer>
-        </Hidden>
-        <main className={classes.content}>
-          {currentFolder !== '' ? (
-            <React.Fragment>
-              {items.length > 0 ? (
+      {!fetchingFolders ? (
+        <React.Fragment>
+          {folders.length > 0 ? (
+            <div className={classes.root}>
+              <CssBaseline />
+              <Hidden smDown>
+                <Drawer
+                  className={classes.drawer}
+                  variant="permanent"
+                  classes={{ paper: classes.drawerPaper }}
+                >
+                  <div className={classes.toolbar} />
+                  <FoldersTreeView
+                    folders={folders}
+                    onOpenFolder={openFolderHandler}
+                    currentFolder={currentFolder}
+                  />
+                </Drawer>
+              </Hidden>
+              <main className={classes.content}>
                 <React.Fragment>
                   <MainPageToolBar onOpenNewButtonMenu={openNewButtonHandler} />
                   <MenuListPopper
@@ -169,48 +165,54 @@ function MainPage({
                       </MenuItem>
                     </MenuList>
                   </MenuListPopper>
-                </React.Fragment>
-              ) : null}
-              <Items
-                items={items}
-                loading={fetchingItems}
-                onOpenItemMoreActions={openItemMoreActionsHandler}
-                onOpenNewItemHandler={openSelectTemplatePageHandler}
-              />
-              <MenuListPopper
-                isOpen={Boolean(itemMoreActionsAnchorEl)}
-                anchorEl={itemMoreActionsAnchorEl}
-                onClose={closeItemMoreActionsHandler}
-              >
-                <MenuList>
-                  <MenuItem
-                    dense={true}
-                    onClick={() => {
-                      onRemoveItem(currentItem);
-                      closeItemMoreActionsHandler();
-                    }}
+                  <Items
+                    items={items}
+                    loading={fetchingItems}
+                    onOpenItemMoreActions={openItemMoreActionsHandler}
+                    onOpenNewItemHandler={openSelectTemplatePageHandler}
+                  />
+                  <MenuListPopper
+                    isOpen={Boolean(itemMoreActionsAnchorEl)}
+                    anchorEl={itemMoreActionsAnchorEl}
+                    onClose={closeItemMoreActionsHandler}
                   >
-                    <Typography variant="body2">Delete Item</Typography>
-                  </MenuItem>
-                </MenuList>
-              </MenuListPopper>
-              <NewFolderDialog
-                isOpen={isNewFolderDialogOpen}
-                onClose={closeNewFolderDialogHandler}
-                currentFolder={currentFolder}
-                submitting={creatingFolder}
-                onSubmit={onCreateFolder}
-              />
-            </React.Fragment>
+                    <MenuList>
+                      <MenuItem
+                        dense={true}
+                        onClick={() => {
+                          onRemoveItem(currentItem);
+                          closeItemMoreActionsHandler();
+                        }}
+                      >
+                        <Typography variant="body2">Delete Item</Typography>
+                      </MenuItem>
+                    </MenuList>
+                  </MenuListPopper>
+                </React.Fragment>
+              </main>
+            </div>
           ) : (
             <IllustrationPlaceholder
-              sourceImage={SelectFolderIllustration}
-              title="You haven't selected a folder yet"
-              subtitle="Choose a folder to view its items and subfolders"
+              title="No folders yet"
+              subtitle="Create your first folder to start using EIS"
+              sourceImage={NoFoldersllustration}
+              action={{
+                label: 'New Folder',
+                action: openNewFolderDialogHandler
+              }}
             />
           )}
-        </main>
-      </div>
+          <NewFolderDialog
+            isOpen={isNewFolderDialogOpen}
+            onClose={closeNewFolderDialogHandler}
+            currentFolder={currentFolder}
+            submitting={creatingFolder}
+            onSubmit={onCreateFolder}
+          />
+        </React.Fragment>
+      ) : (
+        <LoadingIndicator />
+      )}
     </React.Fragment>
   );
 }
