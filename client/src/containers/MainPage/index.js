@@ -55,7 +55,7 @@ function MainPage({
   match: { params },
   history
 }) {
-  const [currentFolder, setCurrentFolder] = useState(params.folderId || '');
+  const [currentFolder, setCurrentFolder] = useState(params.folderId || null);
   const [folderChildren, setFolderChildren] = useState(
     folders.filter(folder => folder.parent === currentFolder) || []
   );
@@ -110,10 +110,13 @@ function MainPage({
   }, [onFetchFolders]);
 
   useEffect(() => {
-    if (currentFolder !== '') {
+    if (currentFolder) {
       history.push(`/folders/${currentFolder}`);
       setFolderChildren(getFolderChildren(currentFolder));
       onFetchItems(currentFolder);
+    } else {
+      history.push('/');
+      setFolderChildren(getFolderChildren(currentFolder));
     }
   }, [
     onFetchItems,
@@ -131,15 +134,24 @@ function MainPage({
 
   if (folders.length === 0) {
     return (
-      <IllustrationPlaceholder
-        title="No folders yet"
-        subtitle="Create your first folder to start using EIS"
-        sourceImage={NoFoldersllustration}
-        action={{
-          label: 'New Folder',
-          action: openNewFolderDialogHandler
-        }}
-      />
+      <React.Fragment>
+        <IllustrationPlaceholder
+          title="No folders yet"
+          subtitle="Create your first folder to start using EIS"
+          sourceImage={NoFoldersllustration}
+          action={{
+            label: 'New Folder',
+            action: openNewFolderDialogHandler
+          }}
+        />
+        <NewFolderDialog
+          isOpen={isNewFolderDialogOpen}
+          onClose={closeNewFolderDialogHandler}
+          currentFolder={currentFolder}
+          submitting={creatingFolder}
+          onSubmit={onCreateFolder}
+        />
+      </React.Fragment>
     );
   }
 
@@ -162,41 +174,38 @@ function MainPage({
           </Drawer>
         </Hidden>
         <main className={classes.content}>
-          <React.Fragment>
-            <MainPageToolBar onOpenNewButtonMenu={openNewButtonHandler} />
-            <NewButtonMenuListPopper
-              isOpen={Boolean(newButtonAnchorEl)}
-              anchorEl={newButtonAnchorEl}
-              onClose={closeNewButtonHandler}
+          <MainPageToolBar onOpenNewButtonMenu={openNewButtonHandler} />
+          <NewButtonMenuListPopper
+            isOpen={Boolean(newButtonAnchorEl)}
+            anchorEl={newButtonAnchorEl}
+            onClose={closeNewButtonHandler}
+            currentFolder={currentFolder}
+            onOpenSelectTemplatePage={openSelectTemplatePageHandler}
+            onOpenNewFolderDialog={openNewFolderDialogHandler}
+          />
+          {!fetchingItems ? (
+            <MainPageContent
+              folders={folderChildren}
               currentFolder={currentFolder}
-              onOpenSelectTemplatePage={openSelectTemplatePageHandler}
-              onOpenNewFolderDialog={openNewFolderDialogHandler}
+              items={items}
+              onOpenItemMoreActions={openItemMoreActionsHandler}
+              itemMoreActionsAnchorEl={itemMoreActionsAnchorEl}
+              onCloseItemMoreActions={closeItemMoreActionsHandler}
+              currentItem={currentItem}
+              onRemoveItem={onRemoveItem}
             />
-            {!fetchingItems ? (
-              <MainPageContent
-                folders={folderChildren}
-                items={items}
-                onOpenItemMoreActions={openItemMoreActionsHandler}
-                itemMoreActionsAnchorEl={itemMoreActionsAnchorEl}
-                onCloseItemMoreActions={closeItemMoreActionsHandler}
-                currentItem={currentItem}
-                onRemoveItem={onRemoveItem}
-              />
-            ) : (
-              <LoadingIndicator label="Fetching items..." />
-            )}
-          </React.Fragment>
+          ) : (
+            <LoadingIndicator label="Fetching items..." />
+          )}
         </main>
       </div>
-      {isNewFolderDialogOpen ? (
-        <NewFolderDialog
-          isOpen={isNewFolderDialogOpen}
-          onClose={closeNewFolderDialogHandler}
-          currentFolder={currentFolder}
-          submitting={creatingFolder}
-          onSubmit={onCreateFolder}
-        />
-      ) : null}
+      <NewFolderDialog
+        isOpen={isNewFolderDialogOpen}
+        onClose={closeNewFolderDialogHandler}
+        currentFolder={currentFolder}
+        submitting={creatingFolder}
+        onSubmit={onCreateFolder}
+      />
     </React.Fragment>
   );
 }

@@ -34,8 +34,8 @@ function App() {
               path="/folders/:folderId/select-template"
               component={SelectTemplatePage}
             />
+            <Route exact path="/folders/:folderId" component={MainPage} />
             <Route path="/folders/:folderId/new-item" component={NewItemPage} />
-            <Route path="/folders/:folderId" component={MainPage} />
             <Route exact path="/" component={MainPage} />
           </Switch>
         </HashRouter>
