@@ -25,7 +25,7 @@ export default function LoadingIndicator({ label = '' }) {
   const [isLoadingDisplayed, setIsLoadingDisplayed] = useState(false);
   const timer = setTimeout(() => {
     setIsLoadingDisplayed(true);
-  }, 500);
+  }, 250);
 
   useEffect(() => {
     return () => {
