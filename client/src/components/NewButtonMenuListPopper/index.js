@@ -32,7 +32,7 @@ export default function NewButtonMenuListPopper({
   return (
     <MenuListPopper isOpen={isOpen} anchorEl={anchorEl} onClose={onClose}>
       <MenuList className={classes.menuList}>
-        {currentFolder !== '' ? (
+        {currentFolder ? (
           <MenuItem onClick={onOpenSelectTemplatePage}>
             <ItemIcon className={classes.menuItemIcon} />
             <Typography>Item</Typography>

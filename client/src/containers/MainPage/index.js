@@ -144,13 +144,15 @@ function MainPage({
             action: openNewFolderDialogHandler
           }}
         />
-        <NewFolderDialog
-          isOpen={isNewFolderDialogOpen}
-          onClose={closeNewFolderDialogHandler}
-          currentFolder={currentFolder}
-          submitting={creatingFolder}
-          onSubmit={onCreateFolder}
-        />
+        {isNewFolderDialogOpen ? (
+          <NewFolderDialog
+            isOpen={isNewFolderDialogOpen}
+            onClose={closeNewFolderDialogHandler}
+            currentFolder={currentFolder}
+            submitting={creatingFolder}
+            onSubmit={onCreateFolder}
+          />
+        ) : null}
       </React.Fragment>
     );
   }
@@ -199,13 +201,15 @@ function MainPage({
           )}
         </main>
       </div>
-      <NewFolderDialog
-        isOpen={isNewFolderDialogOpen}
-        onClose={closeNewFolderDialogHandler}
-        currentFolder={currentFolder}
-        submitting={creatingFolder}
-        onSubmit={onCreateFolder}
-      />
+      {isNewFolderDialogOpen ? (
+        <NewFolderDialog
+          isOpen={isNewFolderDialogOpen}
+          onClose={closeNewFolderDialogHandler}
+          currentFolder={currentFolder}
+          submitting={creatingFolder}
+          onSubmit={onCreateFolder}
+        />
+      ) : null}
     </React.Fragment>
   );
 }
