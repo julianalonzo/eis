@@ -21,12 +21,7 @@ export default function MainPageToolBar({ onOpenNewButtonMenu }) {
 
   return (
     <Grid container justify="flex-end" spacing={4} className={classes.root}>
-      <Grid
-        item
-        md={2}
-        justify="flex-end"
-        className={classes.primaryActionGrid}
-      >
+      <Grid item md={2} className={classes.primaryActionGrid}>
         <Button
           color="primary"
           variant="contained"

@@ -1,27 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
 import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
-import Items from '../../components/Items';
 import FoldersTreeView from '../../components/FoldersTreeView';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import MainPageContent from '../../components/MainPageContent';
 import MainPageToolBar from '../../components/MainPageToolBar';
-import MenuListPopper from '../../components/UI/MenuListPopper';
+import NewButtonMenuListPopper from '../../components/NewButtonMenuListPopper';
+import NewFolderDialog from '../../components/NewFolderDialog';
 import NoFoldersllustration from '../../assets/illustrations/select_folder.svg';
 
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-import FolderIcon from '@material-ui/icons/Folder';
 import Hidden from '@material-ui/core/Hidden';
-import MenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
-import ItemIcon from '@material-ui/icons/Style';
-import Typography from '@material-ui/core/Typography';
-import NewFolderDialog from '../../components/NewFolderDialog';
 
 const drawerWidth = 300;
 
@@ -44,13 +39,6 @@ const useStyles = makeStyles(theme => ({
   toolbar: {
     ...theme.mixins.toolbar,
     marginBottom: theme.spacing(2)
-  },
-  menuList: {
-    width: '120px'
-  },
-  menuItemIcon: {
-    color: theme.palette.text.secondary,
-    marginRight: theme.spacing(2)
   }
 }));
 
@@ -68,6 +56,9 @@ function MainPage({
   history
 }) {
   const [currentFolder, setCurrentFolder] = useState(params.folderId || '');
+  const [folderChildren, setFolderChildren] = useState(
+    folders.filter(folder => folder.parent === currentFolder) || []
+  );
   const [newButtonAnchorEl, setNewButtonAnchorEl] = useState(null);
   const [itemMoreActionsAnchorEl, setItemMoreActionsAnchorEl] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
@@ -107,120 +98,105 @@ function MainPage({
     setIsNewFolderDialogOpen(false);
   };
 
-  useEffect(() => {
-    if (currentFolder !== '') {
-      history.push(`/folders/${currentFolder}`);
-      onFetchItems(currentFolder);
-    }
-  }, [onFetchItems, currentFolder, history]);
+  const getFolderChildren = useCallback(
+    folderId => {
+      return folders.filter(folder => folder.parent === folderId);
+    },
+    [folders]
+  );
 
   useEffect(() => {
     onFetchFolders();
   }, [onFetchFolders]);
 
+  useEffect(() => {
+    if (currentFolder !== '') {
+      history.push(`/folders/${currentFolder}`);
+      setFolderChildren(getFolderChildren(currentFolder));
+      onFetchItems(currentFolder);
+    }
+  }, [
+    onFetchItems,
+    currentFolder,
+    setFolderChildren,
+    getFolderChildren,
+    history
+  ]);
+
   const classes = useStyles();
+
+  if (fetchingFolders) {
+    return <LoadingIndicator />;
+  }
+
+  if (folders.length === 0) {
+    return (
+      <IllustrationPlaceholder
+        title="No folders yet"
+        subtitle="Create your first folder to start using EIS"
+        sourceImage={NoFoldersllustration}
+        action={{
+          label: 'New Folder',
+          action: openNewFolderDialogHandler
+        }}
+      />
+    );
+  }
 
   return (
     <React.Fragment>
-      {!fetchingFolders ? (
-        <React.Fragment>
-          {folders.length > 0 ? (
-            <div className={classes.root}>
-              <CssBaseline />
-              <Hidden smDown>
-                <Drawer
-                  className={classes.drawer}
-                  variant="permanent"
-                  classes={{ paper: classes.drawerPaper }}
-                >
-                  <div className={classes.toolbar} />
-                  <FoldersTreeView
-                    folders={folders}
-                    onOpenFolder={openFolderHandler}
-                    currentFolder={currentFolder}
-                  />
-                </Drawer>
-              </Hidden>
-              <main className={classes.content}>
-                <React.Fragment>
-                  <MainPageToolBar onOpenNewButtonMenu={openNewButtonHandler} />
-                  <MenuListPopper
-                    isOpen={Boolean(newButtonAnchorEl)}
-                    anchorEl={newButtonAnchorEl}
-                    onClose={closeNewButtonHandler}
-                  >
-                    <MenuList className={classes.menuList}>
-                      {currentFolder !== '' ? (
-                        <MenuItem onClick={openSelectTemplatePageHandler}>
-                          <ItemIcon className={classes.menuItemIcon} />
-                          <Typography>Item</Typography>
-                        </MenuItem>
-                      ) : null}
-                      <MenuItem
-                        onClick={() => {
-                          closeNewButtonHandler();
-                          openNewFolderDialogHandler();
-                        }}
-                      >
-                        <FolderIcon className={classes.menuItemIcon} />
-                        <Typography>Folder</Typography>
-                      </MenuItem>
-                    </MenuList>
-                  </MenuListPopper>
-                  {currentFolder !== '' ? (
-                    <React.Fragment>
-                      <Items
-                        items={items}
-                        loading={fetchingItems}
-                        onOpenItemMoreActions={openItemMoreActionsHandler}
-                        onOpenNewItemHandler={openSelectTemplatePageHandler}
-                      />
-                      <MenuListPopper
-                        isOpen={Boolean(itemMoreActionsAnchorEl)}
-                        anchorEl={itemMoreActionsAnchorEl}
-                        onClose={closeItemMoreActionsHandler}
-                      >
-                        <MenuList>
-                          <MenuItem
-                            dense={true}
-                            onClick={() => {
-                              onRemoveItem(currentItem);
-                              closeItemMoreActionsHandler();
-                            }}
-                          >
-                            <Typography variant="body2">Delete Item</Typography>
-                          </MenuItem>
-                        </MenuList>
-                      </MenuListPopper>
-                    </React.Fragment>
-                  ) : null}
-                </React.Fragment>
-              </main>
-            </div>
-          ) : (
-            <IllustrationPlaceholder
-              title="No folders yet"
-              subtitle="Create your first folder to start using EIS"
-              sourceImage={NoFoldersllustration}
-              action={{
-                label: 'New Folder',
-                action: openNewFolderDialogHandler
-              }}
-            />
-          )}
-          {isNewFolderDialogOpen ? (
-            <NewFolderDialog
-              isOpen={isNewFolderDialogOpen}
-              onClose={closeNewFolderDialogHandler}
+      <div className={classes.root}>
+        <CssBaseline />
+        <Hidden smDown>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{ paper: classes.drawerPaper }}
+          >
+            <div className={classes.toolbar} />
+            <FoldersTreeView
+              folders={folders}
+              onOpenFolder={openFolderHandler}
               currentFolder={currentFolder}
-              submitting={creatingFolder}
-              onSubmit={onCreateFolder}
             />
-          ) : null}
-        </React.Fragment>
-      ) : (
-        <LoadingIndicator />
-      )}
+          </Drawer>
+        </Hidden>
+        <main className={classes.content}>
+          <React.Fragment>
+            <MainPageToolBar onOpenNewButtonMenu={openNewButtonHandler} />
+            <NewButtonMenuListPopper
+              isOpen={Boolean(newButtonAnchorEl)}
+              anchorEl={newButtonAnchorEl}
+              onClose={closeNewButtonHandler}
+              currentFolder={currentFolder}
+              onOpenSelectTemplatePage={openSelectTemplatePageHandler}
+              onOpenNewFolderDialog={openNewFolderDialogHandler}
+            />
+            {!fetchingItems ? (
+              <MainPageContent
+                folders={folderChildren}
+                items={items}
+                onOpenItemMoreActions={openItemMoreActionsHandler}
+                itemMoreActionsAnchorEl={itemMoreActionsAnchorEl}
+                onCloseItemMoreActions={closeItemMoreActionsHandler}
+                currentItem={currentItem}
+                onRemoveItem={onRemoveItem}
+              />
+            ) : (
+              <LoadingIndicator label="Fetching items..." />
+            )}
+          </React.Fragment>
+        </main>
+      </div>
+      {isNewFolderDialogOpen ? (
+        <NewFolderDialog
+          isOpen={isNewFolderDialogOpen}
+          onClose={closeNewFolderDialogHandler}
+          currentFolder={currentFolder}
+          submitting={creatingFolder}
+          onSubmit={onCreateFolder}
+        />
+      ) : null}
     </React.Fragment>
   );
 }
