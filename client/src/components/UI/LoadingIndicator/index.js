@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -13,6 +13,21 @@ const useStyles = makeStyles(theme => ({
 
 export default function LoadingIndicator() {
   const classes = useStyles();
+
+  const [isLoadingDisplayed, setIsLoadingDisplayed] = useState(false);
+  const timer = setTimeout(() => {
+    setIsLoadingDisplayed(true);
+  }, 250);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  if (!isLoadingDisplayed) {
+    return null;
+  }
 
   return (
     <div className={classes.root}>
