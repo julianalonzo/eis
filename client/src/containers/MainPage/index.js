@@ -89,7 +89,7 @@ function MainPage({
   };
 
   const openSelectTemplatePageHandler = () => {
-    history.push(`/folders/${params.folderId}/select-template`);
+    history.push(`/folders/${currentFolder}/select-template`);
   };
 
   const openNewFolderDialogHandler = () => {
@@ -149,7 +149,7 @@ function MainPage({
           <NewFolderDialog
             isOpen={isNewFolderDialogOpen}
             onClose={closeNewFolderDialogHandler}
-            currentFolder={params.folderId}
+            currentFolder={currentFolder}
             submitting={creatingFolder}
             onSubmit={onCreateFolder}
           />
@@ -172,7 +172,7 @@ function MainPage({
             <FoldersTreeView
               folders={folders}
               onOpenFolder={openFolderHandler}
-              currentFolder={params.folderId}
+              currentFolder={currentFolder}
             />
           </Drawer>
         </Hidden>
@@ -182,14 +182,14 @@ function MainPage({
             isOpen={Boolean(newButtonAnchorEl)}
             anchorEl={newButtonAnchorEl}
             onClose={closeNewButtonHandler}
-            currentFolder={params.folderID}
+            currentFolder={currentFolder}
             onOpenSelectTemplatePage={openSelectTemplatePageHandler}
             onOpenNewFolderDialog={openNewFolderDialogHandler}
           />
           {!fetchingItems ? (
             <MainPageContent
               folders={folderChildren}
-              currentFolder={params.folderId}
+              currentFolder={currentFolder}
               onOpenFolder={openFolderHandler}
               items={items}
               onOpenItemMoreActions={openItemMoreActionsHandler}
@@ -207,7 +207,7 @@ function MainPage({
         <NewFolderDialog
           isOpen={isNewFolderDialogOpen}
           onClose={closeNewFolderDialogHandler}
-          currentFolder={params.folderId}
+          currentFolder={currentFolder}
           submitting={creatingFolder}
           onSubmit={onCreateFolder}
         />
