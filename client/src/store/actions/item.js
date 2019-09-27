@@ -36,6 +36,12 @@ export const fetchItems = folderId => {
   };
 };
 
+export const resetItems = () => {
+  return {
+    type: actionTypes.RESET_ITEMS
+  };
+};
+
 export const createItemsStart = () => {
   return {
     type: actionTypes.CREATE_ITEMS_START

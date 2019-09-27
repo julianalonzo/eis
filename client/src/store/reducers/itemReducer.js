@@ -22,6 +22,10 @@ const fetchItemsFail = (state, action) => {
   return updateObject(state, { fetchingItems: false });
 };
 
+const resetItems = (state, action) => {
+  return updateObject(state, { items: [] });
+};
+
 const createItemsStart = (state, action) => {
   return updateObject(state, { creatingItem: true });
 };
@@ -65,6 +69,8 @@ const reducer = (state = initialState, action) => {
       return fetchItemsSuccess(state, action);
     case actionTypes.FETCH_ITEMS_FAIL:
       return fetchItemsFail(state, action);
+    case actionTypes.RESET_ITEMS:
+      return resetItems(state, action);
     case actionTypes.CREATE_ITEMS_START:
       return createItemsStart(state, action);
     case actionTypes.CREATE_ITEMS_SUCCESS:
