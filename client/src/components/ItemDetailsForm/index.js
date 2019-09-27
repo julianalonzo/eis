@@ -55,23 +55,16 @@ export default function ItemDetailsForm({
 }) {
   const classes = useStyles();
 
-  const formattedThumbnails = thumbnails.map(thumbnail => {
-    let name = '';
-    let src = '';
+  const preprocessedThumbnails = thumbnails.map(thumbnail => {
+    let image;
 
     if (thumbnail instanceof File) {
-      name = thumbnail.name;
-      src = URL.createObjectURL(thumbnail);
+      image = URL.createObjectURL(thumbnail);
     } else {
-      name = thumbnail.filename;
-      src = `${HOST}/api/files/${thumbnail.filename}`;
+      image = `${HOST}/api/files/${thumbnail.filename}`;
     }
 
-    return {
-      alt: name,
-      src: src,
-      variant: 'THUMBNAIL_PRIMARY'
-    };
+    return image;
   });
 
   return (
@@ -142,14 +135,14 @@ export default function ItemDetailsForm({
           onAddFiles={onAddThumbnails}
           label="thumbnails"
         >
-          {formattedThumbnails.length > 0 ? (
+          {preprocessedThumbnails.length > 0 ? (
             <div className={classes.thumbnailsPreviewContainer}>
-              {formattedThumbnails.map((thumbnail, index) => {
+              {preprocessedThumbnails.map((thumbnail, index) => {
                 return (
                   <Thumbnail
-                    key={thumbnail.src}
-                    alt={thumbnail.name}
-                    src={thumbnail.src}
+                    key={thumbnail}
+                    variant="image"
+                    image={thumbnail}
                     onRemoveThumbnail={() => {
                       onRemoveThumbnail(index);
                     }}
