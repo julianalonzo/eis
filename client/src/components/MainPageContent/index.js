@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function MainPageContent({
   folders,
+  onOpenFolder,
   items,
   onOpenItemMoreActions,
   itemMoreActionsAnchorEl,
@@ -54,7 +55,7 @@ export default function MainPageContent({
           >
             Folders
           </Typography>
-          <Folders folders={folders} />
+          <Folders folders={folders} onOpenFolder={onOpenFolder} />
         </Box>
       ) : null}
       {items.length > 0 ? (

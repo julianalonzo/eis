@@ -5,7 +5,7 @@ import Card from '../UI/Card';
 import Grid from '@material-ui/core/Grid';
 import FolderIcon from '@material-ui/icons/Folder';
 
-export default function Folders({ folders }) {
+export default function Folders({ folders, onOpenFolder }) {
   return (
     <Grid container spacing={4}>
       {folders.map(folder => {
@@ -16,6 +16,9 @@ export default function Folders({ folders }) {
               variant="dense"
               thumbnailVariant="icon"
               icon={<FolderIcon />}
+              onClick={() => {
+                onOpenFolder(folder._id);
+              }}
               onOpenMoreActions={() => {}}
             />
           </Grid>

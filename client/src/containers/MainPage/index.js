@@ -46,6 +46,7 @@ function MainPage({
   onFetchItems,
   items,
   fetchingItems,
+  onResetItems,
   onRemoveItem,
   onFetchFolders,
   onCreateFolder,
@@ -55,7 +56,8 @@ function MainPage({
   match: { params },
   history
 }) {
-  const [currentFolder, setCurrentFolder] = useState(params.folderId || null);
+  const currentFolder = params.folderId || null;
+
   const [folderChildren, setFolderChildren] = useState(
     folders.filter(folder => folder.parent === currentFolder) || []
   );
@@ -83,11 +85,11 @@ function MainPage({
   };
 
   const openFolderHandler = folderId => {
-    setCurrentFolder(folderId);
+    history.push(`/folders/${folderId}`);
   };
 
   const openSelectTemplatePageHandler = () => {
-    history.push(`/folders/${currentFolder}/select-template`);
+    history.push(`/folders/${params.folderId}/select-template`);
   };
 
   const openNewFolderDialogHandler = () => {
@@ -110,20 +112,19 @@ function MainPage({
   }, [onFetchFolders]);
 
   useEffect(() => {
+    setFolderChildren(getFolderChildren(currentFolder));
+
     if (currentFolder) {
-      history.push(`/folders/${currentFolder}`);
-      setFolderChildren(getFolderChildren(currentFolder));
       onFetchItems(currentFolder);
     } else {
-      history.push('/');
-      setFolderChildren(getFolderChildren(currentFolder));
+      onResetItems();
     }
   }, [
     onFetchItems,
-    currentFolder,
     setFolderChildren,
     getFolderChildren,
-    history
+    currentFolder,
+    onResetItems
   ]);
 
   const classes = useStyles();
@@ -148,7 +149,7 @@ function MainPage({
           <NewFolderDialog
             isOpen={isNewFolderDialogOpen}
             onClose={closeNewFolderDialogHandler}
-            currentFolder={currentFolder}
+            currentFolder={params.folderId}
             submitting={creatingFolder}
             onSubmit={onCreateFolder}
           />
@@ -171,7 +172,7 @@ function MainPage({
             <FoldersTreeView
               folders={folders}
               onOpenFolder={openFolderHandler}
-              currentFolder={currentFolder}
+              currentFolder={params.folderId}
             />
           </Drawer>
         </Hidden>
@@ -181,14 +182,15 @@ function MainPage({
             isOpen={Boolean(newButtonAnchorEl)}
             anchorEl={newButtonAnchorEl}
             onClose={closeNewButtonHandler}
-            currentFolder={currentFolder}
+            currentFolder={params.folderID}
             onOpenSelectTemplatePage={openSelectTemplatePageHandler}
             onOpenNewFolderDialog={openNewFolderDialogHandler}
           />
           {!fetchingItems ? (
             <MainPageContent
               folders={folderChildren}
-              currentFolder={currentFolder}
+              currentFolder={params.folderId}
+              onOpenFolder={openFolderHandler}
               items={items}
               onOpenItemMoreActions={openItemMoreActionsHandler}
               itemMoreActionsAnchorEl={itemMoreActionsAnchorEl}
@@ -205,7 +207,7 @@ function MainPage({
         <NewFolderDialog
           isOpen={isNewFolderDialogOpen}
           onClose={closeNewFolderDialogHandler}
-          currentFolder={currentFolder}
+          currentFolder={params.folderId}
           submitting={creatingFolder}
           onSubmit={onCreateFolder}
         />
@@ -228,6 +230,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onFetchItems: folderId => dispatch(actions.fetchItems(folderId)),
     onRemoveItem: itemId => dispatch(actions.removeItem(itemId)),
+    onResetItems: () => dispatch(actions.resetItems()),
     onFetchFolders: () => dispatch(actions.fetchFolders()),
     onCreateFolder: folder => dispatch(actions.createFolder(folder))
   };
