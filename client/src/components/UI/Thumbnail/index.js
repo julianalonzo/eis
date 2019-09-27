@@ -24,13 +24,16 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    color: theme.palette.primary.main
+    color: theme.palette.text.secondary
   }),
   text: props => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     color: theme.palette.primary.main
+  }),
+  noBorder: props => ({
+    borderColor: 'transparent'
   }),
   textContent: {
     fontSize: theme.typography.fontSize * 1.75,
@@ -49,6 +52,7 @@ export default function Thumbnail({
   icon,
   text,
   marginRight = 0,
+  noBorder = false,
   onRemoveThumbnail = null,
   onClick
 }) {
@@ -79,7 +83,11 @@ export default function Thumbnail({
   }
 
   return (
-    <div className={`${classes.root} ${variantClass}`}>
+    <div
+      className={`${classes.root} ${variantClass} ${
+        noBorder ? classes.noBorder : ''
+      }`}
+    >
       {content}
       {onRemoveThumbnail && (
         <div className={classes.removeIcon}>

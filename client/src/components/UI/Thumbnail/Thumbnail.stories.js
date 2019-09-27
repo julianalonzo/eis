@@ -18,7 +18,10 @@ storiesOf('Thumbnail', module)
   .addDecorator(muiTheme([customTheme]))
   .add('image', () => <Thumbnail variant="image" image={mockImage} />)
   .add('icon', () => <Thumbnail variant="icon" icon={mockIcon} />)
-  .add('letter', () => <Thumbnail variant="text" text={mockText} />)
+  .add('text', () => <Thumbnail variant="text" text={mockText} />)
+  .add('textNoBorder', () => (
+    <Thumbnail variant="text" noBorder={true} text={mockText} />
+  ))
   .add('imageWithRemove', () => (
     <Thumbnail variant="image" image={mockImage} onRemoveThumbnail={() => {}} />
   ));
