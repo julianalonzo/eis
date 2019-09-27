@@ -11,7 +11,13 @@ export default function Folders({ folders }) {
       {folders.map(folder => {
         return (
           <Grid item key={folder._id} xs={12} sm={6} md={4} xl={3}>
-            <Card title={folder.name} image={FolderIcon} />
+            <Card
+              title={folder.name}
+              variant="dense"
+              thumbnailVariant="icon"
+              icon={<FolderIcon />}
+              onOpenMoreActions={() => {}}
+            />
           </Grid>
         );
       })}
