@@ -4,6 +4,9 @@ import customTheme from '../../../util/theme';
 
 import { storiesOf } from '@storybook/react';
 import { muiTheme } from 'storybook-addon-material-ui';
+import Truncate from 'react-truncate';
+
+import FolderIcon from '@material-ui/icons/Folder';
 
 import Card from '.';
 
@@ -18,33 +21,18 @@ export const defaultCardData = {
 
 storiesOf('Card', module)
   .addDecorator(muiTheme([customTheme]))
-  .add('text-subtitle', () => (
+  .add('default', () => (
     <Card
-      title={defaultCardData.title}
-      subtitle={defaultCardData.subtitle}
-      primaryChip={defaultCardData.chips[0]}
-      image={defaultCardData.image}
+      variant="dense"
+      thumbnailVariant="icon"
+      icon={<FolderIcon />}
+      title="Card Title"
     />
   ))
-  .add('text-no-subtitle', () => (
-    <Card
-      title={defaultCardData.title}
-      subtitle={''}
-      image={defaultCardData.image}
-    />
-  ))
-  .add('text-no-subtitle', () => (
-    <Card
-      title={defaultCardData.title}
-      subtitle={''}
-      image={defaultCardData.image}
-    />
-  ))
-  .add('chips-subtitle', () => (
-    <Card
-      title={defaultCardData.title}
-      variant="chips-subtitle"
-      secondaryChips={defaultCardData.chips}
-      image={defaultCardData.image}
-    />
+  .add('descriptive', () => (
+    <Card variant="descriptive" title="Card Title" chip="Chip">
+      <Truncate lines={2} ellipsis="...">
+        {defaultCardData.subtitle}
+      </Truncate>
+    </Card>
   ));
