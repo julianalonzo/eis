@@ -4,6 +4,7 @@ import { HOST } from '../../util/constants';
 
 import Card from '../UI/Card';
 
+import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 
 import PropTypes from 'prop-types';
@@ -21,14 +22,25 @@ export default function Items({ items = [], onOpenItemMoreActions }) {
         return (
           <Grid key={item._id} item xs={12} sm={6} md={4} xl={3}>
             <Card
-              variant="chips-subtitle"
+              variant="descriptive"
               title={item.name}
+              thumbnailVariant="image"
               image={thumbnailUrl}
-              secondaryChips={[item.category, item.condition]}
               onOpenMoreActions={event => {
                 onOpenItemMoreActions(event, item._id);
               }}
-            />
+            >
+              {item.category !== '' && (
+                <Chip
+                  size="small"
+                  style={{ marginRight: '8px' }}
+                  label={item.category}
+                />
+              )}
+              {item.condition !== '' && (
+                <Chip size="small" label={item.condition} />
+              )}
+            </Card>
           </Grid>
         );
       })}
