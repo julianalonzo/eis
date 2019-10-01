@@ -8,6 +8,7 @@ import EmptyIllustration from '../../assets/illustrations/empty.svg';
 import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
 import Items from '../../components/Items';
 import ItemMoreActionsMenuListPopper from '../../components/Items/ItemMoreActionsMenuListPopper';
+import Folders from '../../components/Folders';
 import FoldersTreeView from '../../components/FoldersTreeView';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import MainPageToolBar from '../../components/MainPageToolBar';
@@ -45,16 +46,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function MainPage({
-  onFetchItems,
   items,
+  onFetchItems,
   fetchingItems,
   onResetItems,
   onRemoveItem,
+  folders,
   onFetchFolders,
+  fetchingFolders,
   onCreateFolder,
   creatingFolder,
-  folders,
-  fetchingFolders,
   match: { params },
   history
 }) {
@@ -63,9 +64,14 @@ function MainPage({
   const [folderChildren, setFolderChildren] = useState(
     folders.filter(folder => folder.parent === currentFolder) || []
   );
+
   const [newButtonAnchorEl, setNewButtonAnchorEl] = useState(null);
+
   const [itemMoreActionsAnchorEl, setItemMoreActionsAnchorEl] = useState(null);
-  const [currentItem, setCurrentItem] = useState(null);
+  
+  // Item ID of the item that has its more actions popper opened
+  const [itemIdMoreActions, setItemIdMoreActions] = useState(null);
+
   const [isNewFolderDialogOpen, setIsNewFolderDialogOpen] = useState(false);
 
   const openNewButtonHandler = event => {
@@ -78,12 +84,12 @@ function MainPage({
 
   const openItemMoreActionsHandler = (event, id) => {
     setItemMoreActionsAnchorEl(event.currentTarget);
-    setCurrentItem(id);
+    setItemIdMoreActions(id);
   };
 
   const closeItemMoreActionsHandler = () => {
     setItemMoreActionsAnchorEl(null);
-    setCurrentItem(null);
+    setItemIdMoreActions(null);
   };
 
   const openFolderHandler = folderId => {
@@ -101,7 +107,7 @@ function MainPage({
   const closeNewFolderDialogHandler = () => {
     setIsNewFolderDialogOpen(false);
   };
-
+  
   const getFolderChildren = useCallback(
     folderId => {
       return folders.filter(folder => folder.parent === folderId);
@@ -198,6 +204,10 @@ function MainPage({
                 />
               ) : (
                 <React.Fragment>
+                  <Folders
+                    folders={folderChildren}
+                    onOpenFolder={openFolderHandler}
+                  />
                   <Items
                     items={items}
                     onOpenItemMoreActions={openItemMoreActionsHandler}
@@ -206,7 +216,7 @@ function MainPage({
                     isOpen={Boolean(itemMoreActionsAnchorEl)}
                     anchorEl={itemMoreActionsAnchorEl}
                     onClose={closeItemMoreActionsHandler}
-                    currentItem={currentItem}
+                    currentItem={itemIdMoreActions}
                     onRemoveItem={onRemoveItem}
                   />
                 </React.Fragment>
