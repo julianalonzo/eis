@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
+import EmptyIllustration from '../../assets/illustrations/empty.svg';
 import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
+import Items from '../../components/Items';
+import ItemMoreActionsMenuListPopper from '../../components/Items/ItemMoreActionsMenuListPopper';
 import FoldersTreeView from '../../components/FoldersTreeView';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
-import MainPageContent from '../../components/MainPageContent';
 import MainPageToolBar from '../../components/MainPageToolBar';
 import NewButtonMenuListPopper from '../../components/NewButtonMenuListPopper';
 import NewFolderDialog from '../../components/NewFolderDialog';
@@ -187,17 +189,29 @@ function MainPage({
             onOpenNewFolderDialog={openNewFolderDialogHandler}
           />
           {!fetchingItems ? (
-            <MainPageContent
-              folders={folderChildren}
-              currentFolder={currentFolder}
-              onOpenFolder={openFolderHandler}
-              items={items}
-              onOpenItemMoreActions={openItemMoreActionsHandler}
-              itemMoreActionsAnchorEl={itemMoreActionsAnchorEl}
-              onCloseItemMoreActions={closeItemMoreActionsHandler}
-              currentItem={currentItem}
-              onRemoveItem={onRemoveItem}
-            />
+            <React.Fragment>
+              {folderChildren.length === 0 && items.length === 0 ? (
+                <IllustrationPlaceholder
+                  title="This folder seems to be empty"
+                  subtitle="Add a new item or folder now"
+                  sourceImage={EmptyIllustration}
+                />
+              ) : (
+                <React.Fragment>
+                  <Items
+                    items={items}
+                    onOpenItemMoreActions={openItemMoreActionsHandler}
+                  />
+                  <ItemMoreActionsMenuListPopper
+                    isOpen={Boolean(itemMoreActionsAnchorEl)}
+                    anchorEl={itemMoreActionsAnchorEl}
+                    onClose={closeItemMoreActionsHandler}
+                    currentItem={currentItem}
+                    onRemoveItem={onRemoveItem}
+                  />
+                </React.Fragment>
+              )}
+            </React.Fragment>
           ) : (
             <LoadingIndicator label="Fetching items..." />
           )}
