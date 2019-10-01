@@ -9,4 +9,6 @@ router.get('/', foldersController.getFolders);
 
 router.post('/new', foldersController.createFolder);
 
+router.post('/remove', foldersController.removeFolder);
+
 module.exports = router;

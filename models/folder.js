@@ -6,6 +6,10 @@ const folderSchema = new Schema({
   parent: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Folder'
+  },
+  shown: {
+    type: Boolean,
+    isRequired: true
   }
 });
 

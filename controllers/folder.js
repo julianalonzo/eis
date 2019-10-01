@@ -2,7 +2,7 @@ const Folder = require('../models/folder');
 
 exports.getFolders = async (req, res, next) => {
   try {
-    const folders = await Folder.find();
+    const folders = await Folder.find({ shown: true });
 
     res.status(200).json({ folders: folders });
   } catch (err) {
@@ -63,10 +63,28 @@ exports.createFolder = async (req, res, next) => {
     const folderName = req.body.name || '';
     const folderParent = req.body.parent || null;
 
-    const folder = new Folder({ name: folderName, parent: folderParent });
+    const folder = new Folder({
+      name: folderName,
+      parent: folderParent,
+      shown: true
+    });
     const createdFolder = await folder.save();
 
     res.status(201).json({ folder: createdFolder });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.removeFolder = async (req, res, next) => {
+  const folderId = req.body.folderId;
+
+  try {
+    if (folderId) {
+      await Folder.updateOne({ _id: folderId }, { $set: { shown: false } });
+
+      res.status(200).json({ removedFolderId: folderId });
+    }
   } catch (err) {
     console.log(err);
   }
