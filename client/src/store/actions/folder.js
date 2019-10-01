@@ -67,3 +67,37 @@ export const createFolder = folder => {
     }
   };
 };
+
+export const removeFolderStart = () => {
+  return {
+    type: actionTypes.REMOVE_FOLDER_START
+  };
+};
+
+export const removeFolderFail = error => {
+  return {
+    type: actionTypes.REMOVE_FOLDER_FAIL
+  };
+};
+
+export const removeFolderSuccess = removedFolderId => {
+  return {
+    type: actionTypes.REMOVE_FOLDER_SUCCESS,
+    removedFolderId: removedFolderId
+  };
+};
+
+export const removeFolder = folderId => {
+  return async dispatch => {
+    dispatch(removeFolderStart());
+
+    try {
+      const response = await axios.post('api/folders/remove', {
+        folderId: folderId
+      });
+      dispatch(removeFolderSuccess(response.data.removedFolderId));
+    } catch (err) {
+      dispatch(removeFolderFail(err));
+    }
+  };
+};

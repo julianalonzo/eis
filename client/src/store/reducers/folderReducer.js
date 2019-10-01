@@ -5,7 +5,9 @@ import { createFolderFail } from '../actions/folder';
 const initialState = {
   folders: [],
   fetchingFolders: false,
-  creatingFolder: false
+  creatingFolder: false,
+  removingFolder: false,
+  removingFolderError: null
 };
 
 const fetchFoldersStart = (state, action) => {
@@ -34,6 +36,26 @@ const createFolderSuccess = (state, action) => {
   });
 };
 
+const removeFolderStart = (state, action) => {
+  return updateObject(state, { removingFolder: true });
+};
+
+const removeFolderFail = (state, action) => {
+  return updateObject(state, {
+    removingFolder: false,
+    removingFolderError: action.error
+  });
+};
+
+const removeFolderSuccess = (state, action) => {
+  return updateObject(state, {
+    removingFolder: false,
+    folder: state.folders.filter(
+      folder => folder._id !== action.removedFolderId
+    )
+  });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_FOLDERS_START:
@@ -48,6 +70,12 @@ const reducer = (state = initialState, action) => {
       return createFolderSuccess(state, action);
     case actionTypes.CREATE_FOLDER_FAIL:
       return createFolderFail(state, action);
+    case actionTypes.REMOVE_FOLDER_START:
+      return removeFolderStart(state, action);
+    case actionTypes.REMOVE_FOLDER_FAIL:
+      return removeFolderFail(state, action);
+    case actionTypes.REMOVE_FOLDER_SUCCESS:
+      return removeFolderSuccess(state, action);
     default:
       return state;
   }
