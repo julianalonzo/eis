@@ -137,3 +137,14 @@ exports.removeItem = async (req, res, next) => {
     console.log(err);
   }
 };
+
+exports.removeItemsByFolderId = async folderId => {
+  const folderItems = await Item.find({ folder: folderId, shown: true });
+
+  await Item.updateMany(
+    { folder: folderId, shown: true },
+    { $set: { shown: false } }
+  );
+
+  return folderItems.map(item => item.id);
+};
