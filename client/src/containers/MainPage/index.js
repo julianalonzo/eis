@@ -9,6 +9,7 @@ import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder
 import Items from '../../components/Items';
 import ItemMoreActionsMenuListPopper from '../../components/Items/ItemMoreActionsMenuListPopper';
 import Folders from '../../components/Folders';
+import FolderMoreActionsPopper from '../../components/Folders/FolderMoreActionsPopper';
 import FoldersTreeView from '../../components/FoldersTreeView';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import MainPageToolBar from '../../components/MainPageToolBar';
@@ -46,16 +47,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function MainPage({
-  items,
-  onFetchItems,
-  fetchingItems,
-  onResetItems,
-  onRemoveItem,
   folders,
   onFetchFolders,
   fetchingFolders,
   onCreateFolder,
   creatingFolder,
+  onRemoveFolder,
+  items,
+  onFetchItems,
+  fetchingItems,
+  onResetItems,
+  onRemoveItem,
   match: { params },
   history
 }) {
@@ -65,10 +67,17 @@ function MainPage({
     folders.filter(folder => folder.parent === currentFolder) || []
   );
 
+  const [folderMoreActionsAnchorEl, setFolderMoreActionsAnchorEl] = useState(
+    null
+  );
+
+  // Folder ID of the folder that has its more actions popper opened
+  const [folderIdMoreActions, setFolderIdMoreActions] = useState(null);
+
   const [newButtonAnchorEl, setNewButtonAnchorEl] = useState(null);
 
   const [itemMoreActionsAnchorEl, setItemMoreActionsAnchorEl] = useState(null);
-  
+
   // Item ID of the item that has its more actions popper opened
   const [itemIdMoreActions, setItemIdMoreActions] = useState(null);
 
@@ -80,6 +89,16 @@ function MainPage({
 
   const closeNewButtonHandler = event => {
     setNewButtonAnchorEl(null);
+  };
+
+  const openFolderMoreActionsHandler = (event, id) => {
+    setFolderMoreActionsAnchorEl(event.currentTarget);
+    setFolderIdMoreActions(id);
+  };
+
+  const closeFolderMoreActionsHandler = () => {
+    setFolderMoreActionsAnchorEl(null);
+    setFolderIdMoreActions(null);
   };
 
   const openItemMoreActionsHandler = (event, id) => {
@@ -107,7 +126,7 @@ function MainPage({
   const closeNewFolderDialogHandler = () => {
     setIsNewFolderDialogOpen(false);
   };
-  
+
   const getFolderChildren = useCallback(
     folderId => {
       return folders.filter(folder => folder.parent === folderId);
@@ -207,6 +226,14 @@ function MainPage({
                   <Folders
                     folders={folderChildren}
                     onOpenFolder={openFolderHandler}
+                    onOpenFolderMoreActions={openFolderMoreActionsHandler}
+                  />
+                  <FolderMoreActionsPopper
+                    isOpen={Boolean(folderMoreActionsAnchorEl)}
+                    anchorEl={folderMoreActionsAnchorEl}
+                    onClose={closeFolderMoreActionsHandler}
+                    folderId={folderIdMoreActions}
+                    onRemoveFolder={onRemoveFolder}
                   />
                   <Items
                     items={items}
@@ -242,21 +269,22 @@ function MainPage({
 
 const mapStateToProps = state => {
   return {
-    items: state.item.items,
-    fetchingItems: state.item.fetchingItems,
     folders: state.folder.folders,
     fetchingFolders: state.folder.fetchingFolders,
-    creatingFolder: state.folder.creatingFolder
+    creatingFolder: state.folder.creatingFolder,
+    items: state.item.items,
+    fetchingItems: state.item.fetchingItems
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    onFetchFolders: () => dispatch(actions.fetchFolders()),
+    onCreateFolder: folder => dispatch(actions.createFolder(folder)),
+    onRemoveFolder: folderId => dispatch(actions.removeFolder(folderId)),
     onFetchItems: folderId => dispatch(actions.fetchItems(folderId)),
     onRemoveItem: itemId => dispatch(actions.removeItem(itemId)),
-    onResetItems: () => dispatch(actions.resetItems()),
-    onFetchFolders: () => dispatch(actions.fetchFolders()),
-    onCreateFolder: folder => dispatch(actions.createFolder(folder))
+    onResetItems: () => dispatch(actions.resetItems())
   };
 };
 

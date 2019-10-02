@@ -20,7 +20,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Folders({ folders, loading = false, onOpenFolder }) {
+export default function Folders({
+  folders,
+  loading = false,
+  onOpenFolder,
+  onOpenFolderMoreActions
+}) {
   const classes = useStyles();
 
   if (loading) {
@@ -53,7 +58,10 @@ export default function Folders({ folders, loading = false, onOpenFolder }) {
                 onClick={() => {
                   onOpenFolder(folder._id);
                 }}
-                onOpenMoreActions={() => {}}
+                onOpenMoreActions={event => {
+                  event.stopPropagation();
+                  onOpenFolderMoreActions(event, folder._id);
+                }}
               />
             </Grid>
           );
