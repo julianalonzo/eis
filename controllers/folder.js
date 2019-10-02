@@ -1,5 +1,7 @@
 const Folder = require('../models/folder');
 
+const { removeItemsByFolderId } = require('./item');
+
 exports.getFolders = async (req, res, next) => {
   try {
     const folders = await Folder.find({ shown: true });
@@ -8,24 +10,6 @@ exports.getFolders = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
-
-exports.findChildren = async folderId => {
-  const children = await Folder.find({ parent: folderId });
-
-  const childFoldersWithChildren = [];
-  for (const childFolder of children) {
-    const childFolderWithChildren = {
-      _id: childFolder.id,
-      name: childFolder.name,
-      parent: childFolder.parent,
-      children: (await this.findChildren(childFolder.id)) || []
-    };
-
-    childFoldersWithChildren.push(childFolderWithChildren);
-  }
-
-  return childFoldersWithChildren;
 };
 
 exports.getFolderHierarchy = async (req, res, next) => {
@@ -81,11 +65,57 @@ exports.removeFolder = async (req, res, next) => {
 
   try {
     if (folderId) {
-      await Folder.updateOne({ _id: folderId }, { $set: { shown: false } });
+      const folderChildren = await this.findChildren(folderId);
 
-      res.status(200).json({ removedFolderId: folderId });
+      let removedFoldersIds = [];
+      let removedItemsIds = [];
+      for (const folderChild of folderChildren) {
+        const clearedFolder = await this.clearFolder(folderChild.id);
+
+        removedFoldersIds = removedFoldersIds.concat(clearedFolder.folderId);
+        removedItemsIds = removedItemsIds.concat(clearedFolder.removedItems);
+      }
+
+      const clearedParentFolder = await this.clearFolder(folderId);
+      removedFoldersIds = removedFoldersIds.concat(
+        clearedParentFolder.folderId
+      );
+      removedItemsIds = removedItemsIds.concat(
+        clearedParentFolder.removedItems
+      );
+
+      res.status(200).json({
+        removedFoldersIds: removedFoldersIds,
+        removedItemsIds: removedItemsIds
+      });
     }
   } catch (err) {
     console.log(err);
   }
+};
+
+exports.clearFolder = async folderId => {
+  await Folder.updateOne(
+    { _id: folderId, shown: true },
+    { $set: { shown: false } }
+  );
+
+  const removedItems = await removeItemsByFolderId(folderId);
+
+  return {
+    folderId: folderId,
+    removedItems: removedItems
+  };
+};
+
+exports.findChildren = async folderId => {
+  let children = await Folder.find({ parent: folderId, shown: true });
+
+  for (const childFolder of children) {
+    const childrenOfChildFolder = await this.findChildren(childFolder.id);
+
+    children = children.concat(childrenOfChildFolder);
+  }
+
+  return children;
 };
