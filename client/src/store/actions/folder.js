@@ -80,10 +80,11 @@ export const removeFolderFail = error => {
   };
 };
 
-export const removeFolderSuccess = removedFolderId => {
+export const removeFolderSuccess = ({ removedFoldersIds, removedItemsIds }) => {
   return {
     type: actionTypes.REMOVE_FOLDER_SUCCESS,
-    removedFolderId: removedFolderId
+    removedFoldersIds: removedFoldersIds,
+    removedItemsIds: removedItemsIds
   };
 };
 
@@ -95,7 +96,7 @@ export const removeFolder = folderId => {
       const response = await axios.post('api/folders/remove', {
         folderId: folderId
       });
-      dispatch(removeFolderSuccess(response.data.removedFolderId));
+      dispatch(removeFolderSuccess(response.data));
     } catch (err) {
       dispatch(removeFolderFail(err));
     }

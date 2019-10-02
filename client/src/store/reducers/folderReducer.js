@@ -48,11 +48,17 @@ const removeFolderFail = (state, action) => {
 };
 
 const removeFolderSuccess = (state, action) => {
+  let updatedFolders = state.folders;
+
+  for (const removedFolderId of action.removedFoldersIds) {
+    updatedFolders = updatedFolders.filter(
+      folder => folder._id !== removedFolderId
+    );
+  }
+
   return updateObject(state, {
     removingFolder: false,
-    folder: state.folders.filter(
-      folder => folder._id !== action.removedFolderId
-    )
+    folders: updatedFolders
   });
 };
 
