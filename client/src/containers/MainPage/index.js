@@ -134,25 +134,61 @@ function MainPage({
     [folders]
   );
 
+  const getAllFolderParents = useCallback(
+    folderId => {
+      if (folderId === null) {
+        return [];
+      }
+
+      const allFolderParents = [];
+      let hasFoundAllFolderParents = false;
+      let folderIdToBeEvaluated = folderId;
+
+      while (!hasFoundAllFolderParents) {
+        let parentFolder = null;
+        // eslint-disable-next-line no-loop-func
+        const folder = folders.filter(f => f._id === folderIdToBeEvaluated);
+
+        if (folder.length > 0) {
+          parentFolder = folder[0].parent;
+        }
+
+        if (parentFolder !== null) {
+          allFolderParents.push(parentFolder);
+          folderIdToBeEvaluated = parentFolder;
+        } else {
+          hasFoundAllFolderParents = true;
+        }
+      }
+
+      return allFolderParents;
+    },
+    [folders]
+  );
+
+  const [openedFolders, setOpenedFolders] = useState(
+    getAllFolderParents(currentFolder)
+  );
+
   useEffect(() => {
     onFetchFolders();
   }, [onFetchFolders]);
 
   useEffect(() => {
-    setFolderChildren(getFolderChildren(currentFolder));
-
     if (currentFolder) {
       onFetchItems(currentFolder);
     } else {
       onResetItems();
     }
-  }, [
-    onFetchItems,
-    setFolderChildren,
-    getFolderChildren,
-    currentFolder,
-    onResetItems
-  ]);
+  }, [onFetchItems, currentFolder, onResetItems]);
+
+  useEffect(() => {
+    setOpenedFolders(getAllFolderParents(currentFolder).concat(currentFolder));
+  }, [setOpenedFolders, getAllFolderParents, currentFolder]);
+
+  useEffect(() => {
+    setFolderChildren(getFolderChildren(currentFolder));
+  }, [setFolderChildren, getFolderChildren, currentFolder]);
 
   const classes = useStyles();
 
@@ -200,6 +236,7 @@ function MainPage({
               folders={folders}
               onOpenFolder={openFolderHandler}
               currentFolder={currentFolder}
+              openedFolders={openedFolders}
             />
           </Drawer>
         </Hidden>
