@@ -61,7 +61,7 @@ function MainPage({
   match: { params },
   history
 }) {
-  const currentFolder = params.folderId || null;
+  const [currentFolder, setCurrentFolder] = useState(params.folderId || null);
 
   const [folderChildren, setFolderChildren] = useState(
     folders.filter(folder => folder.parent === currentFolder) || []
@@ -112,7 +112,7 @@ function MainPage({
   };
 
   const openFolderHandler = folderId => {
-    history.push(`/folders/${folderId}`);
+    setCurrentFolder(folderId);
   };
 
   const openSelectTemplatePageHandler = () => {
@@ -175,7 +175,19 @@ function MainPage({
   }, [onFetchFolders]);
 
   useEffect(() => {
-    if (currentFolder) {
+    setCurrentFolder(params.folderId || null);
+  }, [params, setCurrentFolder]);
+
+  useEffect(() => {
+    if (currentFolder !== null) {
+      history.push(`/folders/${currentFolder}`);
+    } else {
+      history.push(`/`);
+    }
+  }, [history, currentFolder]);
+
+  useEffect(() => {
+    if (currentFolder !== null) {
       onFetchItems(currentFolder);
     } else {
       onResetItems();
@@ -183,12 +195,12 @@ function MainPage({
   }, [onFetchItems, currentFolder, onResetItems]);
 
   useEffect(() => {
-    setOpenedFolders(getAllFolderParents(currentFolder).concat(currentFolder));
-  }, [setOpenedFolders, getAllFolderParents, currentFolder]);
-
-  useEffect(() => {
     setFolderChildren(getFolderChildren(currentFolder));
   }, [setFolderChildren, getFolderChildren, currentFolder]);
+
+  useEffect(() => {
+    setOpenedFolders(getAllFolderParents(currentFolder).concat(currentFolder));
+  }, [setOpenedFolders, getAllFolderParents, currentFolder]);
 
   const classes = useStyles();
 
