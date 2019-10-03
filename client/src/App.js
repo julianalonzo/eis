@@ -23,10 +23,10 @@ const theme = createMuiTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <AppBar />
-      <Toolbar variant="dense" style={{ marginBottom: theme.spacing(4) }} />
-      <Container maxWidth="xl">
-        <HashRouter>
+      <HashRouter>
+        <AppBar />
+        <Toolbar variant="dense" style={{ marginBottom: theme.spacing(4) }} />
+        <Container maxWidth="xl">
           <Switch>
             <Route path="/templates" component={TemplatesPage} />
             <Route path="/new-template" component={NewTemplatePage} />
@@ -38,8 +38,8 @@ function App() {
             <Route path="/folders/:folderId/new-item" component={NewItemPage} />
             <Route exact path="/" component={MainPage} />
           </Switch>
-        </HashRouter>
-      </Container>
+        </Container>
+      </HashRouter>
     </ThemeProvider>
   );
 }
