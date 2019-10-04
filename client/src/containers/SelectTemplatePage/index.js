@@ -4,6 +4,7 @@ import { HOST } from '../../util/constants';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
+import Truncate from 'react-truncate';
 import { withRouter } from 'react-router-dom';
 
 import Card from '../../components/UI/Card';
@@ -19,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   pageHeading: { marginBottom: theme.spacing(2) },
   noTemplateCard: {
     padding: theme.spacing(3),
-    height: '120px',
+    height: '110px',
     border: `2px dashed ${theme.palette.primary[400]}`,
     display: 'flex',
     alignItems: 'center',
@@ -57,63 +58,68 @@ function SelectTemplatePage({
     onFetchTemplates();
   }, [onFetchTemplates]);
 
+  if (fetchingTemplates) {
+    return <LoadingIndicator />;
+  }
+
   return (
     <React.Fragment>
-      {!fetchingTemplates ? (
-        <React.Fragment>
-          <Typography variant="h5" className={classes.pageHeading}>
-            Choose template
-          </Typography>
-          <Grid container spacing={4}>
-            <Grid item xs={12} lg={3} md={4}>
-              <Box
-                className={classes.noTemplateCard}
-                onClick={() => {
-                  history.push(`/folders/${folderId}/new-item`);
-                }}
-              >
-                <AddCircleOutlineIcon className={classes.addIcon} />
-                <Typography className={classes.noTemplateText}>
-                  No Template
-                </Typography>
-              </Box>
-            </Grid>
-            {templates.map(template => {
-              let thumbnailUrl = null;
-
-              if (template.item.thumbnails.length > 0) {
-                thumbnailUrl = `${HOST}/api/files/${template.item.thumbnails[0].filename}`;
-              }
-
-              return (
-                <Grid
-                  className={classes.gridItem}
-                  item
-                  xs={12}
-                  lg={3}
-                  md={4}
-                  key={template._id}
-                >
-                  <Card
-                    primaryChip={template.item.category}
-                    title={template.name}
-                    subtitle={template.description}
-                    variant="text-subtitle"
-                    image={thumbnailUrl}
-                    onClick={() => {
-                      history.push(
-                        `/folders/${folderId}/new-item?templateId=${template._id}`
-                      );
-                    }}
-                  />
-                </Grid>
-              );
-            })}
+      <React.Fragment>
+        <Typography variant="h5" className={classes.pageHeading}>
+          Choose template
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} lg={3} md={4}>
+            <Box
+              className={classes.noTemplateCard}
+              onClick={() => {
+                history.push(`/folders/${folderId}/new-item`);
+              }}
+            >
+              <AddCircleOutlineIcon className={classes.addIcon} />
+              <Typography className={classes.noTemplateText}>
+                No Template
+              </Typography>
+            </Box>
           </Grid>
-        </React.Fragment>
-      ) : (
-        <LoadingIndicator />
-      )}
+          {templates.map(template => {
+            let thumbnailUrl = null;
+
+            if (template.item.thumbnails.length > 0) {
+              thumbnailUrl = `${HOST}/api/files/${template.item.thumbnails[0].filename}`;
+            }
+
+            return (
+              <Grid
+                className={classes.gridItem}
+                item
+                xs={12}
+                lg={3}
+                md={4}
+                key={template._id}
+              >
+                <Card
+                  title={template.name}
+                  thumbnailVariant="image"
+                  image={thumbnailUrl}
+                  chip={template.item.category || null}
+                  onClick={() => {
+                    history.push(
+                      `/folders/${folderId}/new-item?templateId=${template._id}`
+                    );
+                  }}
+                >
+                  <Typography variant="body2" color="textSecondary">
+                    <Truncate lines={2} ellipsis="...">
+                      {template.description}
+                    </Truncate>
+                  </Typography>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </React.Fragment>
     </React.Fragment>
   );
 }
