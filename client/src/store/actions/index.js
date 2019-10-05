@@ -1,4 +1,10 @@
-export { fetchItems, createItems, resetItems, removeItem } from './item';
+export {
+  fetchItems,
+  fetchItem,
+  createItems,
+  resetItems,
+  removeItem
+} from './item';
 
 export {
   fetchTemplates,

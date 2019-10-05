@@ -3,7 +3,9 @@ import { updateObject } from '../utility';
 
 const initialState = {
   items: [],
+  item: null,
   fetchingItems: false,
+  fetchingItem: false,
   creatingItem: false,
   creatingItemsError: null,
   removingItem: false,
@@ -20,6 +22,18 @@ const fetchItemsSuccess = (state, action) => {
 
 const fetchItemsFail = (state, action) => {
   return updateObject(state, { fetchingItems: false });
+};
+
+const fetchItemStart = (state, action) => {
+  return updateObject(state, { fetchingItem: true });
+};
+
+const fetchItemSuccess = (state, action) => {
+  return updateObject(state, { item: action.item, fetchingItem: false });
+};
+
+const fetchItemFail = (state, action) => {
+  return updateObject(state, { fetchingItem: false });
 };
 
 const resetItems = (state, action) => {
@@ -69,6 +83,12 @@ const reducer = (state = initialState, action) => {
       return fetchItemsSuccess(state, action);
     case actionTypes.FETCH_ITEMS_FAIL:
       return fetchItemsFail(state, action);
+    case actionTypes.FETCH_ITEM_START:
+      return fetchItemStart(state, action);
+    case actionTypes.FETCH_ITEM_SUCCESS:
+      return fetchItemSuccess(state, action);
+    case actionTypes.FETCH_ITEM_FAIL:
+      return fetchItemFail(state, action);
     case actionTypes.RESET_ITEMS:
       return resetItems(state, action);
     case actionTypes.CREATE_ITEMS_START:

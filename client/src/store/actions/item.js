@@ -36,6 +36,40 @@ export const fetchItems = folderId => {
   };
 };
 
+export const fetchItemStart = () => {
+  return {
+    type: actionTypes.FETCH_ITEM_START
+  };
+};
+
+export const fetchItemSuccess = item => {
+  return {
+    type: actionTypes.FETCH_ITEM_SUCCESS,
+    item: item
+  };
+};
+
+export const fetchItemFail = error => {
+  return {
+    type: actionTypes.FETCH_ITEM_FAIL,
+    error: error
+  };
+};
+
+export const fetchItem = itemId => {
+  return dispatch => {
+    dispatch(fetchItemStart());
+    axios
+      .get(`/api/items/${itemId}`)
+      .then(res => {
+        dispatch(fetchItemSuccess(res.data.item));
+      })
+      .catch(error => {
+        dispatch(fetchItemFail(error));
+      });
+  };
+};
+
 export const resetItems = () => {
   return {
     type: actionTypes.RESET_ITEMS
