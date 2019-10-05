@@ -70,6 +70,12 @@ export const fetchTemplate = templateId => {
   };
 };
 
+export const resetTemplate = () => {
+  return {
+    type: actionTypes.RESET_TEMPLATE
+  };
+};
+
 export const createTemplateStart = () => {
   return {
     type: actionTypes.CREATE_TEMPLATE_START

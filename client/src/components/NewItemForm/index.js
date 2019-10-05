@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import arrayMutators from 'final-form-arrays';
 import { Form } from 'react-final-form';
@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 export default function NewItemForm({ initialValues, onSubmit, submitting }) {
   const classes = useStyles();
 
-  const [formValues] = useState({
+  const [formValues, setFormValues] = useState({
     itemName: initialValues.item.name || '',
     itemCategory: initialValues.item.category || '',
     itemCondition: initialValues.item.condition || '',
@@ -42,6 +42,19 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
   const [attachments, setAttachments] = useState(
     initialValues.attachments || []
   );
+
+  useEffect(() => {
+    setFormValues({
+      itemName: initialValues.item.name || '',
+      itemCategory: initialValues.item.category || '',
+      itemCondition: initialValues.item.condition || '',
+      properties: initialValues.properties || []
+    });
+
+    setThumbnails(initialValues.item.thumbnails || []);
+
+    setAttachments(initialValues.attachments || []);
+  }, [initialValues, setFormValues, setThumbnails]);
 
   const addThumbnailsHandler = thumbnails => {
     setThumbnails(previousThumbnails => {

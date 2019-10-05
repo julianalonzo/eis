@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { getParamValueByKey } from '../../util/helperFunctions';
 
@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
+import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import NewItemForm from '../../components/NewItemForm';
 
 function NewItemPage({
@@ -14,20 +15,29 @@ function NewItemPage({
   template,
   fetchingTemplate,
   fetchingTemplateError,
+  onResetTemplate,
   onCreateItems,
   creatingItem,
   history,
   match: { params }
 }) {
-  const templateId = getParamValueByKey(location.search, 'templateId');
+  const [templateId, setTemplateId] = useState(
+    getParamValueByKey(location.search, 'templateId') || null
+  );
 
   const folderId = params.folderId || null;
 
   useEffect(() => {
-    if (templateId) {
+    setTemplateId(getParamValueByKey(location.search, 'templateId') || null);
+  }, [location.search]);
+
+  useEffect(() => {
+    if (templateId !== null) {
       onFetchTemplate(templateId);
+    } else {
+      onResetTemplate();
     }
-  }, [templateId, onFetchTemplate]);
+  }, [templateId, onFetchTemplate, onResetTemplate]);
 
   const createItemsHandler = async itemData => {
     const formData = new FormData();
@@ -69,18 +79,16 @@ function NewItemPage({
     history.push(`/folders/${folderId}`);
   };
 
+  if (fetchingTemplate) {
+    return <LoadingIndicator />;
+  }
+
   return (
-    <React.Fragment>
-      {fetchingTemplate ? (
-        <p>Fetching template...</p>
-      ) : (
-        <NewItemForm
-          initialValues={template}
-          onSubmit={createItemsHandler}
-          submitting={creatingItem}
-        />
-      )}
-    </React.Fragment>
+    <NewItemForm
+      initialValues={template}
+      onSubmit={createItemsHandler}
+      submitting={creatingItem}
+    />
   );
 }
 
@@ -96,7 +104,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchTemplate: templateId => dispatch(actions.fetchTemplate(templateId)),
-    onCreateItems: item => dispatch(actions.createItems(item))
+    onCreateItems: item => dispatch(actions.createItems(item)),
+    onResetTemplate: () => dispatch(actions.resetTemplate())
   };
 };
 

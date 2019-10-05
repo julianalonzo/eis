@@ -60,6 +60,23 @@ const fetchTemplateSuccess = (state, action) => {
   });
 };
 
+const resetTemplate = (state, action) => {
+  return updateObject(state, {
+    template: {
+      name: '',
+      description: '',
+      item: {
+        name: '',
+        description: '',
+        category: '',
+        thumbnails: []
+      },
+      properties: [],
+      attachments: []
+    }
+  });
+};
+
 const createTemplateStart = (state, action) => {
   return updateObject(state, { creatingTemplate: true });
 };
@@ -91,6 +108,8 @@ const reducer = (state = initialState, action) => {
       return fetchTemplateSuccess(state, action);
     case actionTypes.FETCH_TEMPLATE_FAIL:
       return fetchTemplateFail(state, action);
+    case actionTypes.RESET_TEMPLATE:
+      return resetTemplate(state, action);
     case actionTypes.CREATE_TEMPLATE_START:
       return createTemplateStart(state, action);
     case actionTypes.CREATE_TEMPLATE_SUCCESS:
