@@ -127,6 +127,10 @@ function MainPage({
     setIsNewFolderDialogOpen(false);
   };
 
+  const openItemDetailsPageHandler = itemId => {
+    history.push(`/items/${itemId}`);
+  };
+
   const getFolderChildren = useCallback(
     folderId => {
       return folders.filter(folder => folder.parent === folderId);
@@ -287,6 +291,7 @@ function MainPage({
                   <Items
                     items={items}
                     onOpenItemMoreActions={openItemMoreActionsHandler}
+                    onOpenItemDetails={openItemDetailsPageHandler}
                   />
                   <ItemMoreActionsMenuListPopper
                     isOpen={Boolean(itemMoreActionsAnchorEl)}

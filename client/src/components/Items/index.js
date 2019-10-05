@@ -27,7 +27,8 @@ const useStyles = makeStyles(theme => ({
 export default function Items({
   items = [],
   loading = false,
-  onOpenItemMoreActions
+  onOpenItemMoreActions,
+  onOpenItemDetails
 }) {
   const classes = useStyles();
 
@@ -66,6 +67,9 @@ export default function Items({
                 image={thumbnailUrl}
                 onOpenMoreActions={event => {
                   onOpenItemMoreActions(event, item._id);
+                }}
+                onClick={() => {
+                  onOpenItemDetails(item._id);
                 }}
               >
                 {item.category !== '' && (
