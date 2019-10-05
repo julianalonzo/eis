@@ -40,6 +40,11 @@ const useStyles = makeStyles(theme => ({
   },
   noTemplateText: {
     color: 'inherit'
+  },
+  subtitle: {
+    fontSize: theme.typography.fontSize,
+    fontFamily: theme.typography.fontFamily,
+    color: theme.palette.text.secondary
   }
 }));
 
@@ -65,7 +70,7 @@ function SelectTemplatePage({
   return (
     <React.Fragment>
       <React.Fragment>
-        <Typography variant="h5" className={classes.pageHeading}>
+        <Typography variant="h6" className={classes.pageHeading}>
           Choose template
         </Typography>
         <Grid container spacing={4}>
@@ -109,11 +114,13 @@ function SelectTemplatePage({
                     );
                   }}
                 >
-                  <Typography variant="body2" color="textSecondary">
-                    <Truncate lines={2} ellipsis="...">
-                      {template.description}
-                    </Truncate>
-                  </Typography>
+                  <Truncate
+                    lines={2}
+                    ellipsis="..."
+                    className={classes.subtitle}
+                  >
+                    {template.description}
+                  </Truncate>
                 </Card>
               </Grid>
             );
