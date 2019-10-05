@@ -180,7 +180,7 @@ function MainPage({
 
   useEffect(() => {
     setCurrentFolder(params.folderId || null);
-  }, [params, setCurrentFolder]);
+  }, [params]);
 
   useEffect(() => {
     if (currentFolder !== null) {
@@ -200,11 +200,11 @@ function MainPage({
 
   useEffect(() => {
     setFolderChildren(getFolderChildren(currentFolder));
-  }, [setFolderChildren, getFolderChildren, currentFolder]);
+  }, [getFolderChildren, currentFolder]);
 
   useEffect(() => {
     setOpenedFolders(getAllFolderParents(currentFolder).concat(currentFolder));
-  }, [setOpenedFolders, getAllFolderParents, currentFolder]);
+  }, [getAllFolderParents, currentFolder]);
 
   const classes = useStyles();
 
