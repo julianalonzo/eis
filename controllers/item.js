@@ -25,6 +25,24 @@ exports.getItems = async (req, res, next) => {
   }
 };
 
+exports.getItem = async (req, res, next) => {
+  try {
+    const itemId = req.params.itemId || null;
+
+    if (Boolean(itemId)) {
+      const item = await Item.findOne({ _id: itemId });
+
+      if (Boolean(item)) {
+        res.status(200).json({ item: item });
+      } else {
+        res.status(404).json({ item: null, message: 'Item not found' });
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.createItems = async (req, res, next) => {
   // @TODO: Add validation
 

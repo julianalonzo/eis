@@ -7,6 +7,8 @@ const itemController = require('../controllers/item');
 
 router.get('/', itemController.getItems);
 
+router.get('/:itemId', itemController.getItem);
+
 const createItemsUpload = upload.fields([
   { name: 'fileThumbnails' },
   { name: 'fileAttachments' }
