@@ -5,8 +5,6 @@ const upload = require('../util/fileStorage');
 
 const itemController = require('../controllers/item');
 
-router.get('/:folderId', itemController.getItemsOfFolder);
-
 router.get('/', itemController.getItems);
 
 const createItemsUpload = upload.fields([

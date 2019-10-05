@@ -6,25 +6,18 @@ const {
 
 const Item = require('../models/item');
 
-exports.getItemsOfFolder = async (req, res, next) => {
-  try {
-    const folderId = req.params.folderId || null;
-
-    if (folderId) {
-      const items = await Item.find({ folder: folderId, shown: true }).populate(
-        'thumbnails'
-      );
-
-      res.status(200).json({ items: items });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 exports.getItems = async (req, res, next) => {
   try {
-    const items = await Item.find().populate('thumbnails');
+    const folderId = req.query.folderId || null;
+
+    let items = [];
+    if (Boolean(folderId)) {
+      items = await Item.find({ folder: folderId, shown: true }).populate(
+        'thumbnails'
+      );
+    } else {
+      items = await Item.find().populate('thumbnails');
+    }
 
     res.status(200).json({ items: items });
   } catch (err) {

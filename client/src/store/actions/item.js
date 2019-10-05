@@ -26,7 +26,7 @@ export const fetchItems = folderId => {
   return dispatch => {
     dispatch(fetchItemsStart());
     axios
-      .get(`/api/items/${folderId}`)
+      .get(`/api/items?folderId=${folderId}`)
       .then(res => {
         dispatch(fetchItemsSuccess(res.data.items));
       })
