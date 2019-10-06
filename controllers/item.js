@@ -30,7 +30,10 @@ exports.getItem = async (req, res, next) => {
     const itemId = req.params.itemId || null;
 
     if (Boolean(itemId)) {
-      const item = await Item.findOne({ _id: itemId }).populate('thumbnails');
+      const item = await Item.findOne({ _id: itemId })
+        .populate('thumbnails')
+        .populate('attachments')
+        .exec();
 
       if (Boolean(item)) {
         res.status(200).json({ item: item });
