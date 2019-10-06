@@ -66,6 +66,7 @@ export default function Items({
                 thumbnailVariant="image"
                 image={thumbnailUrl}
                 onOpenMoreActions={event => {
+                  event.stopPropagation();
                   onOpenItemMoreActions(event, item._id);
                 }}
                 onClick={() => {
