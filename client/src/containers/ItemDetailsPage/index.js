@@ -6,9 +6,17 @@ import { withRouter } from 'react-router-dom';
 
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import PropertiesSection from '../../components/PropertiesSection';
 import SectionPaper from '../../components/UI/SectionPaper';
 
+import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
+
+const useStyles = makeStyles(theme => ({
+  sectionGridItem: {
+    marginBottom: theme.spacing(6)
+  }
+}));
 
 function ItemDetailsPage({
   item,
@@ -17,6 +25,8 @@ function ItemDetailsPage({
   onResetItem,
   match: { params }
 }) {
+  const classes = useStyles();
+
   const [itemId, setItemId] = useState(params.itemId || null);
 
   useEffect(() => {
@@ -37,16 +47,25 @@ function ItemDetailsPage({
 
   return (
     <React.Fragment>
-      <Grid container>
-        <Grid item xs={12} md={8}>
-          {item !== null && (
-            <SectionPaper title="Item Details">
-              <ItemDetailsSection item={item} />
-            </SectionPaper>
-          )}
+      {item !== null ? (
+        <Grid container>
+          <Grid item xs={12} md={8} lg={6}>
+            <Grid container>
+              <Grid item xs={12} className={classes.sectionGridItem}>
+                <SectionPaper title="Item Details">
+                  <ItemDetailsSection item={item} />
+                </SectionPaper>
+              </Grid>
+              <Grid item xs={12} className={classes.sectionGridItem}>
+                <SectionPaper title="Properties">
+                  <PropertiesSection properties={item.properties} />
+                </SectionPaper>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item md={4}></Grid>
         </Grid>
-        <Grid item md={4}></Grid>
-      </Grid>
+      ) : null}
     </React.Fragment>
   );
 }
