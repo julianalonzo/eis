@@ -9,7 +9,11 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2)
   },
   title: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
+    color: theme.palette.text.hint,
+    textTransform: 'uppercase',
+    fontWeight: theme.typography.fontWeightMedium,
+    letterSpacing: '1.2px'
   }
 }));
 
@@ -18,7 +22,7 @@ export default function SectionPaper({ title, children }) {
 
   return (
     <Paper className={classes.root}>
-      <Typography variant="h6" className={classes.title}>
+      <Typography variant="body1" className={classes.title}>
         {title}
       </Typography>
       {children}
