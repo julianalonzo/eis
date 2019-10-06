@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
+import Attachments from '../../components/Attachments';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import PropertiesSection from '../../components/PropertiesSection';
@@ -59,6 +60,17 @@ function ItemDetailsPage({
               <Grid item xs={12} className={classes.sectionGridItem}>
                 <SectionPaper title="Properties">
                   <PropertiesSection properties={item.properties} />
+                </SectionPaper>
+              </Grid>
+              <Grid item xs={12} className={classes.sectionGridItem}>
+                <SectionPaper title="Attachments">
+                  <Attachments
+                    attachments={item.attachments.map(attachment => ({
+                      name: attachment.originalname,
+                      size: attachment.size,
+                      dateUploaded: attachment.dateUploaded
+                    }))}
+                  />
                 </SectionPaper>
               </Grid>
             </Grid>

@@ -4,48 +4,83 @@ import { formatFileSize } from '../../../util/helperFunctions';
 
 import Moment from 'react-moment';
 
-import Avatar from '@material-ui/core/Avatar';
+import Thumbnail from '../../UI/Thumbnail';
+
+import { makeStyles } from '@material-ui/styles';
+import Box from '@material-ui/core/Box';
 import CloseIcon from '@material-ui/icons/Close';
-import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
+import Grid from '@material-ui/core/Grid';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Typography from '@material-ui/core/Typography';
 
 import PropTypes from 'prop-types';
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    marginBottom: theme.spacing(1)
+  },
+  mainDataWrapper: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  textDataWrapper: {
+    minWidth: 0
+  },
+  actionButtonsContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end'
+  }
+}));
 
 export default function Attachment({
   attachment: { name, size, dateUploaded },
   variant,
   primaryAction
 }) {
+  const classes = useStyles();
+
   return (
-    <ListItem>
-      <ListItemAvatar>
-        <Avatar>
-          <InsertDriveFileIcon />
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={name}
-        secondary={
-          variant === 'default' ? (
-            <Moment format="MMM D, YYYY" withTitle>
-              {dateUploaded}
-            </Moment>
-          ) : (
-            formatFileSize(size)
-          )
-        }
-      />
-      <ListItemSecondaryAction>
-        <IconButton onClick={primaryAction}>
-          {variant === 'default' ? <DeleteIcon /> : <CloseIcon />}
-        </IconButton>
-      </ListItemSecondaryAction>
-    </ListItem>
+    <Grid container className={classes.root}>
+      <Grid item xs={10} minWidth>
+        <Box className={classes.mainDataWrapper}>
+          <Box>
+            <Thumbnail
+              variant="icon"
+              noBorder={true}
+              icon={<InsertDriveFileIcon />}
+              marginRight={1}
+            />
+          </Box>
+          <Box className={classes.textDataWrapper}>
+            <Typography variant="body2" color="textPrimary" noWrap={true}>
+              {name}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" noWrap={true}>
+              {variant === 'upload' ? (
+                formatFileSize(size)
+              ) : (
+                <Moment format="MMM D, YYYY" withTitle>
+                  {dateUploaded}
+                </Moment>
+              )}
+            </Typography>
+          </Box>
+        </Box>
+      </Grid>
+      <Grid item xs={2}>
+        <Box className={classes.actionButtonsContainer}>
+          <IconButton size="small" onClick={primaryAction}>
+            {variant === 'upload' ? (
+              <CloseIcon fontSize="small" />
+            ) : (
+              <MoreVertIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Box>
+      </Grid>
+    </Grid>
   );
 }
 

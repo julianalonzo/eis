@@ -2,23 +2,30 @@ import React from 'react';
 
 import Attachment from './Attachment';
 
-import List from '@material-ui/core/List';
+import Grid from '@material-ui/core/Grid';
 
 export default function Attachments({ attachments, variant, primaryAction }) {
   return (
-    <List>
+    <Grid>
       {attachments.map((attachment, index) => {
         return (
-          <Attachment
-            key={attachment._id || attachment.name + '_' + index}
-            variant={variant}
-            attachment={attachment}
-            primaryAction={() => {
-              primaryAction(index);
-            }}
-          />
+          <Grid
+            key={attachment._id ? attachment._id : index}
+            item
+            xs={12}
+            md={10}
+          >
+            <Attachment
+              key={attachment._id || attachment.name + '_' + index}
+              variant={variant}
+              attachment={attachment}
+              primaryAction={() => {
+                primaryAction(index);
+              }}
+            />
+          </Grid>
         );
       })}
-    </List>
+    </Grid>
   );
 }
