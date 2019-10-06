@@ -37,6 +37,10 @@ function NewItemPage({
     } else {
       onResetTemplate();
     }
+
+    return () => {
+      onResetTemplate();
+    };
   }, [templateId, onFetchTemplate, onResetTemplate]);
 
   const createItemsHandler = async itemData => {
