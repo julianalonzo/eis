@@ -1,6 +1,9 @@
 import React from 'react';
 
+import { HOST } from '../../util/constants';
+
 import LoadingIndicator from '../UI/LoadingIndicator';
+import Thumbnail from '../UI/Thumbnail';
 
 import { makeStyles } from '@material-ui/styles';
 import Box from '@material-ui/core/Box';
@@ -24,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ItemDetailsSection({
-  item: { name, category, condition },
+  item: { name, category, condition, thumbnails },
   loading = false
 }) {
   const classes = useStyles();
@@ -33,9 +36,17 @@ export default function ItemDetailsSection({
     return <LoadingIndicator />;
   }
 
+  let thumbnailUrl;
+  if (thumbnails.length > 0) {
+    thumbnailUrl = `${HOST}/api/files/${thumbnails[0].filename}`;
+  }
+
   return (
-    <Grid container>
-      <Grid item xs={12}>
+    <Grid container spacing={2}>
+      <Grid item xs={6} sm={5} md={4}>
+        <Thumbnail variant="image" image={thumbnailUrl} size="large" />
+      </Grid>
+      <Grid item xs={6} sm={5} md={4}>
         <Box className={classes.dataField}>
           <Typography
             variant="body1"
