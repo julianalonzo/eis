@@ -3,6 +3,7 @@ export {
   fetchItem,
   createItems,
   resetItems,
+  resetItem,
   removeItem
 } from './item';
 

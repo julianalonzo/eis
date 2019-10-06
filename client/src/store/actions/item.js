@@ -42,6 +42,12 @@ export const fetchItemStart = () => {
   };
 };
 
+export const resetItems = () => {
+  return {
+    type: actionTypes.RESET_ITEMS
+  };
+};
+
 export const fetchItemSuccess = item => {
   return {
     type: actionTypes.FETCH_ITEM_SUCCESS,
@@ -70,9 +76,9 @@ export const fetchItem = itemId => {
   };
 };
 
-export const resetItems = () => {
+export const resetItem = () => {
   return {
-    type: actionTypes.RESET_ITEMS
+    type: actionTypes.RESET_ITEM
   };
 };
 
