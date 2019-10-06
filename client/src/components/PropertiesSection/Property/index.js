@@ -8,10 +8,7 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginBottom: theme.spacing(2)
-  },
-  propertyName: {
-    fontWeight: theme.typography.fontWeightMedium
+    marginBottom: theme.spacing(1)
   },
   actionButton: {
     display: 'flex',
@@ -25,11 +22,7 @@ export default function Property({ _id, name, value }) {
   return (
     <Grid container alignItems="baseline" className={classes.root} spacing={2}>
       <Grid item xs={5}>
-        <Typography
-          variant="body1"
-          color="textPrimary"
-          className={classes.propertyName}
-        >
+        <Typography variant="body2" color="textPrimary">
           {name}
         </Typography>
       </Grid>
@@ -39,7 +32,7 @@ export default function Property({ _id, name, value }) {
         </Typography>
       </Grid>
       <Grid item xs={2} className={classes.actionButton}>
-        <IconButton size="small" className={classes.button}>
+        <IconButton size="small">
           <MoreVertIcon fontSize="small" />
         </IconButton>
       </Grid>
