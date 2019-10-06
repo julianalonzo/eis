@@ -10,8 +10,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(props.marginRight),
     border: `1px solid ${theme.palette.grey[300]}`,
     borderRadius: '8px',
-    width: theme.spacing(5),
-    height: theme.spacing(5),
+    width: props.thumbnailSize,
+    height: props.thumbnailSize,
     padding: theme.spacing(0.5)
   }),
   image: props => ({
@@ -54,9 +54,12 @@ export default function Thumbnail({
   marginRight = 0,
   noBorder = false,
   onRemoveThumbnail = null,
+  size = 'default',
   onClick
 }) {
-  const classes = useStyles({ marginRight, image, onClick });
+  let thumbnailSize = size === 'default' ? 40 : 150;
+
+  const classes = useStyles({ marginRight, image, onClick, thumbnailSize });
 
   let variantClass;
   let content;
