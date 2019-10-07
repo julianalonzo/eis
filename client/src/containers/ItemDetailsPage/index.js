@@ -11,7 +11,9 @@ import PropertiesSection from '../../components/PropertiesSection';
 import SectionPaper from '../../components/UI/SectionPaper';
 
 import { makeStyles } from '@material-ui/styles';
+import AddIcon from '@material-ui/icons/Add';
 import Grid from '@material-ui/core/Grid';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles(theme => ({
   sectionGridItem: {
@@ -53,17 +55,35 @@ function ItemDetailsPage({
           <Grid item xs={12} md={8} lg={6}>
             <Grid container>
               <Grid item xs={12} className={classes.sectionGridItem}>
-                <SectionPaper title="Item Details">
+                <SectionPaper
+                  title="Item Details"
+                  actionButton={{
+                    icon: <EditIcon />,
+                    action: () => {}
+                  }}
+                >
                   <ItemDetailsSection item={item} />
                 </SectionPaper>
               </Grid>
               <Grid item xs={12} className={classes.sectionGridItem}>
-                <SectionPaper title="Properties">
+                <SectionPaper
+                  title="Properties"
+                  actionButton={{
+                    icon: <AddIcon />,
+                    action: () => {}
+                  }}
+                >
                   <PropertiesSection properties={item.properties} />
                 </SectionPaper>
               </Grid>
               <Grid item xs={12} className={classes.sectionGridItem}>
-                <SectionPaper title="Attachments">
+                <SectionPaper
+                  title="Attachments"
+                  actionButton={{
+                    icon: <AddIcon />,
+                    action: () => {}
+                  }}
+                >
                   <Attachments
                     attachments={item.attachments.map(attachment => ({
                       name: attachment.originalname,
