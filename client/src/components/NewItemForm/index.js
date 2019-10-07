@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import arrayMutators from 'final-form-arrays';
 import { Form } from 'react-final-form';
+import useItemForm from '../../hooks/useItemForm';
 
 import AttachmentsForm from '../AttachmentsForm';
 import Button from '../UI/Button';
@@ -28,67 +29,18 @@ const useStyles = makeStyles(theme => ({
 export default function NewItemForm({ initialValues, onSubmit, submitting }) {
   const classes = useStyles();
 
-  const [formValues, setFormValues] = useState({
-    itemName: initialValues.item.name || '',
-    itemCategory: initialValues.item.category || '',
-    itemCondition: initialValues.item.condition || '',
-    properties: initialValues.properties || []
-  });
-
-  const [thumbnails, setThumbnails] = useState(
-    initialValues.item.thumbnails || []
-  );
-
-  const [attachments, setAttachments] = useState(
-    initialValues.attachments || []
-  );
-
-  useEffect(() => {
-    setFormValues({
-      itemName: initialValues.item.name || '',
-      itemCategory: initialValues.item.category || '',
-      itemCondition: initialValues.item.condition || '',
-      properties: initialValues.properties || []
-    });
-
-    setThumbnails(initialValues.item.thumbnails || []);
-
-    setAttachments(initialValues.attachments || []);
-  }, [initialValues, setFormValues, setThumbnails]);
-
-  const addThumbnailsHandler = thumbnails => {
-    setThumbnails(previousThumbnails => {
-      return previousThumbnails.concat(thumbnails);
-    });
-  };
-
-  const removeThumbnailHandler = thumbnailIndex => {
-    setThumbnails(previousThumbnails => {
-      return previousThumbnails.filter(
-        (thumbnail, index) => index !== thumbnailIndex
-      );
-    });
-  };
-
-  const addAttachmentsHandler = attachments => {
-    setAttachments(previousAttachments => {
-      return previousAttachments.concat(attachments);
-    });
-  };
-
-  const removeAttachmentHandler = attachmentIndex => {
-    setAttachments(previousAttachments => {
-      return previousAttachments.filter(
-        (attachment, index) => index !== attachmentIndex
-      );
-    });
-  };
+  const [
+    itemForm,
+    addThumbnailsHandler,
+    removeThumbnailHandler,
+    addAttachmentsHandler,
+    removeAttachmentHandler
+  ] = useItemForm(initialValues);
 
   const submitHandler = values => {
     const itemData = {
       ...values,
-      thumbnails,
-      attachments
+      ...itemForm
     };
 
     onSubmit(itemData);
@@ -96,7 +48,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
 
   return (
     <Form
-      initialValues={{ ...formValues }}
+      initialValues={{ ...itemForm }}
       onSubmit={values => {
         submitHandler(values);
       }}
@@ -122,7 +74,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
           one another."
                 >
                   <ItemDetailsForm
-                    thumbnails={thumbnails}
+                    thumbnails={itemForm.thumbnails}
                     onAddThumbnails={addThumbnailsHandler}
                     onRemoveThumbnail={removeThumbnailHandler}
                   />
@@ -138,7 +90,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
                   subtitle="Attachments are relevant files of an item. These files may be software license, receipts, and images."
                 >
                   <AttachmentsForm
-                    attachments={attachments}
+                    attachments={itemForm.attachments}
                     onAddAttachments={addAttachmentsHandler}
                     onRemoveAttachment={removeAttachmentHandler}
                   />
