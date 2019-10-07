@@ -13,10 +13,10 @@ const initialState = {
       name: '',
       description: '',
       category: '',
-      thumbnails: []
-    },
-    properties: [],
-    attachments: []
+      thumbnails: [],
+      properties: [],
+      attachments: []
+    }
   },
   fetchingTemplate: false,
   fetchingTemplateErrors: null
@@ -69,10 +69,10 @@ const resetTemplate = (state, action) => {
         name: '',
         description: '',
         category: '',
-        thumbnails: []
-      },
-      properties: [],
-      attachments: []
+        thumbnails: [],
+        properties: [],
+        attachments: []
+      }
     }
   });
 };
