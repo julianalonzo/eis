@@ -49,7 +49,7 @@ export default function ItemDetailsSection({
       <Grid item xs={6} sm={5} md={4}>
         <Box className={classes.dataField}>
           <Typography
-            variant="body1"
+            variant="body2"
             color="textSecondary"
             className={classes.dataFieldHeader}
           >
@@ -65,7 +65,7 @@ export default function ItemDetailsSection({
         </Box>
         <Box className={classes.dataField}>
           <Typography
-            variant="body1"
+            variant="body2"
             color="textSecondary"
             className={classes.dataFieldHeader}
           >
@@ -85,7 +85,7 @@ export default function ItemDetailsSection({
         </Box>
         <Box className={classes.dataField}>
           <Typography
-            variant="body1"
+            variant="body2"
             color="textSecondary"
             className={classes.dataFieldHeader}
           >
