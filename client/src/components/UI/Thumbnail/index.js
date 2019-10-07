@@ -57,7 +57,7 @@ export default function Thumbnail({
   size = 'default',
   onClick
 }) {
-  let thumbnailSize = size === 'default' ? 40 : 150;
+  let thumbnailSize = size === 'default' ? 40 : 155;
 
   const classes = useStyles({ marginRight, image, onClick, thumbnailSize });
 

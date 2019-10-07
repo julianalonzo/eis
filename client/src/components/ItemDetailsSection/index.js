@@ -23,6 +23,11 @@ const useStyles = makeStyles(theme => ({
   },
   italic: {
     fontStyle: 'italic'
+  },
+  thumbnails: {
+    marginTop: theme.spacing(1),
+    display: 'flex',
+    alignItems: 'center'
   }
 }));
 
@@ -43,66 +48,86 @@ export default function ItemDetailsSection({
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={6} sm={5} md={4}>
+      <Grid item xs={12} sm={5} md={4}>
         <Thumbnail variant="image" image={thumbnailUrl} size="large" />
+        <Box className={classes.thumbnails}>
+          {thumbnails.map(thumbnail => {
+            return (
+              <Thumbnail
+                key={thumbnail._id}
+                variant="image"
+                image={`${HOST}/api/files/${thumbnail.filename}`}
+                marginRight={1}
+              />
+            );
+          })}
+        </Box>
       </Grid>
-      <Grid item xs={6} sm={5} md={4}>
-        <Box className={classes.dataField}>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            className={classes.dataFieldHeader}
-          >
-            Item Name
-          </Typography>
-          <Typography
-            variant="body2"
-            color="textPrimary"
-            className={classes.name}
-          >
-            {name}
-          </Typography>
-        </Box>
-        <Box className={classes.dataField}>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            className={classes.dataFieldHeader}
-          >
-            Category
-          </Typography>
-          {category !== '' ? (
-            <Chip label={category} size="small" />
-          ) : (
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              className={classes.italic}
-            >
-              Not set
-            </Typography>
-          )}
-        </Box>
-        <Box className={classes.dataField}>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            className={classes.dataFieldHeader}
-          >
-            Condition
-          </Typography>
-          {condition !== '' ? (
-            <Chip label={condition} size="small" />
-          ) : (
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              className={classes.italic}
-            >
-              Not set
-            </Typography>
-          )}
-        </Box>
+      <Grid item xs={12} sm={7} md={8}>
+        <Grid container>
+          <Grid item xs={12}>
+            <Box className={classes.dataField}>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                className={classes.dataFieldHeader}
+              >
+                Item Name
+              </Typography>
+              <Typography
+                variant="body2"
+                color="textPrimary"
+                className={classes.name}
+              >
+                {name}
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={6} sm={6} md={4}>
+            <Box className={classes.dataField}>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                className={classes.dataFieldHeader}
+              >
+                Category
+              </Typography>
+              {category !== '' ? (
+                <Chip label={category} size="small" />
+              ) : (
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  className={classes.italic}
+                >
+                  Not set
+                </Typography>
+              )}
+            </Box>
+          </Grid>
+          <Grid item xs={6} sm={6} md={4}>
+            <Box className={classes.dataField}>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                className={classes.dataFieldHeader}
+              >
+                Condition
+              </Typography>
+              {condition !== '' ? (
+                <Chip label={condition} size="small" />
+              ) : (
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  className={classes.italic}
+                >
+                  Not set
+                </Typography>
+              )}
+            </Box>
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );
