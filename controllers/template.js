@@ -18,7 +18,7 @@ exports.getTemplate = async (req, res, next) => {
 
     const template = await Template.findOne({ _id: templateId })
       .populate('item.thumbnails')
-      .populate('attachments')
+      .populate('item.attachments')
       .exec();
 
     res.status(200).json({ template: template });
@@ -61,10 +61,10 @@ exports.createTemplate = async (req, res, next) => {
         name: itemData.name,
         category: itemData.category,
         condition: itemData.condition,
-        thumbnails: itemData.thumbnails
-      },
-      attachments: itemData.attachments,
-      properties: itemData.properties
+        thumbnails: itemData.thumbnails,
+        attachments: itemData.attachments,
+        properties: itemData.properties
+      }
     });
 
     const savedTemplate = await template.save();

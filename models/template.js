@@ -25,17 +25,17 @@ const templateSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'File'
       }
+    ],
+    properties: [
+      { name: { type: String, isRequired: true }, value: { type: String } }
+    ],
+    attachments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'File'
+      }
     ]
-  },
-  properties: [
-    { name: { type: String, isRequired: true }, value: { type: String } }
-  ],
-  attachments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'File'
-    }
-  ]
+  }
 });
 
 module.exports = mongoose.model('Template', templateSchema);
