@@ -89,7 +89,14 @@ function NewItemPage({
 
   return (
     <NewItemForm
-      initialValues={template}
+      initialValues={{
+        itemName: template.item.name || '',
+        itemCategory: template.item.category || '',
+        itemCondition: template.item.condition || '',
+        thumbnails: template.item.thumbnails || [],
+        properties: template.item.properties || [],
+        attachments: template.item.attachments || []
+      }}
       onSubmit={createItemsHandler}
       submitting={creatingItem}
     />
