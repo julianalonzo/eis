@@ -3,6 +3,8 @@ import React from 'react';
 import arrayMutators from 'final-form-arrays';
 import { Form } from 'react-final-form';
 import useItemForm from '../../hooks/useItemForm';
+import useThumbnailsForm from '../../hooks/useThumbnailsForm';
+import useAttachmentsForm from '../../hooks/useAttachmentsForm';
 
 import AttachmentsForm from '../AttachmentsForm';
 import Button from '../UI/Button';
@@ -29,18 +31,39 @@ const useStyles = makeStyles(theme => ({
 export default function NewItemForm({ initialValues, onSubmit, submitting }) {
   const classes = useStyles();
 
+  const {
+    itemName,
+    itemCategory,
+    itemCondition,
+    thumbnails,
+    properties,
+    attachments
+  } = initialValues;
+
+  const itemForm = useItemForm({
+    itemName,
+    itemCategory,
+    itemCondition,
+    properties
+  });
+
   const [
-    itemForm,
+    thumbnailsForm,
     addThumbnailsHandler,
-    removeThumbnailHandler,
+    removeThumbnailHandler
+  ] = useThumbnailsForm(thumbnails);
+
+  const [
+    attachmentsForm,
     addAttachmentsHandler,
     removeAttachmentHandler
-  ] = useItemForm(initialValues);
+  ] = useAttachmentsForm(attachments);
 
   const submitHandler = values => {
     const itemData = {
       ...values,
-      ...itemForm
+      thumbnails: thumbnailsForm,
+      attachments: attachmentsForm
     };
 
     onSubmit(itemData);
@@ -64,7 +87,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
             <Grid container>
               <Grid item md={2} />
               <Grid item xs={12} md={8} className={classes.formContainer}>
-                <Typography variant="h5" className={classes.pageHeading}>
+                <Typography variant="h6" className={classes.pageHeading}>
                   New Item
                 </Typography>
                 <FormPaper
@@ -74,7 +97,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
           one another."
                 >
                   <ItemDetailsForm
-                    thumbnails={itemForm.thumbnails}
+                    thumbnails={thumbnailsForm}
                     onAddThumbnails={addThumbnailsHandler}
                     onRemoveThumbnail={removeThumbnailHandler}
                   />
@@ -90,7 +113,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
                   subtitle="Attachments are relevant files of an item. These files may be software license, receipts, and images."
                 >
                   <AttachmentsForm
-                    attachments={itemForm.attachments}
+                    attachments={attachmentsForm}
                     onAddAttachments={addAttachmentsHandler}
                     onRemoveAttachment={removeAttachmentHandler}
                   />
