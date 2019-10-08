@@ -53,11 +53,8 @@ const createItemsFail = (state, action) => {
 };
 
 const createItemsSuccess = (state, action) => {
-  const newItems = action.item;
-
   return updateObject(state, {
-    creatingItem: false,
-    items: state.items.concat(newItems)
+    creatingItem: false
   });
 };
 
