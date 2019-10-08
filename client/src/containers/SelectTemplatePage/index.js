@@ -52,6 +52,7 @@ function SelectTemplatePage({
   templates,
   fetchingTemplates,
   onFetchTemplates,
+  onResetTemplates,
   history,
   match: { params }
 }) {
@@ -61,7 +62,11 @@ function SelectTemplatePage({
 
   useEffect(() => {
     onFetchTemplates();
-  }, [onFetchTemplates]);
+
+    return () => {
+      onResetTemplates();
+    };
+  }, [onFetchTemplates, onResetTemplates]);
 
   if (fetchingTemplates) {
     return <LoadingIndicator />;
@@ -141,7 +146,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchTemplates: () => dispatch(actions.fetchTemplates())
+    onFetchTemplates: () => dispatch(actions.fetchTemplates()),
+    onResetTemplates: () => dispatch(actions.resetTemplates())
   };
 };
 
