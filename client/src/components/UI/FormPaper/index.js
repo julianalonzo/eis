@@ -19,7 +19,9 @@ export default function FormPaper({ title, subtitle, children }) {
     <Paper className={classes.root}>
       <Grid container spacing={8}>
         <Grid item xs={12} md={5}>
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h6" color="textSecondary">
+            {title}
+          </Typography>
           <Typography variant="body2" color="textSecondary">
             {subtitle}
           </Typography>
