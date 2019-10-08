@@ -8,7 +8,10 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
-    marginBottom: theme.spacing(6)
+    marginBottom: theme.spacing(6),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2)
+    }
   }
 }));
 
@@ -17,8 +20,8 @@ export default function FormPaper({ title, subtitle, children }) {
 
   return (
     <Paper className={classes.root}>
-      <Grid container spacing={8}>
-        <Grid item xs={12} md={5}>
+      <Grid container spacing={4}>
+        <Grid item sm={12} md={5}>
           <Typography variant="h6" color="textSecondary">
             {title}
           </Typography>
@@ -26,7 +29,7 @@ export default function FormPaper({ title, subtitle, children }) {
             {subtitle}
           </Typography>
         </Grid>
-        <Grid item xs={12} md={7}>
+        <Grid item sm={12} md={7}>
           {children}
         </Grid>
       </Grid>

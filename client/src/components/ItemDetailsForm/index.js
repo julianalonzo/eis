@@ -9,9 +9,7 @@ import Thumbnail from '../UI/Thumbnail';
 import UploadDropzone from '../UI/UploadDropzone';
 
 import { makeStyles } from '@material-ui/styles';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import { Box, Grid, TextField, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   thumbnailsFormHeader: {
@@ -34,17 +32,14 @@ const useStyles = makeStyles(theme => ({
   },
   thumbnailsPreviewContainer: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexWrap: 'wrap'
   },
   noThumbnailText: {
     fontStyle: 'italic'
   },
-  formInput: {
-    margin: theme.spacing(0, 3, 3, 0),
-    width: '200px'
-  },
-  itemNameField: {
-    width: '300px'
+  textField: {
+    margin: theme.spacing(0, 3, 3, 0)
   }
 }));
 
@@ -70,45 +65,49 @@ export default function ItemDetailsForm({
   return (
     <Grid container>
       <Grid item xs={12}>
-        <Field name="itemName" validate={isRequired}>
-          {({ input, meta }) => {
-            return (
-              <TextField
-                label="Item Name"
-                variant="outlined"
-                className={`${classes.formInput} ${classes.itemNameField}`}
-                {...input}
-                error={meta.error && meta.touched}
-                helperText={meta.error && meta.touched ? meta.error : null}
-              />
-            );
-          }}
-        </Field>
-        <br />
-        <Field name="itemCategory">
-          {({ input, meta }) => {
-            return (
-              <TextField
-                label="Item Category"
-                variant="outlined"
-                className={classes.formInput}
-                {...input}
-              />
-            );
-          }}
-        </Field>
-        <Field name="itemCondition">
-          {({ input, meta }) => {
-            return (
-              <TextField
-                label="Item Condition"
-                variant="outlined"
-                className={classes.formInput}
-                {...input}
-              />
-            );
-          }}
-        </Field>
+        <Box>
+          <Field name="itemName" validate={isRequired}>
+            {({ input, meta }) => {
+              return (
+                <TextField
+                  label="Item Name"
+                  variant="outlined"
+                  margin="dense"
+                  className={classes.textField}
+                  {...input}
+                  error={meta.error && meta.touched}
+                  helperText={meta.error && meta.touched ? meta.error : null}
+                />
+              );
+            }}
+          </Field>
+          <Field name="itemCategory">
+            {({ input, meta }) => {
+              return (
+                <TextField
+                  label="Item Category"
+                  variant="outlined"
+                  margin="dense"
+                  className={classes.textField}
+                  {...input}
+                />
+              );
+            }}
+          </Field>
+          <Field name="itemCondition">
+            {({ input, meta }) => {
+              return (
+                <TextField
+                  label="Item Condition"
+                  variant="outlined"
+                  margin="dense"
+                  className={classes.textField}
+                  {...input}
+                />
+              );
+            }}
+          </Field>
+        </Box>
       </Grid>
       <Grid item xs={12}>
         <div className={classes.thumbnailsFormHeader}>

@@ -5,14 +5,12 @@ import { isRequired } from '../../../util/validators';
 import { Field } from 'react-final-form';
 
 import { makeStyles } from '@material-ui/styles';
+import { Grid, IconButton, TextField } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles(theme => ({
-  actionButtonContainer: {
-    paddingLeft: theme.space
+  textField: {
+    margin: theme.spacing(0, 3, 3, 0)
   }
 }));
 
@@ -24,40 +22,38 @@ export default function PropertyForm({
   const classes = useStyles();
 
   return (
-    <Grid container alignItems="flex-start" spacing={2}>
-      <Grid item xs={5}>
+    <Grid container alignItems="baseline">
+      <Grid item xs={12}>
         <Field name={`${fieldName}.name`} validate={isRequired}>
           {({ input, meta }) => {
             return (
               <TextField
                 label="Property Name"
                 variant="outlined"
+                margin="dense"
+                className={classes.textField}
                 {...input}
-                fullWidth
                 error={meta.error && meta.touched}
                 helperText={meta.error && meta.touched ? meta.error : null}
               />
             );
           }}
         </Field>
-      </Grid>
-      <Grid item xs={5}>
         <Field name={`${fieldName}.value`}>
           {({ input, meta }) => {
             return (
               <TextField
                 label="Default Value"
                 variant="outlined"
+                margin="dense"
+                className={classes.textField}
                 {...input}
-                fullWidth
               />
             );
           }}
         </Field>
-      </Grid>
-      <Grid item xs={2} className={classes.actionButtonContainer}>
-        <IconButton onClick={() => onPropertyRemoved(fieldIndex)}>
-          <CloseIcon />
+        <IconButton size="small" onClick={() => onPropertyRemoved(fieldIndex)}>
+          <CloseIcon fontSize="small" />
         </IconButton>
       </Grid>
     </Grid>

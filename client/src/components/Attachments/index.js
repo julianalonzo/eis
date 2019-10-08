@@ -13,7 +13,8 @@ export default function Attachments({ attachments, variant, primaryAction }) {
             key={attachment._id ? attachment._id : index}
             item
             xs={12}
-            md={10}
+            md={variant === 'upload' ? 12 : 10}
+            xl={9}
           >
             <Attachment
               key={attachment._id || attachment.name + '_' + index}
