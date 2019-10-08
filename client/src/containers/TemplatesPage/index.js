@@ -10,8 +10,6 @@ import Templates from '../../components/Templates';
 import { makeStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
 
-import PropTypes from 'prop-types';
-
 const useStyles = makeStyles(theme => ({
   pageHeading: {
     marginBottom: theme.spacing(2)
@@ -21,6 +19,7 @@ const useStyles = makeStyles(theme => ({
 function TemplatesPage({
   templates,
   fetchingTemplates,
+  onResetTemplates,
   onFetchTemplates,
   history
 }) {
@@ -32,7 +31,11 @@ function TemplatesPage({
 
   useEffect(() => {
     onFetchTemplates();
-  }, [onFetchTemplates]);
+
+    return () => {
+      onResetTemplates();
+    };
+  }, [onFetchTemplates, onResetTemplates]);
 
   if (fetchingTemplates) {
     return <LoadingIndicator />;
@@ -41,9 +44,11 @@ function TemplatesPage({
   return (
     <React.Fragment>
       {templates.length > 0 && (
-        <Typography variant="h6" className={classes.pageHeading}>
-          My Templates
-        </Typography>
+        <React.Fragment>
+          <Typography variant="h6" className={classes.pageHeading}>
+            My Templates
+          </Typography>
+        </React.Fragment>
       )}
       <Templates
         templates={templates}
@@ -62,7 +67,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchTemplates: () => dispatch(actions.fetchTemplates())
+    onFetchTemplates: () => dispatch(actions.fetchTemplates()),
+    onResetTemplates: () => dispatch(actions.resetTemplates())
   };
 };
 
@@ -70,13 +76,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withRouter(TemplatesPage));
-
-TemplatesPage.propTypes = {
-  templates: PropTypes.arrayOf(), // @TODO: Put templates schema here
-  onFetchTemplates: PropTypes.func.isRequired
-};
-
-TemplatesPage.defaultProps = {
-  fetchingTemplates: false,
-  fetchingTemplatesError: null
-};
