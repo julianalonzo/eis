@@ -36,6 +36,12 @@ export const fetchTemplates = () => {
   };
 };
 
+export const resetTemplates = () => {
+  return {
+    type: actionTypes.RESET_TEMPLATES
+  };
+};
+
 export const fetchTemplateStart = () => {
   return {
     type: actionTypes.FETCH_TEMPLATE_START
@@ -96,15 +102,14 @@ export const createTemplateFail = error => {
 };
 
 export const createTemplate = template => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(createTemplateStart());
-    axios
-      .post('/api/templates/new', template)
-      .then(response => {
-        dispatch(createTemplateSuccess(response.data.template));
-      })
-      .catch(error => {
-        dispatch(createTemplateFail(error));
-      });
+
+    try {
+      const response = await axios.post('api/templates/new', template);
+      dispatch(createTemplateSuccess(response.data.template));
+    } catch (err) {
+      dispatch(createTemplateFail(err));
+    }
   };
 };

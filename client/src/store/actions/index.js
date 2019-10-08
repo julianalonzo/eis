@@ -9,6 +9,7 @@ export {
 
 export {
   fetchTemplates,
+  resetTemplates,
   fetchTemplate,
   resetTemplate,
   createTemplate
