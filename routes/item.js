@@ -15,6 +15,12 @@ const createItemsUpload = upload.fields([
 ]);
 router.post('/new', createItemsUpload, itemController.createItems);
 
+const updateItemUpload = upload.fields([
+  { name: 'fileThumbnails' },
+  { name: 'fileAttachments' }
+]);
+router.put('/', updateItemUpload, itemController.updateItem);
+
 router.post('/remove', itemController.removeItem);
 
 module.exports = router;

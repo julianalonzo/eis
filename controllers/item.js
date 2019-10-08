@@ -139,6 +139,38 @@ exports.generateItemData = async (
   }
 };
 
+exports.updateItem = async (req, res, next) => {
+  // @TODO: Add validation
+
+  try {
+    const itemId = req.body.itemId;
+
+    const newThumbnailsIds = req.files.fileThumbnails
+      ? await extractIdsFromNewFiles('thumbnail', req.files.fileThumbnails)
+      : undefined;
+
+    const newAttachmentIds = req.files.fileAttachments
+      ? await extractIdsFromNewFiles('attachment', req.files.fileAttachments)
+      : undefined;
+
+    const modifiedItem = await Item.findOneAndUpdate(
+      { _id: itemId },
+      {
+        $set: { ...req.body },
+        $addToSet: {
+          thumbnails: newThumbnailsIds,
+          newAttachmentIds: newAttachmentIds
+        }
+      },
+      { new: true, omitUndefined: true, useFindAndModify: false }
+    );
+
+    res.json({ item: modifiedItem });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.removeItem = async (req, res, next) => {
   const itemId = req.body.itemId;
   try {
