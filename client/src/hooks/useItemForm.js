@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
 function useItemForm(initialValues) {
-  const [itemForm] = useState({
+  const [itemForm, setItemForm] = useState({
     itemName: initialValues.itemName || '',
     itemCategory: initialValues.itemCategory || '',
     itemCondition: initialValues.itemCondition || '',
     properties: initialValues.properties || []
   });
 
-  return itemForm;
+  return [itemForm, setItemForm];
 }
 
 export default useItemForm;

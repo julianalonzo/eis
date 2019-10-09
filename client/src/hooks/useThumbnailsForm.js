@@ -17,7 +17,12 @@ function useThumbnailsForm(initialValue) {
     });
   };
 
-  return [thumbnailsForm, addThumbnailsHandler, removeThumbnailHandler];
+  return [
+    thumbnailsForm,
+    setThumbnailsForm,
+    addThumbnailsHandler,
+    removeThumbnailHandler
+  ];
 }
 
 export default useThumbnailsForm;
