@@ -114,6 +114,39 @@ export const createItems = item => {
   };
 };
 
+export const updateItemStart = () => {
+  return {
+    type: actionTypes.UPDATE_ITEM_START
+  };
+};
+
+export const updateItemSuccess = updatedItem => {
+  return {
+    type: actionTypes.UPDATE_ITEM_SUCCESS,
+    item: updatedItem
+  };
+};
+
+export const updateItemFail = error => {
+  return {
+    type: actionTypes.UPDATE_ITEM_FAIL,
+    error: error
+  };
+};
+
+export const updateItem = updatedItemData => {
+  return async dispatch => {
+    dispatch(updateItemStart());
+
+    try {
+      const response = await axios.put('api/items/', updatedItemData);
+      dispatch(updateItemSuccess(response.data.item));
+    } catch (err) {
+      dispatch(updateItemFail(err));
+    }
+  };
+};
+
 export const removeItemStart = () => {
   return {
     type: actionTypes.REMOVE_ITEM_START

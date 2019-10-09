@@ -7,6 +7,8 @@ const initialState = {
   fetchingItems: false,
   fetchingItem: false,
   creatingItem: false,
+  updatingItem: false,
+  updatingItemError: null,
   creatingItemsError: null,
   removingItem: false,
   removingItemError: null
@@ -58,6 +60,24 @@ const createItemsSuccess = (state, action) => {
   });
 };
 
+const updateItemStart = (state, action) => {
+  return updateObject(state, {
+    updatingItem: true
+  });
+};
+const updateItemSuccess = (state, action) => {
+  return updateObject(state, {
+    updatingItem: false,
+    item: action.item
+  });
+};
+const updateItemFail = (state, action) => {
+  return updateObject(state, {
+    updatingItem: false,
+    updatingItemError: action.error
+  });
+};
+
 const removeItemStart = (state, action) => {
   return updateObject(state, { removingItem: true });
 };
@@ -100,6 +120,12 @@ const reducer = (state = initialState, action) => {
       return createItemsSuccess(state, action);
     case actionTypes.CREATE_ITEMS_FAIL:
       return createItemsFail(state, action);
+    case actionTypes.UPDATE_ITEM_START:
+      return updateItemStart(state, action);
+    case actionTypes.UPDATE_ITEM_SUCCESS:
+      return updateItemSuccess(state, action);
+    case actionTypes.UPDATE_ITEM_FAIL:
+      return updateItemFail(state, action);
     case actionTypes.REMOVE_ITEM_START:
       return removeItemStart(state, action);
     case actionTypes.REMOVE_ITEM_FAIL:

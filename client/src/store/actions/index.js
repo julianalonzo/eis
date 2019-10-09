@@ -2,6 +2,7 @@ export {
   fetchItems,
   fetchItem,
   createItems,
+  updateItem,
   resetItems,
   resetItem,
   removeItem
