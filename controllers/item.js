@@ -144,6 +144,17 @@ exports.updateItem = async (req, res, next) => {
 
   try {
     const itemId = req.body.itemId;
+    const name = req.body.name;
+    const category = req.body.category;
+    const condition = req.body.condition;
+    const properties = req.body.properties
+      ? parseElementsToJSON(req.body.properties)
+      : undefined;
+    const thumbnails = req.body.thumbnails
+      ? JSON.parse(req.body.thumbnails)
+      : undefined;
+    const attachments = req.body.attachments;
+    const folder = req.body.folder;
 
     const newThumbnailsIds = req.files.fileThumbnails
       ? await extractIdsFromNewFiles('thumbnail', req.files.fileThumbnails)
@@ -153,17 +164,37 @@ exports.updateItem = async (req, res, next) => {
       ? await extractIdsFromNewFiles('attachment', req.files.fileAttachments)
       : undefined;
 
-    const modifiedItem = await Item.findOneAndUpdate(
+    await Item.updateOne(
       { _id: itemId },
       {
-        $set: { ...req.body },
-        $addToSet: {
-          thumbnails: newThumbnailsIds,
-          newAttachmentIds: newAttachmentIds
+        $set: {
+          name,
+          category,
+          condition,
+          properties,
+          thumbnails,
+          attachments,
+          folder
         }
       },
-      { new: true, omitUndefined: true, useFindAndModify: false }
+      { omitUndefined: true }
     );
+
+    await Item.updateOne(
+      { _id: itemId },
+      {
+        $addToSet: {
+          thumbnails: newThumbnailsIds,
+          attachments: newAttachmentIds
+        }
+      },
+      { omitUndefined: true }
+    );
+
+    const modifiedItem = await Item.findById(itemId)
+      .populate('thumbnails')
+      .populate('attachments')
+      .exec();
 
     res.json({ item: modifiedItem });
   } catch (err) {
