@@ -33,6 +33,7 @@ export default function NewTemplateForm({ onSubmit, submitting }) {
 
   const [
     thumbnailsForm,
+    setThumbnailsForm,
     addThumbnailsHandler,
     removeThumbnailHandler
   ] = useThumbnailsForm([]);

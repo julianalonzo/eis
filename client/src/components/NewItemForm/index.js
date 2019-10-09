@@ -40,7 +40,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
     attachments
   } = initialValues;
 
-  const itemForm = useItemForm({
+  const [itemForm] = useItemForm({
     itemName,
     itemCategory,
     itemCondition,
@@ -49,6 +49,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
 
   const [
     thumbnailsForm,
+    setThumbnailForm,
     addThumbnailsHandler,
     removeThumbnailHandler
   ] = useThumbnailsForm(thumbnails);
