@@ -12,7 +12,13 @@ import DialogContent from '../UI/Dialog/DialogContent';
 import DialogActions from '../UI/Dialog/DialogActions';
 import ItemDetailsForm from '../ItemDetailsForm';
 
-function EditItemDetailsDialogForm({ isOpen, onClose, item }) {
+function EditItemDetailsDialogForm({
+  isOpen,
+  onClose,
+  item,
+  onSubmit,
+  submitting
+}) {
   const [itemDetailsForm, setItemDetailsForm] = useItemForm({
     itemName: item.name || '',
     itemCondition: item.condition || '',
@@ -38,35 +44,46 @@ function EditItemDetailsDialogForm({ isOpen, onClose, item }) {
     }
   }, [item, setItemDetailsForm, setThumbnailsForm, isOpen]);
 
+  const submitHandler = values => {
+    const updatedItemData = {
+      ...values,
+      thumbnails: thumbnailsForm
+    };
+
+    onSubmit(updatedItemData);
+  };
+
   return (
-    <Dialog isOpen={isOpen} onClose={onClose}>
-      <DialogTitle onClose={onClose}>Edit Item</DialogTitle>
-      <DialogContent>
-        <Form
-          initialValues={itemDetailsForm}
-          onSubmit={values => {
-            console.log(values);
-          }}
-          render={({ handleSubmit }) => {
-            return (
-              <form onSubmit={handleSubmit}>
+    <Form
+      initialValues={itemDetailsForm}
+      onSubmit={values => {
+        submitHandler(values);
+      }}
+      render={({ handleSubmit }) => {
+        return (
+          <form onSubmit={handleSubmit}>
+            <Dialog isOpen={isOpen} onClose={onClose}>
+              <DialogTitle onClose={onClose}>Edit Item</DialogTitle>
+              <DialogContent>
                 <ItemDetailsForm
                   thumbnails={thumbnailsForm}
                   onAddThumbnails={addThumbnailsHandler}
                   onRemoveThumbnail={removeThumbnailHandler}
                 />
-              </form>
-            );
-          }}
-        ></Form>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button color="primary" type="submit">
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={onClose} disabled={submitting}>
+                  Cancel
+                </Button>
+                <Button color="primary" type="submit" disabled={submitting}>
+                  {submitting ? 'Saving Item...' : 'Save Item'}
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </form>
+        );
+      }}
+    />
   );
 }
 

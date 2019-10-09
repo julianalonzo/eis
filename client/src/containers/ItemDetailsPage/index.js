@@ -28,6 +28,8 @@ function ItemDetailsPage({
   onFetchItem,
   fetchingItem,
   onResetItem,
+  onUpdateItem,
+  updatingItem,
   match: { params }
 }) {
   const classes = useStyles();
@@ -51,6 +53,36 @@ function ItemDetailsPage({
       onResetItem();
     };
   }, [itemId, onFetchItem, onResetItem]);
+
+  const updateItemDetailsHandler = async updatedItemData => {
+    const formData = new FormData();
+
+    formData.append('itemId', item._id);
+    formData.append('name', updatedItemData.itemName);
+    formData.append('category', updatedItemData.itemCategory || '');
+    formData.append('condition', updatedItemData.itemCondition || '');
+
+    let thumbnails = [];
+    let fileThumbnails = [];
+
+    for (const thumbnail of updatedItemData.thumbnails) {
+      if (thumbnail instanceof File) {
+        fileThumbnails = fileThumbnails.concat(thumbnail);
+      } else {
+        thumbnails = thumbnails.concat(thumbnail);
+      }
+    }
+
+    for (const fileThumbnail of fileThumbnails) {
+      formData.append('fileThumbnails', fileThumbnail);
+    }
+
+    formData.append('thumbnails', JSON.stringify(thumbnails));
+
+    await onUpdateItem(formData);
+
+    closeEditItemDetailsDialogHandler();
+  };
 
   if (fetchingItem) {
     return <LoadingIndicator />;
@@ -76,6 +108,8 @@ function ItemDetailsPage({
                   isOpen={isEditItemDetailsDialogOpened}
                   onClose={closeEditItemDetailsDialogHandler}
                   item={item}
+                  onSubmit={updateItemDetailsHandler}
+                  submitting={updatingItem}
                 />
               </Grid>
               <Grid item xs={12} className={classes.sectionGridItem}>
@@ -118,14 +152,17 @@ function ItemDetailsPage({
 const mapStateToProps = state => {
   return {
     item: state.item.item,
-    fetchingItem: state.item.fetchingItem
+    fetchingItem: state.item.fetchingItem,
+    updatingItem: state.item.updatingItem
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onFetchItem: itemId => dispatch(actions.fetchItem(itemId)),
-    onResetItem: () => dispatch(actions.resetItem())
+    onResetItem: () => dispatch(actions.resetItem()),
+    onUpdateItem: updatedItemData =>
+      dispatch(actions.updateItem(updatedItemData))
   };
 };
 
