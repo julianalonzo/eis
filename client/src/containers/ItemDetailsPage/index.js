@@ -2,25 +2,20 @@ import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { Form } from 'react-final-form';
 import { withRouter } from 'react-router-dom';
 
+import useDialogState from '../../hooks/useDialogState';
+
 import Attachments from '../../components/Attachments';
-import Button from '../../components/UI/Button';
-import Dialog from '../../components/UI/Dialog';
-import DialogTitle from '../../components/UI/Dialog/DialogTitle';
-import DialogContent from '../../components/UI/Dialog/DialogContent';
-import DialogActions from '../../components/UI/Dialog/DialogActions';
+import EditItemDetailsDialogForm from '../../components/EditItemDetailsDialogForm';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import PropertiesSection from '../../components/PropertiesSection';
 import SectionPaper from '../../components/UI/SectionPaper';
 
 import { makeStyles } from '@material-ui/styles';
-import AddIcon from '@material-ui/icons/Add';
 import Grid from '@material-ui/core/Grid';
-import EditIcon from '@material-ui/icons/Edit';
-import ItemDetailsForm from '../../components/ItemDetailsForm';
+import { Add as AddIcon, Edit as EditIcon } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   sectionGridItem: {
@@ -39,38 +34,15 @@ function ItemDetailsPage({
 
   const [itemId, setItemId] = useState(params.itemId || null);
 
-  const [currentItem, setCurrentItem] = useState({
-    itemName: '',
-    itemCondition: '',
-    itemCategory: ''
-  });
-
   const [
     isEditItemDetailsDialogOpened,
-    setIsEditItemDetailsDialogOpened
-  ] = useState(false);
-
-  const openEditItemDetailsDialogHandler = () => {
-    setIsEditItemDetailsDialogOpened(true);
-  };
-
-  const closeEditItemDetailsDialogHandler = () => {
-    setIsEditItemDetailsDialogOpened(false);
-  };
+    openEditItemDetailsDialogHandler,
+    closeEditItemDetailsDialogHandler
+  ] = useDialogState(false);
 
   useEffect(() => {
     setItemId(params.itemId || null);
   }, [params]);
-
-  useEffect(() => {
-    if (item !== null) {
-      setCurrentItem({
-        itemName: item.name || '',
-        itemCondition: item.condition || '',
-        itemCategory: item.category || ''
-      });
-    }
-  }, [item]);
 
   useEffect(() => {
     onFetchItem(itemId);
@@ -87,85 +59,57 @@ function ItemDetailsPage({
   return (
     <React.Fragment>
       {item !== null ? (
-        <React.Fragment>
-          <Grid container>
-            <Grid item xs={12} md={8} lg={6}>
-              <Grid container>
-                <Grid item xs={12} className={classes.sectionGridItem}>
-                  <SectionPaper
-                    title="Item Details"
-                    actionButton={{
-                      icon: <EditIcon />,
-                      action: openEditItemDetailsDialogHandler
-                    }}
-                  >
-                    <ItemDetailsSection item={item} />
-                  </SectionPaper>
-                </Grid>
-                <Grid item xs={12} className={classes.sectionGridItem}>
-                  <SectionPaper
-                    title="Properties"
-                    actionButton={{
-                      icon: <AddIcon />,
-                      action: () => {}
-                    }}
-                  >
-                    <PropertiesSection properties={item.properties} />
-                  </SectionPaper>
-                </Grid>
-                <Grid item xs={12} className={classes.sectionGridItem}>
-                  <SectionPaper
-                    title="Attachments"
-                    actionButton={{
-                      icon: <AddIcon />,
-                      action: () => {}
-                    }}
-                  >
-                    <Attachments
-                      attachments={item.attachments.map(attachment => ({
-                        name: attachment.originalname,
-                        size: attachment.size,
-                        dateUploaded: attachment.dateUploaded
-                      }))}
-                    />
-                  </SectionPaper>
-                </Grid>
+        <Grid container>
+          <Grid item xs={12} md={8} lg={6}>
+            <Grid container>
+              <Grid item xs={12} className={classes.sectionGridItem}>
+                <SectionPaper
+                  title="Item Details"
+                  actionButton={{
+                    icon: <EditIcon />,
+                    action: openEditItemDetailsDialogHandler
+                  }}
+                >
+                  <ItemDetailsSection item={item} />
+                </SectionPaper>
+                <EditItemDetailsDialogForm
+                  isOpen={isEditItemDetailsDialogOpened}
+                  onClose={closeEditItemDetailsDialogHandler}
+                  item={item}
+                />
+              </Grid>
+              <Grid item xs={12} className={classes.sectionGridItem}>
+                <SectionPaper
+                  title="Properties"
+                  actionButton={{
+                    icon: <AddIcon />,
+                    action: () => {}
+                  }}
+                >
+                  <PropertiesSection properties={item.properties} />
+                </SectionPaper>
+              </Grid>
+              <Grid item xs={12} className={classes.sectionGridItem}>
+                <SectionPaper
+                  title="Attachments"
+                  actionButton={{
+                    icon: <AddIcon />,
+                    action: () => {}
+                  }}
+                >
+                  <Attachments
+                    attachments={item.attachments.map(attachment => ({
+                      name: attachment.originalname,
+                      size: attachment.size,
+                      dateUploaded: attachment.dateUploaded
+                    }))}
+                  />
+                </SectionPaper>
               </Grid>
             </Grid>
-            <Grid item md={4}></Grid>
           </Grid>
-          <Dialog
-            isOpen={isEditItemDetailsDialogOpened}
-            onClose={closeEditItemDetailsDialogHandler}
-          >
-            <DialogTitle onClose={closeEditItemDetailsDialogHandler}>
-              Edit Item
-            </DialogTitle>
-            <DialogContent>
-              <Form
-                initialValues={currentItem}
-                onSubmit={values => {
-                  console.log(values);
-                }}
-                render={({ handleSubmit }) => {
-                  return (
-                    <form onSubmit={handleSubmit}>
-                      <ItemDetailsForm thumbnails={item.thumbnails} />
-                    </form>
-                  );
-                }}
-              ></Form>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={closeEditItemDetailsDialogHandler}>
-                Cancel
-              </Button>
-              <Button color="primary" type="submit">
-                Save
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </React.Fragment>
+          <Grid item md={4}></Grid>
+        </Grid>
       ) : null}
     </React.Fragment>
   );
