@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const { extractIdsFromNewFiles } = require('./file');
 
 const Item = require('../models/item');
@@ -178,7 +180,7 @@ exports.updateItemDetails = async (req, res, next) => {
       'thumbnails'
     );
 
-    res.json({
+    res.status(200).json({
       updatedItemDetails: {
         _id: modifiedItemDetails.id,
         name: modifiedItemDetails.name,
@@ -186,6 +188,36 @@ exports.updateItemDetails = async (req, res, next) => {
         condition: modifiedItemDetails.condition,
         thumbnails: modifiedItemDetails.thumbnails
       }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.addProperty = async (req, res, next) => {
+  try {
+    const itemId = req.body.itemId;
+    const property = req.body.property;
+
+    // @TODO: Add validators
+
+    const newProperty = {
+      _id: mongoose.Types.ObjectId(),
+      name: property.name,
+      value: property.value || ''
+    };
+
+    await Item.updateOne(
+      { _id: itemId },
+      {
+        $push: {
+          properties: newProperty
+        }
+      }
+    );
+
+    res.status(200).json({
+      newProperty: newProperty
     });
   } catch (err) {
     console.log(err);
