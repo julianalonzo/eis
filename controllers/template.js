@@ -33,13 +33,12 @@ exports.createTemplate = async (req, res, next) => {
   try {
     const templateName = req.body.name || '';
     const templateDescription = req.body.description || '';
-    const rawItemData = req.body.item
-      ? JSON.parse(req.body.item)
-      : { name: '', category: '', condition: '' };
-    const itemName = rawItemData.name || '';
-    const itemCategory = rawItemData.category || '';
-    const itemCondition = rawItemData.condition || '';
-    const properties = req.body.properties || [];
+    const itemName = req.body.itemName || '';
+    const itemCategory = req.body.itemCategory || '';
+    const itemCondition = req.body.itemCondition || '';
+    const properties = req.body.properties
+      ? JSON.parse(req.body.properties)
+      : [];
     const fileThumbnails = req.files.fileThumbnails || [];
     const fileAttachments = req.files.fileAttachments || [];
 

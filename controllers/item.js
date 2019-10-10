@@ -1,8 +1,4 @@
-const { parseElementsToJSON } = require('../util/helperFunctions');
-const {
-  extractIdsFromExistingFiles,
-  extractIdsFromNewFiles
-} = require('./file');
+const { extractIdsFromNewFiles } = require('./file');
 
 const Item = require('../models/item');
 
@@ -61,7 +57,7 @@ exports.createItems = async (req, res, next) => {
       : [];
     const fileThumbnails = req.files.fileThumbnails || [];
     const templateAttachments = req.body.templateAttachments
-      ? JSON.parse(req.body.templateThumbnails)
+      ? JSON.parse(req.body.templateAttachments)
       : [];
     const fileAttachments = req.files.fileAttachments || [];
     const folder = req.body.folder || '';
