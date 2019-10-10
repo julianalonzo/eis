@@ -32,7 +32,9 @@ function ItemDetailsPage({
   fetchingItem,
   onResetItem,
   onUpdateItemDetails,
+  onAddProperty,
   updatingItemDetails,
+  addingProperty,
   match: { params }
 }) {
   const classes = useStyles();
@@ -107,8 +109,8 @@ function ItemDetailsPage({
     closeEditItemDetailsDialogHandler();
   };
 
-  const addNewPropertyHandler = async newProperty => {
-    // @TODO: Add functionality
+  const addNewPropertyHandler = async property => {
+    await onAddProperty(itemId, property);
 
     closeNewPropertyDialogHandler();
   };
@@ -162,7 +164,7 @@ function ItemDetailsPage({
                   isOpen={isNewPropertyDialogOpened}
                   onClose={closeNewPropertyDialogHandler}
                   onSubmit={addNewPropertyHandler}
-                  submitting={false}
+                  submitting={addingProperty}
                 />
               </SectionPaper>
             </Grid>
@@ -195,7 +197,8 @@ const mapStateToProps = state => {
   return {
     item: state.item.item,
     fetchingItem: state.item.fetchingItem,
-    updatingItemDetails: state.item.updatingItemDetails
+    updatingItemDetails: state.item.updatingItemDetails,
+    addingProperty: state.item.addingProperty
   };
 };
 
@@ -204,7 +207,9 @@ const mapDispatchToProps = dispatch => {
     onFetchItem: itemId => dispatch(actions.fetchItem(itemId)),
     onResetItem: () => dispatch(actions.resetItem()),
     onUpdateItemDetails: updatedItemDetailsData =>
-      dispatch(actions.updateItemDetails(updatedItemDetailsData))
+      dispatch(actions.updateItemDetails(updatedItemDetailsData)),
+    onAddProperty: (itemId, property) =>
+      dispatch(actions.addProperty(itemId, property))
   };
 };
 
