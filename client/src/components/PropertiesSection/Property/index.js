@@ -16,7 +16,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Property({ _id, name, value }) {
+export default function Property({
+  _id,
+  name,
+  value,
+  onOpenPropertyMoreActions
+}) {
   const classes = useStyles();
 
   return (
@@ -32,7 +37,12 @@ export default function Property({ _id, name, value }) {
         </Typography>
       </Grid>
       <Grid item xs={2} className={classes.actionButton}>
-        <IconButton size="small">
+        <IconButton
+          size="small"
+          onClick={event => {
+            onOpenPropertyMoreActions(event, _id);
+          }}
+        >
           <MoreVertIcon fontSize="small" />
         </IconButton>
       </Grid>

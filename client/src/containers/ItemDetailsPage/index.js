@@ -5,12 +5,14 @@ import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
 import useDialogState from '../../hooks/useDialogState';
+import usePopperState from '../../hooks/usePopperState';
 
 import Attachments from '../../components/Attachments';
 import EditItemDetailsDialogForm from '../../components/EditItemDetailsDialogForm';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import NewPropertyDialogForm from '../../components/NewPropertyDialogForm';
+import PropertyMoreActionsMenuListPopper from '../../components/PropertiesSection/PropertyMoreActionsMenuListPopper';
 import PropertiesSection from '../../components/PropertiesSection';
 import SectionPaper from '../../components/UI/SectionPaper';
 
@@ -48,6 +50,25 @@ function ItemDetailsPage({
     openNewPropertyDialogHandler,
     closeNewPropertyDialogHandler
   ] = useDialogState(false);
+
+  const [
+    propertyMoreActionsAnchorEl,
+    openPropertyMoreActionsHandler,
+    closePropertyMoreActionsHandler
+  ] = usePopperState(null);
+
+  // Property ID of the property that has its more actions popper opened
+  const [propertyIdMoreActions, setPropertyIdMoreActions] = useState(null);
+
+  const onOpenPropertyMoreActions = (event, id) => {
+    openPropertyMoreActionsHandler(event.currentTarget);
+    setPropertyIdMoreActions(id);
+  };
+
+  const onClosePropertyMoreActions = () => {
+    closePropertyMoreActionsHandler();
+    setPropertyIdMoreActions(null);
+  };
 
   useEffect(() => {
     setItemId(params.itemId || null);
@@ -135,7 +156,16 @@ function ItemDetailsPage({
                   action: openNewPropertyDialogHandler
                 }}
               >
-                <PropertiesSection properties={item.properties} />
+                <PropertiesSection
+                  properties={item.properties}
+                  onOpenPropertyMoreActions={onOpenPropertyMoreActions}
+                />
+                <PropertyMoreActionsMenuListPopper
+                  isOpen={Boolean(propertyMoreActionsAnchorEl)}
+                  anchorEl={propertyMoreActionsAnchorEl}
+                  onClose={onClosePropertyMoreActions}
+                  currentPropertyId={propertyIdMoreActions}
+                />
                 <NewPropertyDialogForm
                   isOpen={isNewPropertyDialogOpened}
                   onClose={closeNewPropertyDialogHandler}
