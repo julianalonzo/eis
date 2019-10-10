@@ -135,7 +135,7 @@ exports.generateItemData = async (
   }
 };
 
-exports.updateItem = async (req, res, next) => {
+exports.updateItemDetails = async (req, res, next) => {
   // @TODO: Add validation
 
   try {
@@ -143,21 +143,12 @@ exports.updateItem = async (req, res, next) => {
     const name = req.body.name;
     const category = req.body.category;
     const condition = req.body.condition;
-    const properties = req.body.properties
-      ? JSON.parse(req.body.properties)
-      : undefined;
     const thumbnails = req.body.thumbnails
       ? JSON.parse(req.body.thumbnails)
       : undefined;
-    const attachments = req.body.attachments;
-    const folder = req.body.folder;
 
     const newThumbnailsIds = req.files.fileThumbnails
       ? await extractIdsFromNewFiles('thumbnail', req.files.fileThumbnails)
-      : undefined;
-
-    const newAttachmentIds = req.files.fileAttachments
-      ? await extractIdsFromNewFiles('attachment', req.files.fileAttachments)
       : undefined;
 
     await Item.updateOne(
@@ -167,10 +158,7 @@ exports.updateItem = async (req, res, next) => {
           name,
           category,
           condition,
-          properties,
-          thumbnails,
-          attachments,
-          folder
+          thumbnails
         }
       },
       { omitUndefined: true }
@@ -180,19 +168,23 @@ exports.updateItem = async (req, res, next) => {
       { _id: itemId },
       {
         $addToSet: {
-          thumbnails: newThumbnailsIds,
-          attachments: newAttachmentIds
+          thumbnails: newThumbnailsIds
         }
       },
       { omitUndefined: true }
     );
 
-    const modifiedItem = await Item.findById(itemId)
-      .populate('thumbnails')
-      .populate('attachments')
-      .exec();
+    const modifiedItemDetails = await Item.findById(itemId).populate(
+      'thumbnails'
+    );
 
-    res.json({ item: modifiedItem });
+    res.json({
+      _id: modifiedItemDetails.id,
+      name: modifiedItemDetails.name,
+      category: modifiedItemDetails.category,
+      condition: modifiedItemDetails.condition,
+      thumbnails: modifiedItemDetails.thumbnails
+    });
   } catch (err) {
     console.log(err);
   }
