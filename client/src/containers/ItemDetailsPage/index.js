@@ -31,8 +31,8 @@ function ItemDetailsPage({
   onFetchItem,
   fetchingItem,
   onResetItem,
-  onUpdateItem,
-  updatingItem,
+  onUpdateItemDetails,
+  updatingItemDetails,
   match: { params }
 }) {
   const classes = useStyles();
@@ -102,21 +102,13 @@ function ItemDetailsPage({
 
     formData.append('thumbnails', JSON.stringify(thumbnails));
 
-    await onUpdateItem(formData);
+    await onUpdateItemDetails(formData);
 
     closeEditItemDetailsDialogHandler();
   };
 
   const addNewPropertyHandler = async newProperty => {
-    const formData = new FormData();
-
-    formData.append('itemId', item._id);
-
-    const properties = item.properties.concat(newProperty);
-
-    formData.append('properties', JSON.stringify(properties));
-
-    await onUpdateItem(formData);
+    // @TODO: Add functionality
 
     closeNewPropertyDialogHandler();
   };
@@ -145,7 +137,7 @@ function ItemDetailsPage({
                 onClose={closeEditItemDetailsDialogHandler}
                 item={item}
                 onSubmit={updateItemDetailsHandler}
-                submitting={updatingItem}
+                submitting={updatingItemDetails}
               />
             </Grid>
             <Grid item xs={12} className={classes.sectionGridItem}>
@@ -170,7 +162,7 @@ function ItemDetailsPage({
                   isOpen={isNewPropertyDialogOpened}
                   onClose={closeNewPropertyDialogHandler}
                   onSubmit={addNewPropertyHandler}
-                  submitting={updatingItem}
+                  submitting={false}
                 />
               </SectionPaper>
             </Grid>
@@ -203,7 +195,7 @@ const mapStateToProps = state => {
   return {
     item: state.item.item,
     fetchingItem: state.item.fetchingItem,
-    updatingItem: state.item.updatingItem
+    updatingItemDetails: state.item.updatingItemDetails
   };
 };
 
@@ -211,8 +203,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onFetchItem: itemId => dispatch(actions.fetchItem(itemId)),
     onResetItem: () => dispatch(actions.resetItem()),
-    onUpdateItem: updatedItemData =>
-      dispatch(actions.updateItem(updatedItemData))
+    onUpdateItemDetails: updatedItemDetailsData =>
+      dispatch(actions.updateItemDetails(updatedItemDetailsData))
   };
 };
 

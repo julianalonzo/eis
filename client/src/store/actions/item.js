@@ -114,35 +114,35 @@ export const createItems = item => {
   };
 };
 
-export const updateItemStart = () => {
+export const updateItemDetailsStart = () => {
   return {
-    type: actionTypes.UPDATE_ITEM_START
+    type: actionTypes.UPDATE_ITEM_DETAILS_START
   };
 };
 
-export const updateItemSuccess = updatedItem => {
+export const updateItemDetailsSuccess = updatedItemDetails => {
   return {
-    type: actionTypes.UPDATE_ITEM_SUCCESS,
-    item: updatedItem
+    type: actionTypes.UPDATE_ITEM_DETAILS_SUCCESS,
+    updatedItemDetails: updatedItemDetails
   };
 };
 
-export const updateItemFail = error => {
+export const updateItemDetailsFail = error => {
   return {
-    type: actionTypes.UPDATE_ITEM_FAIL,
+    type: actionTypes.UPDATE_ITEM_DETAILS_FAIL,
     error: error
   };
 };
 
-export const updateItem = updatedItemData => {
+export const updateItemDetails = updatedItemData => {
   return async dispatch => {
-    dispatch(updateItemStart());
+    dispatch(updateItemDetailsStart());
 
     try {
-      const response = await axios.put('api/items/', updatedItemData);
-      dispatch(updateItemSuccess(response.data.item));
+      const response = await axios.put('api/items/details', updatedItemData);
+      dispatch(updateItemDetailsSuccess(response.data.updatedItemDetails));
     } catch (err) {
-      dispatch(updateItemFail(err));
+      dispatch(updateItemDetailsFail(err));
     }
   };
 };

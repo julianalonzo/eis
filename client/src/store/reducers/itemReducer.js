@@ -14,8 +14,8 @@ const initialState = {
   fetchingItems: false,
   fetchingItem: false,
   creatingItem: false,
-  updatingItem: false,
-  updatingItemError: null,
+  updatingItemDetails: false,
+  updatingItemDetailsError: null,
   creatingItemsError: null,
   removingItem: false,
   removingItemError: null
@@ -86,21 +86,24 @@ const createItemsSuccess = (state, action) => {
   });
 };
 
-const updateItemStart = (state, action) => {
+const updateItemDetailsStart = (state, action) => {
   return updateObject(state, {
-    updatingItem: true
+    updatingItemDetails: true
   });
 };
-const updateItemSuccess = (state, action) => {
+const updateItemDetailsSuccess = (state, action) => {
   return updateObject(state, {
-    updatingItem: false,
-    item: action.item
+    updatingItemDetails: false,
+    item: {
+      ...state.item,
+      ...action.updatedItemDetails
+    }
   });
 };
-const updateItemFail = (state, action) => {
+const updateItemDetailsFail = (state, action) => {
   return updateObject(state, {
-    updatingItem: false,
-    updatingItemError: action.error
+    updatingItemDetails: false,
+    updatingItemDetailsError: action.error
   });
 };
 
@@ -146,12 +149,12 @@ const reducer = (state = initialState, action) => {
       return createItemsSuccess(state, action);
     case actionTypes.CREATE_ITEMS_FAIL:
       return createItemsFail(state, action);
-    case actionTypes.UPDATE_ITEM_START:
-      return updateItemStart(state, action);
-    case actionTypes.UPDATE_ITEM_SUCCESS:
-      return updateItemSuccess(state, action);
-    case actionTypes.UPDATE_ITEM_FAIL:
-      return updateItemFail(state, action);
+    case actionTypes.UPDATE_ITEM_DETAILS_START:
+      return updateItemDetailsStart(state, action);
+    case actionTypes.UPDATE_ITEM_DETAILS_SUCCESS:
+      return updateItemDetailsSuccess(state, action);
+    case actionTypes.UPDATE_ITEM_DETAILS_FAIL:
+      return updateItemDetailsFail(state, action);
     case actionTypes.REMOVE_ITEM_START:
       return removeItemStart(state, action);
     case actionTypes.REMOVE_ITEM_FAIL:

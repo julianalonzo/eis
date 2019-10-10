@@ -179,11 +179,13 @@ exports.updateItemDetails = async (req, res, next) => {
     );
 
     res.json({
-      _id: modifiedItemDetails.id,
-      name: modifiedItemDetails.name,
-      category: modifiedItemDetails.category,
-      condition: modifiedItemDetails.condition,
-      thumbnails: modifiedItemDetails.thumbnails
+      updatedItemDetails: {
+        _id: modifiedItemDetails.id,
+        name: modifiedItemDetails.name,
+        category: modifiedItemDetails.category,
+        condition: modifiedItemDetails.condition,
+        thumbnails: modifiedItemDetails.thumbnails
+      }
     });
   } catch (err) {
     console.log(err);
