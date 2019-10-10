@@ -49,6 +49,7 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
 
   const [
     thumbnailsForm,
+    // eslint-disable-next-line
     setThumbnailForm,
     addThumbnailsHandler,
     removeThumbnailHandler

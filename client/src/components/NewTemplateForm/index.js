@@ -33,6 +33,7 @@ export default function NewTemplateForm({ onSubmit, submitting }) {
 
   const [
     thumbnailsForm,
+    // eslint-disable-next-line
     setThumbnailsForm,
     addThumbnailsHandler,
     removeThumbnailHandler
