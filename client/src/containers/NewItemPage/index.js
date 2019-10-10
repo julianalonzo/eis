@@ -50,31 +50,31 @@ function NewItemPage({
     formData.append('category', itemData.itemCategory || '');
     formData.append('condition', itemData.itemCondition || '');
 
+    let templateThumbnails = [];
     for (const thumbnail of itemData.thumbnails) {
       if (thumbnail instanceof File) {
         formData.append('fileThumbnails', thumbnail);
       } else {
-        formData.append('templateThumbnails', JSON.stringify(thumbnail));
+        templateThumbnails = templateThumbnails.concat(thumbnail._id);
       }
     }
+    formData.append('templateThumbnails', JSON.stringify(templateThumbnails));
 
+    let properties = [];
     for (const property of itemData.properties) {
-      formData.append(
-        'properties',
-        JSON.stringify({
-          name: property.name,
-          value: property.value
-        })
-      );
+      properties = properties.concat(property);
     }
+    formData.append('properties', JSON.stringify(properties));
 
+    let templateAttachments = [];
     for (const attachment of itemData.attachments) {
       if (attachment instanceof File) {
         formData.append('fileAttachments', attachment);
       } else {
-        formData.append('templateAttachments', JSON.stringify(attachment));
+        templateAttachments = templateAttachments.concat(attachment._id);
       }
     }
+    formData.append('templateAttachments', JSON.stringify(templateAttachments));
 
     formData.append('folder', folderId);
 

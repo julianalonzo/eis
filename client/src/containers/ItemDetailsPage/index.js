@@ -63,18 +63,13 @@ function ItemDetailsPage({
     formData.append('condition', updatedItemData.itemCondition || '');
 
     let thumbnails = [];
-    let fileThumbnails = [];
 
     for (const thumbnail of updatedItemData.thumbnails) {
       if (thumbnail instanceof File) {
-        fileThumbnails = fileThumbnails.concat(thumbnail);
+        formData.append('fileThumbnails', thumbnail);
       } else {
-        thumbnails = thumbnails.concat(thumbnail);
+        thumbnails = thumbnails.concat(thumbnail._id);
       }
-    }
-
-    for (const fileThumbnail of fileThumbnails) {
-      formData.append('fileThumbnails', fileThumbnail);
     }
 
     formData.append('thumbnails', JSON.stringify(thumbnails));

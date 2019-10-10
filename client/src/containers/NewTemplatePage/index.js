@@ -10,30 +10,25 @@ function NewTemplatePage({ onCreateTemplate, creatingTemplate, history }) {
   const createTemplateHandler = async templateData => {
     const formData = new FormData();
 
-    formData.append('name', templateData.templateName);
+    formData.append('name', templateData.templateName || '');
     formData.append('description', templateData.templateDescription || '');
-    formData.append(
-      'item',
-      JSON.stringify({
-        name: templateData.itemName,
-        category: templateData.itemCategory || '',
-        condition: templateData.itemCondition || ''
-      })
-    );
+
+    formData.append('itemName', templateData.itemName || '');
+    formData.append('itemCategory', templateData.itemCategory || '');
+    formData.append('itemCondition', templateData.itemCondition || '');
 
     for (const thumbnail of templateData.thumbnails) {
       formData.append('fileThumbnails', thumbnail);
     }
 
+    let properties = [];
     for (const property of templateData.properties) {
-      formData.append(
-        'properties',
-        JSON.stringify({
-          name: property.name,
-          value: property.value ? property.value : ''
-        })
-      );
+      properties = properties.concat({
+        name: property.name,
+        value: property.value ? property.value : ''
+      });
     }
+    formData.append('properties', JSON.stringify(properties));
 
     for (const attachment of templateData.attachments) {
       formData.append('fileAttachments', attachment);
