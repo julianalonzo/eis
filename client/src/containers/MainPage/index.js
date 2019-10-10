@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
+import useDialogState from '../../hooks/useDialogState';
+import usePopperState from '../../hooks/usePopperState';
+
 import EmptyIllustration from '../../assets/illustrations/empty.svg';
 import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
 import Items from '../../components/Items';
@@ -67,47 +70,53 @@ function MainPage({
     folders.filter(folder => folder.parent === currentFolder) || []
   );
 
-  const [folderMoreActionsAnchorEl, setFolderMoreActionsAnchorEl] = useState(
-    null
-  );
+  const [
+    folderMoreActionsAnchorEl,
+    openFolderMoreActionsHandler,
+    closeFolderMoreActionsHandler
+  ] = usePopperState(null);
 
   // Folder ID of the folder that has its more actions popper opened
   const [folderIdMoreActions, setFolderIdMoreActions] = useState(null);
 
-  const [newButtonAnchorEl, setNewButtonAnchorEl] = useState(null);
+  const [
+    newButtonAnchorEl,
+    openNewButtonHandler,
+    closeNewButtonHandler
+  ] = usePopperState(null);
 
-  const [itemMoreActionsAnchorEl, setItemMoreActionsAnchorEl] = useState(null);
+  const [
+    itemMoreActionsAnchorEl,
+    openItemMoreActionsHandler,
+    closeItemMoreActionsHandler
+  ] = usePopperState(null);
 
   // Item ID of the item that has its more actions popper opened
   const [itemIdMoreActions, setItemIdMoreActions] = useState(null);
 
-  const [isNewFolderDialogOpen, setIsNewFolderDialogOpen] = useState(false);
+  const [
+    isNewFolderDialogOpen,
+    openNewFolderDialogHandler,
+    closeNewFolderDialogHandler
+  ] = useDialogState(false);
 
-  const openNewButtonHandler = event => {
-    setNewButtonAnchorEl(event.currentTarget);
-  };
-
-  const closeNewButtonHandler = event => {
-    setNewButtonAnchorEl(null);
-  };
-
-  const openFolderMoreActionsHandler = (event, id) => {
-    setFolderMoreActionsAnchorEl(event.currentTarget);
+  const onOpenFolderMoreActions = (event, id) => {
+    openFolderMoreActionsHandler(event.currentTarget);
     setFolderIdMoreActions(id);
   };
 
-  const closeFolderMoreActionsHandler = () => {
-    setFolderMoreActionsAnchorEl(null);
+  const onCloseFolderMoreActions = () => {
+    closeFolderMoreActionsHandler();
     setFolderIdMoreActions(null);
   };
 
-  const openItemMoreActionsHandler = (event, id) => {
-    setItemMoreActionsAnchorEl(event.currentTarget);
+  const onOpenItemMoreActions = (event, id) => {
+    openItemMoreActionsHandler(event.currentTarget);
     setItemIdMoreActions(id);
   };
 
-  const closeItemMoreActionsHandler = () => {
-    setItemMoreActionsAnchorEl(null);
+  const onCloseItemMoreActions = () => {
+    closeItemMoreActionsHandler();
     setItemIdMoreActions(null);
   };
 
@@ -117,14 +126,6 @@ function MainPage({
 
   const openSelectTemplatePageHandler = () => {
     history.push(`/folders/${currentFolder}/select-template`);
-  };
-
-  const openNewFolderDialogHandler = () => {
-    setIsNewFolderDialogOpen(true);
-  };
-
-  const closeNewFolderDialogHandler = () => {
-    setIsNewFolderDialogOpen(false);
   };
 
   const openItemDetailsPageHandler = itemId => {
@@ -279,24 +280,24 @@ function MainPage({
                   <Folders
                     folders={folderChildren}
                     onOpenFolder={openFolderHandler}
-                    onOpenFolderMoreActions={openFolderMoreActionsHandler}
+                    onOpenFolderMoreActions={onOpenFolderMoreActions}
                   />
                   <FolderMoreActionsPopper
                     isOpen={Boolean(folderMoreActionsAnchorEl)}
                     anchorEl={folderMoreActionsAnchorEl}
-                    onClose={closeFolderMoreActionsHandler}
+                    onClose={onCloseFolderMoreActions}
                     folderId={folderIdMoreActions}
                     onRemoveFolder={onRemoveFolder}
                   />
                   <Items
                     items={items}
-                    onOpenItemMoreActions={openItemMoreActionsHandler}
+                    onOpenItemMoreActions={onOpenItemMoreActions}
                     onOpenItemDetails={openItemDetailsPageHandler}
                   />
                   <ItemMoreActionsMenuListPopper
                     isOpen={Boolean(itemMoreActionsAnchorEl)}
                     anchorEl={itemMoreActionsAnchorEl}
-                    onClose={closeItemMoreActionsHandler}
+                    onClose={onCloseItemMoreActions}
                     currentItem={itemIdMoreActions}
                     onRemoveItem={onRemoveItem}
                   />

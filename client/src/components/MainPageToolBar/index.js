@@ -25,7 +25,9 @@ export default function MainPageToolBar({ onOpenNewButtonMenu }) {
         <Button
           color="primary"
           variant="contained"
-          onClick={onOpenNewButtonMenu}
+          onClick={event => {
+            onOpenNewButtonMenu(event.currentTarget);
+          }}
         >
           <AddIcon /> New
         </Button>
