@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 
 import { Form } from 'react-final-form';
 
-import useItemForm from '../../hooks/useItemForm';
 import useThumbnailsForm from '../../hooks/useThumbnailsForm';
 
 import Button from '../UI/Button';
@@ -19,11 +18,7 @@ function EditItemDetailsDialogForm({
   onSubmit,
   submitting
 }) {
-  const [itemDetailsForm, setItemDetailsForm] = useItemForm({
-    itemName: item.name || '',
-    itemCondition: item.condition || '',
-    itemCategory: item.category || ''
-  });
+  let editItemDetailsForm;
 
   const [
     thumbnailsForm,
@@ -34,7 +29,7 @@ function EditItemDetailsDialogForm({
 
   useEffect(() => {
     if (isOpen) {
-      setItemDetailsForm({
+      editItemDetailsForm.initialize({
         itemName: item.name || '',
         itemCondition: item.condition || '',
         itemCategory: item.category || ''
@@ -42,7 +37,7 @@ function EditItemDetailsDialogForm({
 
       setThumbnailsForm(item.thumbnails || []);
     }
-  }, [item, setItemDetailsForm, setThumbnailsForm, isOpen]);
+  }, [item, setThumbnailsForm, isOpen, editItemDetailsForm]);
 
   const submitHandler = values => {
     const updatedItemData = {
@@ -55,11 +50,12 @@ function EditItemDetailsDialogForm({
 
   return (
     <Form
-      initialValues={itemDetailsForm}
       onSubmit={values => {
         submitHandler(values);
       }}
-      render={({ handleSubmit }) => {
+      render={({ handleSubmit, form }) => {
+        editItemDetailsForm = form;
+
         return (
           <form onSubmit={handleSubmit}>
             <Dialog isOpen={isOpen} onClose={onClose}>
