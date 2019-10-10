@@ -53,10 +53,16 @@ exports.createItems = async (req, res, next) => {
     const name = req.body.name || '';
     const category = req.body.category || '';
     const condition = req.body.condition || '';
-    const properties = req.body.properties || [];
-    const templateThumbnails = req.body.templateThumbnails || [];
+    const properties = req.body.properties
+      ? JSON.parse(req.body.properties)
+      : [];
+    const templateThumbnails = req.body.templateThumbnails
+      ? JSON.parse(req.body.templateThumbnails)
+      : [];
     const fileThumbnails = req.files.fileThumbnails || [];
-    const templateAttachments = req.body.templateAttachments || [];
+    const templateAttachments = req.body.templateAttachments
+      ? JSON.parse(req.body.templateThumbnails)
+      : [];
     const fileAttachments = req.files.fileAttachments || [];
     const folder = req.body.folder || '';
 
@@ -100,13 +106,9 @@ exports.generateItemData = async (
      * Ensure that an array is passed to the Item's properties field since it is
      * possible that req.body.properties is not an array but a single value
      */
-    const processedProperties = properties
-      ? parseElementsToJSON(properties)
-      : [];
+    const processedProperties = properties || [];
 
-    const processedTemplateThumbnails = templateThumbnails
-      ? extractIdsFromExistingFiles('thumbnail', templateThumbnails)
-      : [];
+    const processedTemplateThumbnails = templateThumbnails || [];
     const processedNewThumbnails = fileThumbnails
       ? await extractIdsFromNewFiles('thumbnail', fileThumbnails)
       : [];
@@ -114,9 +116,7 @@ exports.generateItemData = async (
       processedNewThumbnails
     );
 
-    const processedTemplateAttachments = templateAttachments
-      ? extractIdsFromExistingFiles('attachment', templateAttachments)
-      : [];
+    const processedTemplateAttachments = templateAttachments || [];
     const processedNewAttachments = fileAttachments
       ? await extractIdsFromNewFiles('attachment', fileAttachments)
       : [];
@@ -148,7 +148,7 @@ exports.updateItem = async (req, res, next) => {
     const category = req.body.category;
     const condition = req.body.condition;
     const properties = req.body.properties
-      ? parseElementsToJSON(req.body.properties)
+      ? JSON.parse(req.body.properties)
       : undefined;
     const thumbnails = req.body.thumbnails
       ? JSON.parse(req.body.thumbnails)
