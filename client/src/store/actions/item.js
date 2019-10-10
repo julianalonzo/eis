@@ -147,6 +147,42 @@ export const updateItemDetails = updatedItemData => {
   };
 };
 
+export const addPropertyStart = () => {
+  return {
+    type: actionTypes.ADD_PROPERTY_START
+  };
+};
+
+export const addPropertySuccess = property => {
+  return {
+    type: actionTypes.ADD_PROPERTY_SUCCESS,
+    property: property
+  };
+};
+
+export const addPropertyFail = error => {
+  return {
+    type: actionTypes.ADD_PROPERTY_FAIL,
+    error: error
+  };
+};
+
+export const addProperty = (itemId, property) => {
+  return async dispatch => {
+    dispatch(addPropertyStart());
+
+    try {
+      const response = await axios.put('api/items/property', {
+        itemId: itemId,
+        property: property
+      });
+      dispatch(addPropertySuccess(response.data.property));
+    } catch (err) {
+      dispatch(addPropertyFail(err));
+    }
+  };
+};
+
 export const removeItemStart = () => {
   return {
     type: actionTypes.REMOVE_ITEM_START

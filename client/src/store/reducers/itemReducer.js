@@ -15,7 +15,9 @@ const initialState = {
   fetchingItem: false,
   creatingItem: false,
   updatingItemDetails: false,
+  addingProperty: false,
   updatingItemDetailsError: null,
+  addingPropertyError: null,
   creatingItemsError: null,
   removingItem: false,
   removingItemError: null
@@ -107,6 +109,27 @@ const updateItemDetailsFail = (state, action) => {
   });
 };
 
+const addPropertyStart = (state, action) => {
+  return updateObject(state, {
+    addingProperty: true
+  });
+};
+const addPropertySuccess = (state, action) => {
+  return updateObject(state, {
+    addingProperty: false,
+    item: {
+      ...state.item,
+      properties: state.item.properties.concat(action.property)
+    }
+  });
+};
+const addPropertyFail = (state, action) => {
+  return updateObject(state, {
+    addingProperty: false,
+    addingPropertyError: action.error
+  });
+};
+
 const removeItemStart = (state, action) => {
   return updateObject(state, { removingItem: true });
 };
@@ -155,6 +178,12 @@ const reducer = (state = initialState, action) => {
       return updateItemDetailsSuccess(state, action);
     case actionTypes.UPDATE_ITEM_DETAILS_FAIL:
       return updateItemDetailsFail(state, action);
+    case actionTypes.ADD_PROPERTY_START:
+      return addPropertyStart(state, action);
+    case actionTypes.ADD_PROPERTY_SUCCESS:
+      return addPropertySuccess(state, action);
+    case actionTypes.ADD_PROPERTY_FAIL:
+      return addPropertyFail(state, action);
     case actionTypes.REMOVE_ITEM_START:
       return removeItemStart(state, action);
     case actionTypes.REMOVE_ITEM_FAIL:
