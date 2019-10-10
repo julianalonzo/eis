@@ -3,7 +3,14 @@ import { updateObject } from '../utility';
 
 const initialState = {
   items: [],
-  item: null,
+  item: {
+    name: '',
+    category: '',
+    condition: '',
+    thumbnails: [],
+    properties: [],
+    attachments: []
+  },
   fetchingItems: false,
   fetchingItem: false,
   creatingItem: false,
@@ -39,11 +46,30 @@ const fetchItemSuccess = (state, action) => {
 };
 
 const fetchItemFail = (state, action) => {
-  return updateObject(state, { fetchingItem: false, item: null });
+  return updateObject(state, {
+    fetchingItem: false,
+    item: {
+      name: '',
+      category: '',
+      condition: '',
+      thumbnails: [],
+      properties: [],
+      attachments: []
+    }
+  });
 };
 
 const resetItem = (state, action) => {
-  return updateObject(state, { item: null });
+  return updateObject(state, {
+    item: {
+      name: '',
+      category: '',
+      condition: '',
+      thumbnails: [],
+      properties: [],
+      attachments: []
+    }
+  });
 };
 
 const createItemsStart = (state, action) => {
