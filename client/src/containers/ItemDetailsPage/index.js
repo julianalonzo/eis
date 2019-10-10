@@ -10,6 +10,7 @@ import Attachments from '../../components/Attachments';
 import EditItemDetailsDialogForm from '../../components/EditItemDetailsDialogForm';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import NewPropertyDialogForm from '../../components/NewPropertyDialogForm';
 import PropertiesSection from '../../components/PropertiesSection';
 import SectionPaper from '../../components/UI/SectionPaper';
 
@@ -40,6 +41,12 @@ function ItemDetailsPage({
     isEditItemDetailsDialogOpened,
     openEditItemDetailsDialogHandler,
     closeEditItemDetailsDialogHandler
+  ] = useDialogState(false);
+
+  const [
+    isNewPropertyDialogOpened,
+    openNewPropertyDialogHandler,
+    closeNewPropertyDialogHandler
   ] = useDialogState(false);
 
   useEffect(() => {
@@ -79,67 +86,85 @@ function ItemDetailsPage({
     closeEditItemDetailsDialogHandler();
   };
 
+  const addNewPropertyHandler = async newProperty => {
+    const formData = new FormData();
+
+    formData.append('itemId', item._id);
+
+    const properties = item.properties.concat(newProperty);
+
+    formData.append('properties', JSON.stringify(properties));
+
+    await onUpdateItem(formData);
+
+    closeNewPropertyDialogHandler();
+  };
+
   if (fetchingItem) {
     return <LoadingIndicator />;
   }
 
   return (
     <React.Fragment>
-      {item !== null ? (
-        <Grid container>
-          <Grid item xs={12} md={8} lg={6}>
-            <Grid container>
-              <Grid item xs={12} className={classes.sectionGridItem}>
-                <SectionPaper
-                  title="Item Details"
-                  actionButton={{
-                    icon: <EditIcon />,
-                    action: openEditItemDetailsDialogHandler
-                  }}
-                >
-                  <ItemDetailsSection item={item} />
-                </SectionPaper>
-                <EditItemDetailsDialogForm
-                  isOpen={isEditItemDetailsDialogOpened}
-                  onClose={closeEditItemDetailsDialogHandler}
-                  item={item}
-                  onSubmit={updateItemDetailsHandler}
+      <Grid container>
+        <Grid item xs={12} md={8} lg={6}>
+          <Grid container>
+            <Grid item xs={12} className={classes.sectionGridItem}>
+              <SectionPaper
+                title="Item Details"
+                actionButton={{
+                  icon: <EditIcon />,
+                  action: openEditItemDetailsDialogHandler
+                }}
+              >
+                <ItemDetailsSection item={item} />
+              </SectionPaper>
+              <EditItemDetailsDialogForm
+                isOpen={isEditItemDetailsDialogOpened}
+                onClose={closeEditItemDetailsDialogHandler}
+                item={item}
+                onSubmit={updateItemDetailsHandler}
+                submitting={updatingItem}
+              />
+            </Grid>
+            <Grid item xs={12} className={classes.sectionGridItem}>
+              <SectionPaper
+                title="Properties"
+                actionButton={{
+                  icon: <AddIcon />,
+                  action: openNewPropertyDialogHandler
+                }}
+              >
+                <PropertiesSection properties={item.properties} />
+                <NewPropertyDialogForm
+                  isOpen={isNewPropertyDialogOpened}
+                  onClose={closeNewPropertyDialogHandler}
+                  onSubmit={addNewPropertyHandler}
                   submitting={updatingItem}
                 />
-              </Grid>
-              <Grid item xs={12} className={classes.sectionGridItem}>
-                <SectionPaper
-                  title="Properties"
-                  actionButton={{
-                    icon: <AddIcon />,
-                    action: () => {}
-                  }}
-                >
-                  <PropertiesSection properties={item.properties} />
-                </SectionPaper>
-              </Grid>
-              <Grid item xs={12} className={classes.sectionGridItem}>
-                <SectionPaper
-                  title="Attachments"
-                  actionButton={{
-                    icon: <AddIcon />,
-                    action: () => {}
-                  }}
-                >
-                  <Attachments
-                    attachments={item.attachments.map(attachment => ({
-                      name: attachment.originalname,
-                      size: attachment.size,
-                      dateUploaded: attachment.dateUploaded
-                    }))}
-                  />
-                </SectionPaper>
-              </Grid>
+              </SectionPaper>
+            </Grid>
+            <Grid item xs={12} className={classes.sectionGridItem}>
+              <SectionPaper
+                title="Attachments"
+                actionButton={{
+                  icon: <AddIcon />,
+                  action: () => {}
+                }}
+              >
+                <Attachments
+                  attachments={item.attachments.map(attachment => ({
+                    name: attachment.originalname,
+                    size: attachment.size,
+                    dateUploaded: attachment.dateUploaded
+                  }))}
+                />
+              </SectionPaper>
             </Grid>
           </Grid>
-          <Grid item md={4}></Grid>
         </Grid>
-      ) : null}
+        <Grid item md={4}></Grid>
+      </Grid>
     </React.Fragment>
   );
 }
