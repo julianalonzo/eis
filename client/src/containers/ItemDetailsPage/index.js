@@ -33,8 +33,10 @@ function ItemDetailsPage({
   onResetItem,
   onUpdateItemDetails,
   onAddProperty,
+  onRemoveProperty,
   updatingItemDetails,
   addingProperty,
+  removingProperty,
   match: { params }
 }) {
   const classes = useStyles();
@@ -115,6 +117,12 @@ function ItemDetailsPage({
     closeNewPropertyDialogHandler();
   };
 
+  const removePropertyHandler = async () => {
+    await onRemoveProperty(itemId, propertyIdMoreActions);
+
+    closePropertyMoreActionsHandler();
+  };
+
   if (fetchingItem) {
     return <LoadingIndicator />;
   }
@@ -158,7 +166,7 @@ function ItemDetailsPage({
                   isOpen={Boolean(propertyMoreActionsAnchorEl)}
                   anchorEl={propertyMoreActionsAnchorEl}
                   onClose={onClosePropertyMoreActions}
-                  currentPropertyId={propertyIdMoreActions}
+                  onRemoveProperty={removePropertyHandler}
                 />
                 <NewPropertyDialogForm
                   isOpen={isNewPropertyDialogOpened}
@@ -198,7 +206,8 @@ const mapStateToProps = state => {
     item: state.item.item,
     fetchingItem: state.item.fetchingItem,
     updatingItemDetails: state.item.updatingItemDetails,
-    addingProperty: state.item.addingProperty
+    addingProperty: state.item.addingProperty,
+    removingProperty: state.item.removingProperty
   };
 };
 
@@ -209,7 +218,9 @@ const mapDispatchToProps = dispatch => {
     onUpdateItemDetails: updatedItemDetailsData =>
       dispatch(actions.updateItemDetails(updatedItemDetailsData)),
     onAddProperty: (itemId, property) =>
-      dispatch(actions.addProperty(itemId, property))
+      dispatch(actions.addProperty(itemId, property)),
+    onRemoveProperty: (itemId, propertyId) =>
+      dispatch(actions.removeProperty(itemId, propertyId))
   };
 };
 
