@@ -265,6 +265,24 @@ exports.removeProperty = async (req, res, next) => {
   }
 };
 
+exports.removeAttachment = async (req, res, next) => {
+  try {
+    const itemId = req.body.itemId;
+    const attachmentId = req.body.attachmentId;
+
+    await Item.updateOne(
+      { _id: itemId },
+      { $pull: { attachments: attachmentId } }
+    );
+
+    res.status(200).json({
+      attachmentId: attachmentId
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.removeItem = async (req, res, next) => {
   const itemId = req.body.itemId;
   try {

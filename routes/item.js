@@ -28,6 +28,8 @@ router.put('/property', itemController.updateProperty);
 
 router.delete('/property', itemController.removeProperty);
 
+router.delete('/attachment', itemController.removeAttachment);
+
 router.post('/remove', itemController.removeItem);
 
 module.exports = router;
