@@ -16,9 +16,11 @@ const initialState = {
   creatingItem: false,
   updatingItemDetails: false,
   addingProperty: false,
+  updatingProperty: false,
   removingProperty: false,
   updatingItemDetailsError: null,
   addingPropertyError: null,
+  updatingPropertyError: null,
   removingPropertyError: null,
   creatingItemsError: null,
   removingItem: false,
@@ -134,6 +136,36 @@ const addPropertyFail = (state, action) => {
   });
 };
 
+const updatePropertyStart = (state, action) => {
+  return updateObject(state, {
+    updatingProperty: true
+  });
+};
+
+const updatePropertySuccess = (state, action) => {
+  const indexOfUpdatedProperty = state.item.properties.findIndex(
+    property => property._id === action.property._id
+  );
+
+  const updatedProperties = [...state.item.properties];
+  updatedProperties[indexOfUpdatedProperty] = action.property;
+
+  return updateObject(state, {
+    updatingProperty: false,
+    item: {
+      ...state.item,
+      properties: updatedProperties
+    }
+  });
+};
+
+const updatePropertyFail = (state, action) => {
+  return updateObject(state, {
+    updatingProperty: false,
+    updatingPropertyError: action.error
+  });
+};
+
 const removePropertyStart = (state, action) => {
   return updateObject(state, {
     removingProperty: true
@@ -213,6 +245,12 @@ const reducer = (state = initialState, action) => {
       return addPropertySuccess(state, action);
     case actionTypes.ADD_PROPERTY_FAIL:
       return addPropertyFail(state, action);
+    case actionTypes.UPDATE_PROPERTY_START:
+      return updatePropertyStart(state, action);
+    case actionTypes.UPDATE_PROPERTY_SUCCESS:
+      return updatePropertySuccess(state, action);
+    case actionTypes.UPDATE_PROPERTY_FAIL:
+      return updatePropertyFail(state, action);
     case actionTypes.REMOVE_PROPERTY_START:
       return removePropertyStart(state, action);
     case actionTypes.REMOVE_PROPERTY_SUCCESS:
