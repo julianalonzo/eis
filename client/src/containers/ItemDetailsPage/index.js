@@ -8,6 +8,7 @@ import useDialogState from '../../hooks/useDialogState';
 import usePopperState from '../../hooks/usePopperState';
 
 import Attachments from '../../components/Attachments';
+import AttachmentMoreActionsMenuListPopper from '../../components/Attachments/AttachmentMoreActionsMenuListPopper';
 import EditItemDetailsDialogForm from '../../components/EditItemDetailsDialogForm';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
@@ -83,12 +84,32 @@ function ItemDetailsPage({
 
   const onClosePropertyMoreActions = () => {
     closePropertyMoreActionsHandler();
+    setPropertyMoreActions(null);
   };
 
   const onOpenEditPropertyDialog = property => {
     setPropertyBeingEdited(property);
     openEditPropertyDialogHandler();
     closePropertyMoreActionsHandler();
+  };
+
+  const [
+    attachmentMoreActionsAnchorEl,
+    openAttachmentMoreActionsHandler,
+    closeAttachmentMoreActionsHandler
+  ] = usePopperState(null);
+
+  // Attachment that has its more actions popper opened
+  const [attachmentMoreActions, setAttachmentMoreActions] = useState(null);
+
+  const onOpenAttachmentMoreActions = (event, attachment) => {
+    openAttachmentMoreActionsHandler(event.currentTarget);
+    setAttachmentMoreActions(attachment);
+  };
+
+  const onCloseAttachmentMoreActions = () => {
+    closeAttachmentMoreActionsHandler();
+    setAttachmentMoreActions(null);
   };
 
   useEffect(() => {
@@ -151,6 +172,8 @@ function ItemDetailsPage({
   if (fetchingItem) {
     return <LoadingIndicator />;
   }
+
+  console.log(attachmentMoreActions);
 
   return (
     <React.Fragment>
@@ -231,8 +254,15 @@ function ItemDetailsPage({
                   attachments={item.attachments.map(attachment => ({
                     name: attachment.originalname,
                     size: attachment.size,
-                    dateUploaded: attachment.dateUploaded
+                    dateUploaded: attachment.dateUploaded,
+                    ...attachment
                   }))}
+                  primaryAction={onOpenAttachmentMoreActions}
+                />
+                <AttachmentMoreActionsMenuListPopper
+                  isOpen={Boolean(attachmentMoreActionsAnchorEl)}
+                  anchorEl={attachmentMoreActionsAnchorEl}
+                  onClose={onCloseAttachmentMoreActions}
                 />
               </SectionPaper>
             </Grid>

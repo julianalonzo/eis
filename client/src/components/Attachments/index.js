@@ -20,8 +20,12 @@ export default function Attachments({ attachments, variant, primaryAction }) {
               key={attachment._id || attachment.name + '_' + index}
               variant={variant}
               attachment={attachment}
-              primaryAction={() => {
-                primaryAction(index);
+              primaryAction={event => {
+                if (variant === 'upload') {
+                  primaryAction(index);
+                } else {
+                  primaryAction(event, attachment);
+                }
               }}
             />
           </Grid>
