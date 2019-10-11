@@ -183,6 +183,45 @@ export const addProperty = (itemId, property) => {
   };
 };
 
+export const removePropertyStart = () => {
+  return {
+    type: actionTypes.REMOVE_PROPERTY_START
+  };
+};
+
+export const removePropertySuccess = propertyId => {
+  return {
+    type: actionTypes.REMOVE_PROPERTY_SUCCESS,
+    propertyId: propertyId
+  };
+};
+
+export const removePropertyFail = error => {
+  return {
+    type: actionTypes.REMOVE_PROPERTY_FAIL,
+    error: error
+  };
+};
+
+export const removeProperty = (itemId, propertyId) => {
+  return async dispatch => {
+    dispatch(removePropertyStart());
+
+    try {
+      const response = await axios.delete('api/items/property', {
+        data: {
+          itemId: itemId,
+          propertyId: propertyId
+        }
+      });
+
+      dispatch(removePropertySuccess(response.data.propertyId));
+    } catch (err) {
+      dispatch(removePropertyFail(err));
+    }
+  };
+};
+
 export const removeItemStart = () => {
   return {
     type: actionTypes.REMOVE_ITEM_START

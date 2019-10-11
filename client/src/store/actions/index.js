@@ -4,6 +4,7 @@ export {
   createItems,
   updateItemDetails,
   addProperty,
+  removeProperty,
   resetItems,
   resetItem,
   removeItem
