@@ -11,6 +11,7 @@ import Attachments from '../../components/Attachments';
 import EditItemDetailsDialogForm from '../../components/EditItemDetailsDialogForm';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import EditPropertyDialogForm from '../../components/EditPropertyDialogForm';
 import NewPropertyDialogForm from '../../components/NewPropertyDialogForm';
 import PropertyMoreActionsMenuListPopper from '../../components/PropertiesSection/PropertyMoreActionsMenuListPopper';
 import PropertiesSection from '../../components/PropertiesSection';
@@ -33,9 +34,11 @@ function ItemDetailsPage({
   onResetItem,
   onUpdateItemDetails,
   onAddProperty,
+  onUpdateProperty,
   onRemoveProperty,
   updatingItemDetails,
   addingProperty,
+  updatingProperty,
   removingProperty,
   match: { params }
 }) {
@@ -56,22 +59,36 @@ function ItemDetailsPage({
   ] = useDialogState(false);
 
   const [
+    isEditPropertyDialogOpened,
+    openEditPropertyDialogHandler,
+    closeEditPropertyDialogHandler
+  ] = useDialogState(false);
+
+  const [
     propertyMoreActionsAnchorEl,
     openPropertyMoreActionsHandler,
     closePropertyMoreActionsHandler
   ] = usePopperState(null);
 
-  // Property ID of the property that has its more actions popper opened
-  const [propertyIdMoreActions, setPropertyIdMoreActions] = useState(null);
+  // Property that has its more actions popper opened
+  const [propertyMoreActions, setPropertyMoreActions] = useState(null);
 
-  const onOpenPropertyMoreActions = (event, id) => {
+  // Property that is currently being edited
+  const [propertyBeingEdited, setPropertyBeingEdited] = useState(null);
+
+  const onOpenPropertyMoreActions = (event, property) => {
     openPropertyMoreActionsHandler(event.currentTarget);
-    setPropertyIdMoreActions(id);
+    setPropertyMoreActions(property);
   };
 
   const onClosePropertyMoreActions = () => {
     closePropertyMoreActionsHandler();
-    setPropertyIdMoreActions(null);
+  };
+
+  const onOpenEditPropertyDialog = property => {
+    setPropertyBeingEdited(property);
+    openEditPropertyDialogHandler();
+    closePropertyMoreActionsHandler();
   };
 
   useEffect(() => {
@@ -117,8 +134,16 @@ function ItemDetailsPage({
     closeNewPropertyDialogHandler();
   };
 
-  const removePropertyHandler = async () => {
-    await onRemoveProperty(itemId, propertyIdMoreActions);
+  const updatePropertyHandler = async property => {
+    setPropertyBeingEdited(property);
+
+    await onUpdateProperty(itemId, property);
+
+    closeEditPropertyDialogHandler();
+  };
+
+  const removePropertyHandler = async property => {
+    await onRemoveProperty(itemId, property);
 
     closePropertyMoreActionsHandler();
   };
@@ -166,6 +191,8 @@ function ItemDetailsPage({
                   isOpen={Boolean(propertyMoreActionsAnchorEl)}
                   anchorEl={propertyMoreActionsAnchorEl}
                   onClose={onClosePropertyMoreActions}
+                  property={propertyMoreActions}
+                  onOpenEditPropertyDialog={onOpenEditPropertyDialog}
                   onRemoveProperty={removePropertyHandler}
                 />
                 <NewPropertyDialogForm
@@ -173,6 +200,22 @@ function ItemDetailsPage({
                   onClose={closeNewPropertyDialogHandler}
                   onSubmit={addNewPropertyHandler}
                   submitting={addingProperty}
+                />
+                <EditPropertyDialogForm
+                  isOpen={isEditPropertyDialogOpened}
+                  onClose={closeEditPropertyDialogHandler}
+                  onSubmit={updatePropertyHandler}
+                  submitting={updatingProperty}
+                  dialogTitle="Edit Property"
+                  initialValues={
+                    propertyBeingEdited
+                      ? {
+                          _id: propertyBeingEdited._id,
+                          propertyName: propertyBeingEdited.name,
+                          defaultValue: propertyBeingEdited.value
+                        }
+                      : {}
+                  }
                 />
               </SectionPaper>
             </Grid>
@@ -207,6 +250,7 @@ const mapStateToProps = state => {
     fetchingItem: state.item.fetchingItem,
     updatingItemDetails: state.item.updatingItemDetails,
     addingProperty: state.item.addingProperty,
+    updatingProperty: state.item.updatingProperty,
     removingProperty: state.item.removingProperty
   };
 };
@@ -219,6 +263,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(actions.updateItemDetails(updatedItemDetailsData)),
     onAddProperty: (itemId, property) =>
       dispatch(actions.addProperty(itemId, property)),
+    onUpdateProperty: (itemId, property) =>
+      dispatch(actions.updateProperty(itemId, property)),
     onRemoveProperty: (itemId, propertyId) =>
       dispatch(actions.removeProperty(itemId, propertyId))
   };

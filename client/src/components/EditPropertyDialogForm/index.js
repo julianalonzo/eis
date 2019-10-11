@@ -12,22 +12,24 @@ import DialogTitle from '../UI/Dialog/DialogTitle';
 
 import TextField from '@material-ui/core/TextField';
 
-export default function NewPropertyDialogForm({
+export default function EditPropertyDialogForm({
   isOpen,
   onClose,
   onSubmit,
-  submitting
+  submitting,
+  initialValues
 }) {
   let newPropertyForm;
 
   useEffect(() => {
     if (isOpen) {
-      newPropertyForm.reset();
+      newPropertyForm.initialize(initialValues);
     }
-  }, [isOpen, newPropertyForm]);
+  }, [isOpen, newPropertyForm, initialValues]);
 
   const submitHandler = values => {
     onSubmit({
+      _id: initialValues._id,
       name: values.propertyName,
       value: values.defaultValue || ''
     });
@@ -49,7 +51,7 @@ export default function NewPropertyDialogForm({
               maxWidth="sm"
               fullWidth={true}
             >
-              <DialogTitle onClose={onClose}>New Property</DialogTitle>
+              <DialogTitle onClose={onClose}>Edit Property</DialogTitle>
               <DialogContent>
                 <Field name="propertyName" validate={isRequired}>
                   {({ input, meta }) => {

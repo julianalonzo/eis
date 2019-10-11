@@ -40,7 +40,7 @@ export default function Property({
         <IconButton
           size="small"
           onClick={event => {
-            onOpenPropertyMoreActions(event, _id);
+            onOpenPropertyMoreActions(event, { _id, name, value });
           }}
         >
           <MoreVertIcon fontSize="small" />
