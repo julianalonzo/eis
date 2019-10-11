@@ -172,7 +172,7 @@ export const addProperty = (itemId, property) => {
     dispatch(addPropertyStart());
 
     try {
-      const response = await axios.put('api/items/property', {
+      const response = await axios.post('api/items/property', {
         itemId: itemId,
         property: property
       });

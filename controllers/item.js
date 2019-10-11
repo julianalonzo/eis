@@ -224,6 +224,29 @@ exports.addProperty = async (req, res, next) => {
   }
 };
 
+exports.updateProperty = async (req, res, next) => {
+  try {
+    const itemId = req.body.itemId;
+    const property = req.body.property;
+
+    await Item.updateOne(
+      { _id: itemId, 'properties._id': property._id },
+      {
+        $set: {
+          'properties.$.name': property.name,
+          'properties.$.value': property.value
+        }
+      }
+    );
+
+    res.status(200).json({
+      property: property
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.removeProperty = async (req, res, next) => {
   try {
     const itemId = req.body.itemId;

@@ -22,7 +22,9 @@ router.put(
   itemController.updateItemDetails
 );
 
-router.put('/property', itemController.addProperty);
+router.post('/property', itemController.addProperty);
+
+router.put('/property', itemController.updateProperty);
 
 router.delete('/property', itemController.removeProperty);
 
