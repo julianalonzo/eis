@@ -24,6 +24,8 @@ router.put(
 
 router.put('/property', itemController.addProperty);
 
+router.delete('/property', itemController.removeProperty);
+
 router.post('/remove', itemController.removeItem);
 
 module.exports = router;
