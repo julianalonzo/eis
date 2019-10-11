@@ -173,8 +173,6 @@ function ItemDetailsPage({
     return <LoadingIndicator />;
   }
 
-  console.log(attachmentMoreActions);
-
   return (
     <React.Fragment>
       <Grid container>
@@ -263,6 +261,7 @@ function ItemDetailsPage({
                   isOpen={Boolean(attachmentMoreActionsAnchorEl)}
                   anchorEl={attachmentMoreActionsAnchorEl}
                   onClose={onCloseAttachmentMoreActions}
+                  attachment={attachmentMoreActions}
                 />
               </SectionPaper>
             </Grid>
