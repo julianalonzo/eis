@@ -9,7 +9,9 @@ import Typography from '@material-ui/core/Typography';
 export default function TemplateMoreActionsMenuListPopper({
   isOpen,
   anchorEl,
-  onClose
+  onClose,
+  templateId,
+  onRemoveTemplate
 }) {
   return (
     <MenuListPopper isOpen={isOpen} anchorEl={anchorEl} onClose={onClose}>
@@ -17,7 +19,13 @@ export default function TemplateMoreActionsMenuListPopper({
         <MenuItem dense={true}>
           <Typography variant="body2">Open</Typography>
         </MenuItem>
-        <MenuItem dense={true}>
+        <MenuItem
+          dense={true}
+          onClick={() => {
+            onRemoveTemplate(templateId);
+            onClose();
+          }}
+        >
           <Typography variant="body2">Delete</Typography>
         </MenuItem>
       </MenuList>

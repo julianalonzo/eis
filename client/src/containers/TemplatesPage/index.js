@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
@@ -28,6 +28,7 @@ function TemplatesPage({
   fetchingTemplates,
   onResetTemplates,
   onFetchTemplates,
+  onRemoveTemplate,
   history
 }) {
   const classes = useStyles();
@@ -37,6 +38,19 @@ function TemplatesPage({
     openTemplateMoreActionsHandler,
     closeTemplateMoreActionsHandler
   ] = usePopperState(null);
+
+  // ID of the template with its more actions opened
+  const [templateIdMoreActions, setTemplateIdMoreActions] = useState(null);
+
+  const onOpenTemplateMoreActions = (anchorEl, templateId) => {
+    setTemplateIdMoreActions(templateId);
+    openTemplateMoreActionsHandler(anchorEl);
+  };
+
+  const onCloseTemplateMoreActions = () => {
+    setTemplateIdMoreActions(null);
+    closeTemplateMoreActionsHandler();
+  };
 
   const NewTemplatePageLink = React.forwardRef((props, ref) => (
     <Link innerRef={ref} to="/new-template" {...props} />
@@ -81,12 +95,14 @@ function TemplatesPage({
       <Templates
         templates={templates}
         onOpenNewTemplatePage={openNewTemplatePageHandler}
-        onOpenMoreActions={openTemplateMoreActionsHandler}
+        onOpenMoreActions={onOpenTemplateMoreActions}
       />
       <TemplateMoreActionsMenuListPopper
         isOpen={Boolean(templateMoreActionsAnchorEl)}
         anchorEl={templateMoreActionsAnchorEl}
-        onClose={closeTemplateMoreActionsHandler}
+        onClose={onCloseTemplateMoreActions}
+        templateId={templateIdMoreActions}
+        onRemoveTemplate={onRemoveTemplate}
       />
     </React.Fragment>
   );
@@ -102,7 +118,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchTemplates: () => dispatch(actions.fetchTemplates()),
-    onResetTemplates: () => dispatch(actions.resetTemplates())
+    onResetTemplates: () => dispatch(actions.resetTemplates()),
+    onRemoveTemplate: templateId => dispatch(actions.removeTemplate(templateId))
   };
 };
 

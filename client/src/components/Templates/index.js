@@ -64,7 +64,7 @@ export default function Templates({
               image={thumbnailUrl}
               chip={template.item.category || null}
               onOpenMoreActions={event => {
-                onOpenMoreActions(event.currentTarget);
+                onOpenMoreActions(event.currentTarget, template._id);
               }}
             >
               {template.description ? (
