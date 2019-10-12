@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 
-import Button from '../Button';
 import { useDropzone } from 'react-dropzone';
+
+import Button from '../Button';
 
 import { makeStyles } from '@material-ui/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';

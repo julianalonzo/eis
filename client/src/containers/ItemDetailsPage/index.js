@@ -13,6 +13,7 @@ import EditItemDetailsDialogForm from '../../components/EditItemDetailsDialogFor
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import EditPropertyDialogForm from '../../components/EditPropertyDialogForm';
+import NewAttachmentsDialogForm from '../../components/NewAttachmentsDialogForm';
 import NewPropertyDialogForm from '../../components/NewPropertyDialogForm';
 import PropertyMoreActionsMenuListPopper from '../../components/PropertiesSection/PropertyMoreActionsMenuListPopper';
 import PropertiesSection from '../../components/PropertiesSection';
@@ -37,11 +38,13 @@ function ItemDetailsPage({
   onAddProperty,
   onUpdateProperty,
   onRemoveProperty,
+  onAddAttachments,
   onRemoveAttachment,
   updatingItemDetails,
   addingProperty,
   updatingProperty,
   removingProperty,
+  addingAttachments,
   removingAttachment,
   match: { params }
 }) {
@@ -104,6 +107,12 @@ function ItemDetailsPage({
   // Attachment that has its more actions popper opened
   const [attachmentMoreActions, setAttachmentMoreActions] = useState(null);
 
+  const [
+    isNewAttachmentsDialogOpened,
+    openNewAttachmentsDialogHandler,
+    closeNewAttachmentsDialogHandler
+  ] = useDialogState(false);
+
   const onOpenAttachmentMoreActions = (event, attachment) => {
     openAttachmentMoreActionsHandler(event.currentTarget);
     setAttachmentMoreActions(attachment);
@@ -112,6 +121,20 @@ function ItemDetailsPage({
   const onCloseAttachmentMoreActions = () => {
     closeAttachmentMoreActionsHandler();
     setAttachmentMoreActions(null);
+  };
+
+  const addAttachmentsHandler = async attachments => {
+    const formData = new FormData();
+
+    formData.append('itemId', itemId);
+
+    for (const attachment of attachments) {
+      formData.append('fileAttachments', attachment);
+    }
+
+    await onAddAttachments(formData);
+
+    closeNewAttachmentsDialogHandler();
   };
 
   const removeAttachmentHandler = async attachmentId => {
@@ -251,7 +274,7 @@ function ItemDetailsPage({
                 title="Attachments"
                 actionButton={{
                   icon: <AddIcon />,
-                  action: () => {}
+                  action: openNewAttachmentsDialogHandler
                 }}
               >
                 <Attachments
@@ -269,6 +292,12 @@ function ItemDetailsPage({
                   onClose={onCloseAttachmentMoreActions}
                   attachment={attachmentMoreActions}
                   onRemoveAttachment={removeAttachmentHandler}
+                />
+                <NewAttachmentsDialogForm
+                  isOpen={isNewAttachmentsDialogOpened}
+                  onClose={closeNewAttachmentsDialogHandler}
+                  onSubmit={addAttachmentsHandler}
+                  submitting={addingAttachments}
                 />
               </SectionPaper>
             </Grid>
@@ -288,6 +317,7 @@ const mapStateToProps = state => {
     addingProperty: state.item.addingProperty,
     updatingProperty: state.item.updatingProperty,
     removingProperty: state.item.removingProperty,
+    addingAttachments: state.item.addingAttachments,
     removingAttachment: state.item.removingAttachment
   };
 };
@@ -304,6 +334,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(actions.updateProperty(itemId, property)),
     onRemoveProperty: (itemId, propertyId) =>
       dispatch(actions.removeProperty(itemId, propertyId)),
+    onAddAttachments: addAttachmentsData =>
+      dispatch(actions.addAttachments(addAttachmentsData)),
     onRemoveAttachment: (itemId, attachmentId) =>
       dispatch(actions.removeAttachment(itemId, attachmentId))
   };
