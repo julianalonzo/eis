@@ -5,6 +5,8 @@ import * as actions from '../../store/actions';
 import { Link, withRouter } from 'react-router-dom';
 
 import Button from '../../components/UI/Button';
+import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
+import EmptyTemplatesIllustration from '../../assets/illustrations/empty_templates.svg';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import Templates from '../../components/Templates';
 
@@ -47,6 +49,16 @@ function TemplatesPage({
 
   if (fetchingTemplates) {
     return <LoadingIndicator />;
+  }
+
+  if (templates.length === 0) {
+    return (
+      <IllustrationPlaceholder
+        sourceImage={EmptyTemplatesIllustration}
+        title="No templates yet"
+        subtitle="Create a new template now"
+      />
+    );
   }
 
   return (

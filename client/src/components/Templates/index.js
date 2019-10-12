@@ -5,8 +5,6 @@ import { HOST } from '../../util/constants';
 import Truncate from 'react-truncate';
 
 import Card from '../UI/Card';
-import EmptyTemplatesIllustration from '../../assets/illustrations/empty_templates.svg';
-import IllustrationPlaceholder from '../UI/IllustrationPlaceholder';
 import LoadingIndicator from '../UI/LoadingIndicator';
 
 import { makeStyles } from '@material-ui/styles';
@@ -29,16 +27,6 @@ export default function Templates({ loading = false, templates = [] }) {
 
   if (loading) {
     return <LoadingIndicator />;
-  }
-
-  if (templates.length === 0) {
-    return (
-      <IllustrationPlaceholder
-        sourceImage={EmptyTemplatesIllustration}
-        title="No templates yet"
-        subtitle="Create a new template now"
-      />
-    );
   }
 
   return (
