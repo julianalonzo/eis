@@ -4,7 +4,9 @@ const Template = require('../models/template');
 
 exports.getTemplates = async (req, res, next) => {
   try {
-    const templates = await Template.find().populate('item.thumbnails');
+    const templates = await Template.find({ shown: true }).populate(
+      'item.thumbnails'
+    );
 
     res.status(200).json({ templates: templates });
   } catch (err) {
@@ -16,7 +18,7 @@ exports.getTemplate = async (req, res, next) => {
   try {
     const templateId = req.params.templateId || '';
 
-    const template = await Template.findOne({ _id: templateId })
+    const template = await Template.findOne({ _id: templateId, shown: true })
       .populate('item.thumbnails')
       .populate('item.attachments')
       .exec();
@@ -63,12 +65,27 @@ exports.createTemplate = async (req, res, next) => {
         thumbnails: itemData.thumbnails,
         attachments: itemData.attachments,
         properties: itemData.properties
-      }
+      },
+      shown: true
     });
 
     const savedTemplate = await template.save();
 
     res.status(201).json({ template: savedTemplate });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.removeTemplate = async (req, res, next) => {
+  // @TODO Add validation
+
+  try {
+    const templateId = req.body.templateId;
+
+    await Template.updateOne({ _id: templateId }, { $set: { shown: false } });
+
+    res.status(200).json({ templateId: templateId });
   } catch (err) {
     console.log(err);
   }

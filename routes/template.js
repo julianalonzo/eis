@@ -12,6 +12,8 @@ const createTemplateUpload = upload.fields([
 ]);
 router.post('/new', createTemplateUpload, templateController.createTemplate);
 
+router.delete('/', templateController.removeTemplate);
+
 router.get('/:templateId', templateController.getTemplate);
 
 module.exports = router;

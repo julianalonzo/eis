@@ -35,6 +35,10 @@ const templateSchema = new Schema({
         ref: 'File'
       }
     ]
+  },
+  shown: {
+    type: Boolean,
+    isRequired: true
   }
 });
 
