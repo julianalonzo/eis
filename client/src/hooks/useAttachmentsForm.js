@@ -17,7 +17,12 @@ function useAttachmentsForm(initialValue) {
     });
   };
 
-  return [attachmentsForm, addAttachmentsHandler, removeAttachmentHandler];
+  return [
+    attachmentsForm,
+    setAttachmentsForm,
+    addAttachmentsHandler,
+    removeAttachmentHandler
+  ];
 }
 
 export default useAttachmentsForm;

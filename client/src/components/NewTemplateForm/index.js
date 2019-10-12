@@ -41,6 +41,8 @@ export default function NewTemplateForm({ onSubmit, submitting }) {
 
   const [
     attachmentsForm,
+    // eslint-disable-next-line
+    setAttachmentsForm,
     addAttachmentsHandler,
     removeAttachmentHandler
   ] = useAttachmentsForm([]);
