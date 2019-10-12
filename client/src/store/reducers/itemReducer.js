@@ -18,10 +18,12 @@ const initialState = {
   addingProperty: false,
   updatingProperty: false,
   removingProperty: false,
+  removingAttachment: false,
   updatingItemDetailsError: null,
   addingPropertyError: null,
   updatingPropertyError: null,
   removingPropertyError: null,
+  removingAttachmentError: null,
   creatingItemsError: null,
   removingItem: false,
   removingItemError: null
@@ -97,6 +99,7 @@ const updateItemDetailsStart = (state, action) => {
     updatingItemDetails: true
   });
 };
+
 const updateItemDetailsSuccess = (state, action) => {
   return updateObject(state, {
     updatingItemDetails: false,
@@ -106,6 +109,7 @@ const updateItemDetailsSuccess = (state, action) => {
     }
   });
 };
+
 const updateItemDetailsFail = (state, action) => {
   return updateObject(state, {
     updatingItemDetails: false,
@@ -191,6 +195,31 @@ const removePropertyFail = (state, action) => {
   });
 };
 
+const removeAttachmentStart = (state, action) => {
+  return updateObject(state, {
+    removingAttachment: true
+  });
+};
+
+const removeAttachmentSuccess = (state, action) => {
+  return updateObject(state, {
+    removingAttachment: false,
+    item: {
+      ...state.item,
+      attachments: state.item.attachments.filter(
+        attachment => attachment._id !== action.attachmentId
+      )
+    }
+  });
+};
+
+const removeAttachmentFail = (state, action) => {
+  return updateObject(state, {
+    removingAttachment: false,
+    removingAttachmentError: action.error
+  });
+};
+
 const removeItemStart = (state, action) => {
   return updateObject(state, { removingItem: true });
 };
@@ -257,6 +286,12 @@ const reducer = (state = initialState, action) => {
       return removePropertySuccess(state, action);
     case actionTypes.REMOVE_PROPERTY_FAIL:
       return removePropertyFail(state, action);
+    case actionTypes.REMOVE_ATTACHMENT_START:
+      return removeAttachmentStart(state, action);
+    case actionTypes.REMOVE_ATTACHMENT_SUCCESS:
+      return removeAttachmentSuccess(state, action);
+    case actionTypes.REMOVE_ATTACHMENT_FAIL:
+      return removeAttachmentFail(state, action);
     case actionTypes.REMOVE_ITEM_START:
       return removeItemStart(state, action);
     case actionTypes.REMOVE_ITEM_FAIL:

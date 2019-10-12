@@ -259,6 +259,45 @@ export const removeProperty = (itemId, propertyId) => {
   };
 };
 
+export const removeAttachmentStart = () => {
+  return {
+    type: actionTypes.REMOVE_ATTACHMENT_START
+  };
+};
+
+export const removeAttachmentSuccess = attachmentId => {
+  return {
+    type: actionTypes.REMOVE_ATTACHMENT_SUCCESS,
+    attachmentId: attachmentId
+  };
+};
+
+export const removeAttachmentFail = error => {
+  return {
+    type: actionTypes.REMOVE_ATTACHMENT_FAIL,
+    error: error
+  };
+};
+
+export const removeAttachment = (itemId, attachmentId) => {
+  return async dispatch => {
+    dispatch(removeAttachmentStart());
+
+    try {
+      const response = await axios.delete('api/items/attachment', {
+        data: {
+          itemId: itemId,
+          attachmentId: attachmentId
+        }
+      });
+
+      dispatch(removeAttachmentSuccess(response.data.attachmentId));
+    } catch (err) {
+      dispatch(removeAttachmentFail(err));
+    }
+  };
+};
+
 export const removeItemStart = () => {
   return {
     type: actionTypes.REMOVE_ITEM_START
