@@ -2,17 +2,21 @@ import React, { useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
+import Button from '../../components/UI/Button';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import Templates from '../../components/Templates';
 
 import { makeStyles } from '@material-ui/styles';
-import { Typography } from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons';
+import { Box, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   pageHeading: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(3),
+    display: 'flex',
+    justifyContent: 'space-between'
   }
 }));
 
@@ -24,6 +28,10 @@ function TemplatesPage({
   history
 }) {
   const classes = useStyles();
+
+  const NewTemplatePageLink = React.forwardRef((props, ref) => (
+    <Link innerRef={ref} to="/new-template" {...props} />
+  ));
 
   const openNewTemplatePageHandler = () => {
     history.push('/new-template');
@@ -44,11 +52,22 @@ function TemplatesPage({
   return (
     <React.Fragment>
       {templates.length > 0 && (
-        <React.Fragment>
-          <Typography variant="h6" className={classes.pageHeading}>
-            My Templates
-          </Typography>
-        </React.Fragment>
+        <Box className={classes.pageHeading}>
+          <Box>
+            <Typography variant="h6" className={classes.pageHeading}>
+              My Templates
+            </Typography>
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              component={NewTemplatePageLink}
+            >
+              <AddIcon /> New Template
+            </Button>
+          </Box>
+        </Box>
       )}
       <Templates
         templates={templates}

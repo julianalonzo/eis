@@ -24,11 +24,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Templates({
-  loading = false,
-  templates = [],
-  onOpenNewTemplatePage
-}) {
+export default function Templates({ loading = false, templates = [] }) {
   const classes = useStyles();
 
   if (loading) {
@@ -41,7 +37,6 @@ export default function Templates({
         sourceImage={EmptyTemplatesIllustration}
         title="No templates yet"
         subtitle="Create a new template now"
-        action={{ label: 'Create Template', action: onOpenNewTemplatePage }}
       />
     );
   }
