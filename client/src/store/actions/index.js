@@ -18,7 +18,8 @@ export {
   resetTemplates,
   fetchTemplate,
   resetTemplate,
-  createTemplate
+  createTemplate,
+  removeTemplate
 } from './template';
 
 export { fetchFolders, createFolder, removeFolder } from './folder';

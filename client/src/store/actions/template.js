@@ -113,3 +113,37 @@ export const createTemplate = template => {
     }
   };
 };
+
+export const removeTemplateStart = () => {
+  return {
+    type: actionTypes.REMOVE_TEMPLATE_START
+  };
+};
+
+export const removeTemplateFail = error => {
+  return {
+    type: actionTypes.REMOVE_TEMPLATE_FAIL
+  };
+};
+
+export const removeTemplateSuccess = templateId => {
+  return {
+    type: actionTypes.REMOVE_TEMPLATE_SUCCESS,
+    templateId: templateId
+  };
+};
+
+export const removeTemplate = templateId => {
+  return async dispatch => {
+    dispatch(removeTemplateStart());
+
+    try {
+      const response = await axios.delete('api/templates/', {
+        data: { templateId }
+      });
+      dispatch(removeTemplateSuccess(response.data.templateId));
+    } catch (err) {
+      dispatch(removeTemplateFail(err));
+    }
+  };
+};
