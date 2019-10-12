@@ -28,6 +28,13 @@ router.put('/property', itemController.updateProperty);
 
 router.delete('/property', itemController.removeProperty);
 
+const addAttachmentsUpload = upload.fields([{ name: 'fileAttachments' }]);
+router.post(
+  '/attachments',
+  addAttachmentsUpload,
+  itemController.addAttachments
+);
+
 router.delete('/attachment', itemController.removeAttachment);
 
 router.post('/remove', itemController.removeItem);

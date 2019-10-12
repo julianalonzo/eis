@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { extractIdsFromNewFiles } = require('./file');
+const { extractIdsFromNewFiles, saveFiles } = require('./file');
 
 const Item = require('../models/item');
 
@@ -259,6 +259,32 @@ exports.removeProperty = async (req, res, next) => {
 
     res.status(200).json({
       propertyId: propertyId
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.addAttachments = async (req, res, next) => {
+  try {
+    const itemId = req.body.itemId;
+    const fileAttachments = await saveFiles(
+      'attachment',
+      req.files.fileAttachments || []
+    );
+    const attachmentsIds = fileAttachments.map(attachment => attachment._id);
+
+    await Item.updateOne(
+      { _id: itemId },
+      {
+        $addToSet: {
+          attachments: attachmentsIds
+        }
+      }
+    );
+
+    res.status(200).json({
+      attachments: fileAttachments
     });
   } catch (err) {
     console.log(err);
