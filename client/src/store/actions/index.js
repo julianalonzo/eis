@@ -6,6 +6,7 @@ export {
   addProperty,
   updateProperty,
   removeProperty,
+  addAttachments,
   removeAttachment,
   resetItems,
   resetItem,

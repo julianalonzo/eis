@@ -18,11 +18,13 @@ const initialState = {
   addingProperty: false,
   updatingProperty: false,
   removingProperty: false,
+  addingAttachments: false,
   removingAttachment: false,
   updatingItemDetailsError: null,
   addingPropertyError: null,
   updatingPropertyError: null,
   removingPropertyError: null,
+  addingAttachmentsError: null,
   removingAttachmentError: null,
   creatingItemsError: null,
   removingItem: false,
@@ -195,6 +197,29 @@ const removePropertyFail = (state, action) => {
   });
 };
 
+const addAttachmentsStart = (state, action) => {
+  return updateObject(state, {
+    addingAttachments: true
+  });
+};
+
+const addAttachmentsSuccess = (state, action) => {
+  return updateObject(state, {
+    addingAttachments: false,
+    item: {
+      ...state.item,
+      attachments: state.item.attachments.concat(action.attachments)
+    }
+  });
+};
+
+const addAttachmentsFail = (state, action) => {
+  return updateObject(state, {
+    addingAttachments: false,
+    addingAttachmentsError: action.error
+  });
+};
+
 const removeAttachmentStart = (state, action) => {
   return updateObject(state, {
     removingAttachment: true
@@ -286,6 +311,12 @@ const reducer = (state = initialState, action) => {
       return removePropertySuccess(state, action);
     case actionTypes.REMOVE_PROPERTY_FAIL:
       return removePropertyFail(state, action);
+    case actionTypes.ADD_ATTACHMENTS_START:
+      return addAttachmentsStart(state, action);
+    case actionTypes.ADD_ATTACHMENTS_SUCCESS:
+      return addAttachmentsSuccess(state, action);
+    case actionTypes.ADD_ATTACHMENTS_FAIL:
+      return addAttachmentsFail(state, action);
     case actionTypes.REMOVE_ATTACHMENT_START:
       return removeAttachmentStart(state, action);
     case actionTypes.REMOVE_ATTACHMENT_SUCCESS:
