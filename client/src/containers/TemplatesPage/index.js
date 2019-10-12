@@ -4,11 +4,14 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { Link, withRouter } from 'react-router-dom';
 
+import usePopperState from '../../hooks/usePopperState';
+
 import Button from '../../components/UI/Button';
 import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
 import EmptyTemplatesIllustration from '../../assets/illustrations/empty_templates.svg';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import Templates from '../../components/Templates';
+import TemplateMoreActionsMenuListPopper from '../../components/Templates/TemplateMoreActionsMenuListPopper';
 
 import { makeStyles } from '@material-ui/styles';
 import { Add as AddIcon } from '@material-ui/icons';
@@ -30,6 +33,12 @@ function TemplatesPage({
   history
 }) {
   const classes = useStyles();
+
+  const [
+    templateMoreActionsAnchorEl,
+    openTemplateMoreActionsHandler,
+    closeTemplateMoreActionsHandler
+  ] = usePopperState(null);
 
   const NewTemplatePageLink = React.forwardRef((props, ref) => (
     <Link innerRef={ref} to="/new-template" {...props} />
@@ -84,6 +93,12 @@ function TemplatesPage({
       <Templates
         templates={templates}
         onOpenNewTemplatePage={openNewTemplatePageHandler}
+        onOpenMoreActions={openTemplateMoreActionsHandler}
+      />
+      <TemplateMoreActionsMenuListPopper
+        isOpen={Boolean(templateMoreActionsAnchorEl)}
+        anchorEl={templateMoreActionsAnchorEl}
+        onClose={closeTemplateMoreActionsHandler}
       />
     </React.Fragment>
   );

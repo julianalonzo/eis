@@ -22,7 +22,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Templates({ loading = false, templates = [] }) {
+export default function Templates({
+  loading = false,
+  templates = [],
+  onOpenMoreActions
+}) {
   const classes = useStyles();
 
   if (loading) {
@@ -45,7 +49,9 @@ export default function Templates({ loading = false, templates = [] }) {
               thumbnailVariant="image"
               image={thumbnailUrl}
               chip={template.item.category || null}
-              onOpenMoreActions={() => {}}
+              onOpenMoreActions={event => {
+                onOpenMoreActions(event.currentTarget);
+              }}
             >
               {template.description ? (
                 <Truncate lines={2} ellipsis="..." className={classes.subtitle}>
