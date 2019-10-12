@@ -21,15 +21,12 @@ export default function AttachmentMoreActionsMenuListPopper({
           <Typography
             variant="body2"
             onClick={() => {
-              console.log(`${HOST}/api/files/${attachment.filename}`);
               window.open(`${HOST}/api/files/${attachment.filename}`, '_blank');
+              onClose();
             }}
           >
             Open
           </Typography>
-        </MenuItem>
-        <MenuItem dense={true}>
-          <Typography variant="body2">Download</Typography>
         </MenuItem>
         <MenuItem dense={true}>
           <Typography variant="body2">Delete</Typography>
