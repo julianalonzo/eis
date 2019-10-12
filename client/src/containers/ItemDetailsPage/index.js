@@ -37,10 +37,12 @@ function ItemDetailsPage({
   onAddProperty,
   onUpdateProperty,
   onRemoveProperty,
+  onRemoveAttachment,
   updatingItemDetails,
   addingProperty,
   updatingProperty,
   removingProperty,
+  removingAttachment,
   match: { params }
 }) {
   const classes = useStyles();
@@ -110,6 +112,10 @@ function ItemDetailsPage({
   const onCloseAttachmentMoreActions = () => {
     closeAttachmentMoreActionsHandler();
     setAttachmentMoreActions(null);
+  };
+
+  const removeAttachmentHandler = async attachmentId => {
+    await onRemoveAttachment(itemId, attachmentId);
   };
 
   useEffect(() => {
@@ -262,6 +268,7 @@ function ItemDetailsPage({
                   anchorEl={attachmentMoreActionsAnchorEl}
                   onClose={onCloseAttachmentMoreActions}
                   attachment={attachmentMoreActions}
+                  onRemoveAttachment={removeAttachmentHandler}
                 />
               </SectionPaper>
             </Grid>
@@ -280,7 +287,8 @@ const mapStateToProps = state => {
     updatingItemDetails: state.item.updatingItemDetails,
     addingProperty: state.item.addingProperty,
     updatingProperty: state.item.updatingProperty,
-    removingProperty: state.item.removingProperty
+    removingProperty: state.item.removingProperty,
+    removingAttachment: state.item.removingAttachment
   };
 };
 
@@ -295,7 +303,9 @@ const mapDispatchToProps = dispatch => {
     onUpdateProperty: (itemId, property) =>
       dispatch(actions.updateProperty(itemId, property)),
     onRemoveProperty: (itemId, propertyId) =>
-      dispatch(actions.removeProperty(itemId, propertyId))
+      dispatch(actions.removeProperty(itemId, propertyId)),
+    onRemoveAttachment: (itemId, attachmentId) =>
+      dispatch(actions.removeAttachment(itemId, attachmentId))
   };
 };
 

@@ -12,7 +12,8 @@ export default function AttachmentMoreActionsMenuListPopper({
   isOpen,
   anchorEl,
   onClose,
-  attachment
+  attachment,
+  onRemoveAttachment
 }) {
   return (
     <MenuListPopper isOpen={isOpen} anchorEl={anchorEl} onClose={onClose}>
@@ -28,7 +29,13 @@ export default function AttachmentMoreActionsMenuListPopper({
             Open
           </Typography>
         </MenuItem>
-        <MenuItem dense={true}>
+        <MenuItem
+          dense={true}
+          onClick={() => {
+            onRemoveAttachment(attachment._id);
+            onClose();
+          }}
+        >
           <Typography variant="body2">Delete</Typography>
         </MenuItem>
       </MenuList>
