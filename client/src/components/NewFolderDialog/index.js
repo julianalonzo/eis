@@ -68,7 +68,7 @@ export default function NewFolderDialog({
                   Cancel
                 </Button>
                 <Button type="submit" color="primary" disabled={submitting}>
-                  {submitting ? 'Creating Folder...' : 'Create Folder'}
+                  {submitting ? 'Saving...' : 'Save'}
                 </Button>
               </DialogActions>
             </Dialog>

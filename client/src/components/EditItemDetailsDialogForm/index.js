@@ -72,7 +72,7 @@ function EditItemDetailsDialogForm({
                   Cancel
                 </Button>
                 <Button color="primary" type="submit" disabled={submitting}>
-                  {submitting ? 'Saving Item...' : 'Save Item'}
+                  {submitting ? 'Saving...' : 'Save'}
                 </Button>
               </DialogActions>
             </Dialog>
