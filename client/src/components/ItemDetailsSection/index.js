@@ -5,9 +5,9 @@ import * as actions from '../../store/actions';
 
 import useDialogState from '../../hooks/useDialogState';
 
-import ItemDetails from '../../components/ItemDetails';
-import EditItemDetailsDialogForm from '../../components/EditItemDetailsDialogForm';
-import SectionPaper from '../../components/UI/SectionPaper';
+import ItemDetails from '../ItemDetails';
+import EditItemDetailsDialogForm from '../EditItemDetailsDialogForm';
+import SectionPaper from '../UI/SectionPaper';
 
 import { Edit as EditIcon } from '@material-ui/icons';
 

@@ -9,7 +9,7 @@ import usePopperState from '../../hooks/usePopperState';
 
 import Attachments from '../../components/Attachments';
 import AttachmentMoreActionsMenuListPopper from '../../components/Attachments/AttachmentMoreActionsMenuListPopper';
-import ItemDetailsSection from '../ItemDetailsSection';
+import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import EditPropertyDialogForm from '../../components/EditPropertyDialogForm';
 import NewAttachmentsDialogForm from '../../components/NewAttachmentsDialogForm';

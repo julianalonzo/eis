@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 
 import { Form } from 'react-final-form';
 
-import useThumbnailsForm from '../../hooks/useThumbnailsForm';
+import useThumbnailsForm from '../../../hooks/useThumbnailsForm';
 
-import Button from '../UI/Button';
-import Dialog from '../UI/Dialog';
-import DialogTitle from '../UI/Dialog/DialogTitle';
-import DialogContent from '../UI/Dialog/DialogContent';
-import DialogActions from '../UI/Dialog/DialogActions';
-import ItemDetailsForm from '../ItemDetailsForm';
+import Button from '../../UI/Button';
+import Dialog from '../../UI/Dialog';
+import DialogTitle from '../../UI/Dialog/DialogTitle';
+import DialogContent from '../../UI/Dialog/DialogContent';
+import DialogActions from '../../UI/Dialog/DialogActions';
+import ItemDetailsForm from '../../ItemDetailsForm';
 
 function EditItemDetailsDialogForm({
   isOpen,
