@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ItemDetailsSection({
+export default function ItemDetails({
   item: { name, category, condition, thumbnails },
   loading = false
 }) {
