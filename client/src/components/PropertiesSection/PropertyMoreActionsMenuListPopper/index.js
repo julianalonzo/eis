@@ -19,8 +19,9 @@ export default function PropertyMoreActionsMenuListPopper({
       <MenuList>
         <MenuItem
           dense={true}
-          onClick={() => {
-            onOpenEditPropertyDialog(property);
+          onClick={event => {
+            onOpenEditPropertyDialog(event.currentTarget, property);
+            onClose();
           }}
         >
           <Typography variant="body2">Edit</Typography>
@@ -29,6 +30,7 @@ export default function PropertyMoreActionsMenuListPopper({
           dense={true}
           onClick={() => {
             onRemoveProperty(property._id);
+            onClose();
           }}
         >
           <Typography variant="body2">Delete</Typography>

@@ -1,37 +1,35 @@
 import React, { useEffect } from 'react';
 
-import { isRequired } from '../../util/validators';
+import { isRequired } from '../../../util/validators';
 
 import { Form, Field } from 'react-final-form';
 
-import Button from '../UI/Button';
-import Dialog from '../UI/Dialog';
-import DialogActions from '../UI/Dialog/DialogActions';
-import DialogContent from '../UI/Dialog/DialogContent';
-import DialogTitle from '../UI/Dialog/DialogTitle';
+import Button from '../../UI/Button';
+import Dialog from '../../UI/Dialog';
+import DialogActions from '../../UI/Dialog/DialogActions';
+import DialogContent from '../../UI/Dialog/DialogContent';
+import DialogTitle from '../../UI/Dialog/DialogTitle';
 
 import TextField from '@material-ui/core/TextField';
 
-export default function EditPropertyDialogForm({
+export default function NewPropertyDialogForm({
   isOpen,
   onClose,
   onSubmit,
-  submitting,
-  initialValues
+  submitting
 }) {
   let newPropertyForm;
 
   useEffect(() => {
     if (isOpen) {
-      newPropertyForm.initialize(initialValues);
+      newPropertyForm.reset();
     }
-  }, [isOpen, newPropertyForm, initialValues]);
+  }, [isOpen, newPropertyForm]);
 
   const submitHandler = values => {
     onSubmit({
-      _id: initialValues._id,
-      name: values.propertyName,
-      value: values.defaultValue || ''
+      name: values.name,
+      value: values.value || ''
     });
   };
 
@@ -51,9 +49,9 @@ export default function EditPropertyDialogForm({
               maxWidth="sm"
               fullWidth={true}
             >
-              <DialogTitle onClose={onClose}>Edit Property</DialogTitle>
+              <DialogTitle onClose={onClose}>New Property</DialogTitle>
               <DialogContent>
-                <Field name="propertyName" validate={isRequired}>
+                <Field name="name" validate={isRequired}>
                   {({ input, meta }) => {
                     return (
                       <TextField
@@ -70,7 +68,7 @@ export default function EditPropertyDialogForm({
                     );
                   }}
                 </Field>
-                <Field name="defaultValue">
+                <Field name="value">
                   {({ input, meta }) => {
                     return (
                       <TextField

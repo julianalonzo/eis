@@ -16,13 +16,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Property({
-  _id,
-  name,
-  value,
-  onOpenPropertyMoreActions
-}) {
+export default function Property({ property, onOpenPropertyMoreActions }) {
   const classes = useStyles();
+
+  const { name, value } = property;
 
   return (
     <Grid container alignItems="baseline" className={classes.root} spacing={2}>
@@ -40,7 +37,7 @@ export default function Property({
         <IconButton
           size="small"
           onClick={event => {
-            onOpenPropertyMoreActions(event, { _id, name, value });
+            onOpenPropertyMoreActions(event.currentTarget, property);
           }}
         >
           <MoreVertIcon fontSize="small" />

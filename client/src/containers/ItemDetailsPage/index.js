@@ -11,10 +11,7 @@ import Attachments from '../../components/Attachments';
 import AttachmentMoreActionsMenuListPopper from '../../components/Attachments/AttachmentMoreActionsMenuListPopper';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
-import EditPropertyDialogForm from '../../components/EditPropertyDialogForm';
 import NewAttachmentsDialogForm from '../../components/NewAttachmentsDialogForm';
-import NewPropertyDialogForm from '../../components/NewPropertyDialogForm';
-import PropertyMoreActionsMenuListPopper from '../../components/PropertiesSection/PropertyMoreActionsMenuListPopper';
 import PropertiesSection from '../../components/PropertiesSection';
 import SectionPaper from '../../components/UI/SectionPaper';
 
@@ -33,61 +30,14 @@ function ItemDetailsPage({
   onFetchItem,
   fetchingItem,
   onResetItem,
-  onAddProperty,
-  onUpdateProperty,
-  onRemoveProperty,
   onAddAttachments,
   onRemoveAttachment,
-  addingProperty,
-  updatingProperty,
-  removingProperty,
   addingAttachments,
-  removingAttachment,
   match: { params }
 }) {
   const classes = useStyles();
 
   const [itemId, setItemId] = useState(params.itemId || null);
-
-  const [
-    isNewPropertyDialogOpened,
-    openNewPropertyDialogHandler,
-    closeNewPropertyDialogHandler
-  ] = useDialogState(false);
-
-  const [
-    isEditPropertyDialogOpened,
-    openEditPropertyDialogHandler,
-    closeEditPropertyDialogHandler
-  ] = useDialogState(false);
-
-  const [
-    propertyMoreActionsAnchorEl,
-    openPropertyMoreActionsHandler,
-    closePropertyMoreActionsHandler
-  ] = usePopperState(null);
-
-  // Property that has its more actions popper opened
-  const [propertyMoreActions, setPropertyMoreActions] = useState(null);
-
-  // Property that is currently being edited
-  const [propertyBeingEdited, setPropertyBeingEdited] = useState(null);
-
-  const onOpenPropertyMoreActions = (event, property) => {
-    openPropertyMoreActionsHandler(event.currentTarget);
-    setPropertyMoreActions(property);
-  };
-
-  const onClosePropertyMoreActions = () => {
-    closePropertyMoreActionsHandler();
-    setPropertyMoreActions(null);
-  };
-
-  const onOpenEditPropertyDialog = property => {
-    setPropertyBeingEdited(property);
-    openEditPropertyDialogHandler();
-    closePropertyMoreActionsHandler();
-  };
 
   const [
     attachmentMoreActionsAnchorEl,
@@ -144,26 +94,6 @@ function ItemDetailsPage({
     };
   }, [itemId, onFetchItem, onResetItem]);
 
-  const addNewPropertyHandler = async property => {
-    await onAddProperty(itemId, property);
-
-    closeNewPropertyDialogHandler();
-  };
-
-  const updatePropertyHandler = async property => {
-    setPropertyBeingEdited(property);
-
-    await onUpdateProperty(itemId, property);
-
-    closeEditPropertyDialogHandler();
-  };
-
-  const removePropertyHandler = async property => {
-    await onRemoveProperty(itemId, property);
-
-    closePropertyMoreActionsHandler();
-  };
-
   if (fetchingItem) {
     return <LoadingIndicator />;
   }
@@ -176,48 +106,7 @@ function ItemDetailsPage({
             <ItemDetailsSection item={item} />
           </Grid>
           <Grid item xs={12} className={classes.sectionGridItem}>
-            <SectionPaper
-              title="Properties"
-              actionButton={{
-                icon: <AddIcon />,
-                action: openNewPropertyDialogHandler
-              }}
-            >
-              <PropertiesSection
-                properties={item.properties}
-                onOpenPropertyMoreActions={onOpenPropertyMoreActions}
-              />
-              <PropertyMoreActionsMenuListPopper
-                isOpen={Boolean(propertyMoreActionsAnchorEl)}
-                anchorEl={propertyMoreActionsAnchorEl}
-                onClose={onClosePropertyMoreActions}
-                property={propertyMoreActions}
-                onOpenEditPropertyDialog={onOpenEditPropertyDialog}
-                onRemoveProperty={removePropertyHandler}
-              />
-              <NewPropertyDialogForm
-                isOpen={isNewPropertyDialogOpened}
-                onClose={closeNewPropertyDialogHandler}
-                onSubmit={addNewPropertyHandler}
-                submitting={addingProperty}
-              />
-              <EditPropertyDialogForm
-                isOpen={isEditPropertyDialogOpened}
-                onClose={closeEditPropertyDialogHandler}
-                onSubmit={updatePropertyHandler}
-                submitting={updatingProperty}
-                dialogTitle="Edit Property"
-                initialValues={
-                  propertyBeingEdited
-                    ? {
-                        _id: propertyBeingEdited._id,
-                        propertyName: propertyBeingEdited.name,
-                        defaultValue: propertyBeingEdited.value
-                      }
-                    : {}
-                }
-              />
-            </SectionPaper>
+            <PropertiesSection properties={item.properties} itemId={item._id} />
           </Grid>
           <Grid item xs={12} className={classes.sectionGridItem}>
             <SectionPaper

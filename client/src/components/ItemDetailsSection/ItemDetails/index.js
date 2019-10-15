@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { HOST } from '../../util/constants';
+import { HOST } from '../../../util/constants';
 
-import LoadingIndicator from '../UI/LoadingIndicator';
-import Thumbnail from '../UI/Thumbnail';
+import LoadingIndicator from '../../UI/LoadingIndicator';
+import Thumbnail from '../../UI/Thumbnail';
 
 import { makeStyles } from '@material-ui/styles';
 import Box from '@material-ui/core/Box';

@@ -1,35 +1,37 @@
 import React, { useEffect } from 'react';
 
-import { isRequired } from '../../util/validators';
+import { isRequired } from '../../../util/validators';
 
 import { Form, Field } from 'react-final-form';
 
-import Button from '../UI/Button';
-import Dialog from '../UI/Dialog';
-import DialogActions from '../UI/Dialog/DialogActions';
-import DialogContent from '../UI/Dialog/DialogContent';
-import DialogTitle from '../UI/Dialog/DialogTitle';
+import Button from '../../UI/Button';
+import Dialog from '../../UI/Dialog';
+import DialogActions from '../../UI/Dialog/DialogActions';
+import DialogContent from '../../UI/Dialog/DialogContent';
+import DialogTitle from '../../UI/Dialog/DialogTitle';
 
 import TextField from '@material-ui/core/TextField';
 
-export default function NewPropertyDialogForm({
+export default function EditPropertyDialogForm({
   isOpen,
   onClose,
   onSubmit,
-  submitting
+  submitting,
+  initialValues
 }) {
   let newPropertyForm;
 
   useEffect(() => {
     if (isOpen) {
-      newPropertyForm.reset();
+      newPropertyForm.initialize(initialValues);
     }
-  }, [isOpen, newPropertyForm]);
+  }, [isOpen, newPropertyForm, initialValues]);
 
   const submitHandler = values => {
     onSubmit({
-      name: values.propertyName,
-      value: values.defaultValue || ''
+      _id: initialValues._id,
+      name: values.name,
+      value: values.value || ''
     });
   };
 
@@ -49,9 +51,9 @@ export default function NewPropertyDialogForm({
               maxWidth="sm"
               fullWidth={true}
             >
-              <DialogTitle onClose={onClose}>New Property</DialogTitle>
+              <DialogTitle onClose={onClose}>Edit Property</DialogTitle>
               <DialogContent>
-                <Field name="propertyName" validate={isRequired}>
+                <Field name="name" validate={isRequired}>
                   {({ input, meta }) => {
                     return (
                       <TextField
@@ -68,7 +70,7 @@ export default function NewPropertyDialogForm({
                     );
                   }}
                 </Field>
-                <Field name="defaultValue">
+                <Field name="value">
                   {({ input, meta }) => {
                     return (
                       <TextField
