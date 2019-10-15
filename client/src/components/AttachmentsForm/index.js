@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Attachments from '../Attachments';
+import UploadAttachments from './UploadAttachments';
 import UploadDropzone from '../UI/UploadDropzone';
 
 import { makeStyles } from '@material-ui/styles';
@@ -51,10 +51,9 @@ export default function AttachmentsForm({
           label="attachments"
         >
           {formattedAttachments.length > 0 ? (
-            <Attachments
+            <UploadAttachments
               attachments={formattedAttachments}
-              variant="upload"
-              primaryAction={onRemoveAttachment}
+              onRemoveAttachment={onRemoveAttachment}
             />
           ) : null}
         </UploadDropzone>

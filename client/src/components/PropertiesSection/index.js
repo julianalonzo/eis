@@ -68,8 +68,8 @@ function PropertiesSection({
     closeEditPropertyDialogHandler();
   };
 
-  const removePropertyHandler = async propertyId => {
-    await onRemoveProperty(itemId, propertyId);
+  const removePropertyHandler = propertyId => {
+    onRemoveProperty(itemId, propertyId);
   };
 
   return (

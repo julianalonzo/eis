@@ -5,7 +5,7 @@ import customTheme from './util/theme';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 
 import AppBar from './components/UI/AppBar';
-import ItemDetailsPage from './containers/ItemDetailsPage';
+import ItemPage from './containers/ItemPage';
 import NewTemplatePage from './containers/NewTemplatePage';
 import MainPage from './containers/MainPage';
 import NewItemPage from './containers/NewItemPage';
@@ -37,7 +37,7 @@ function App() {
             />
             <Route exact path="/folders/:folderId" component={MainPage} />
             <Route path="/folders/:folderId/new-item" component={NewItemPage} />
-            <Route exact path="/items/:itemId" component={ItemDetailsPage} />
+            <Route exact path="/items/:itemId" component={ItemPage} />
             <Route exact path="/" component={MainPage} />
           </Switch>
         </Container>

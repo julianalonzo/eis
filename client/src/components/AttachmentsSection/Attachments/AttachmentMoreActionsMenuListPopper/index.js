@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { HOST } from '../../../util/constants';
+import { HOST } from '../../../../util/constants';
 
-import MenuListPopper from '../../UI/MenuListPopper';
+import MenuListPopper from '../../../UI/MenuListPopper';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
@@ -32,8 +32,8 @@ export default function AttachmentMoreActionsMenuListPopper({
         <MenuItem
           dense={true}
           onClick={() => {
-            onRemoveAttachment(attachment._id);
             onClose();
+            onRemoveAttachment(attachment._id);
           }}
         >
           <Typography variant="body2">Delete</Typography>

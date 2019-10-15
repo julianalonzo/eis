@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 
-import useAttachmentsForm from '../../hooks/useAttachmentsForm';
+import useAttachmentsForm from '../../../hooks/useAttachmentsForm';
 
-import AttachmentsForm from '../AttachmentsForm';
-import Button from '../UI/Button';
-import Dialog from '../UI/Dialog';
-import DialogTitle from '../UI/Dialog/DialogTitle';
-import DialogContent from '../UI/Dialog/DialogContent';
-import DialogActions from '../UI/Dialog/DialogActions';
-import EmptyAttachmentsIllustration from '../../assets/illustrations/upload.svg';
+import AttachmentsForm from '../../AttachmentsForm';
+import Button from '../../UI/Button';
+import Dialog from '../../UI/Dialog';
+import DialogTitle from '../../UI/Dialog/DialogTitle';
+import DialogContent from '../../UI/Dialog/DialogContent';
+import DialogActions from '../../UI/Dialog/DialogActions';
+import EmptyAttachmentsIllustration from '../../../assets/illustrations/upload.svg';
 
 import { makeStyles } from '@material-ui/styles';
 import { Box } from '@material-ui/core';
