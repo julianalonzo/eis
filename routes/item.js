@@ -41,4 +41,6 @@ router.post('/remove', itemController.removeItem);
 
 router.post('/note', itemController.addNote);
 
+router.delete('/note', itemController.removeNote);
+
 module.exports = router;

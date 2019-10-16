@@ -363,3 +363,23 @@ exports.addNote = async (req, res, next) => {
     console.log(err);
   }
 };
+
+exports.removeNote = async (req, res, next) => {
+  // @TODO Add validation
+
+  try {
+    const itemId = req.body.itemId;
+    const noteId = req.body.noteId;
+
+    await Item.updateOne(
+      { _id: itemId },
+      { $pull: { notes: { _id: noteId } } }
+    );
+
+    res.status(200).json({
+      noteId: noteId
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
