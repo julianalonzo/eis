@@ -40,7 +40,6 @@ function TemplatePage({
     let attachments = [];
     for (const attachment of template.attachments) {
       if (attachment instanceof File) {
-        console.log(attachment);
         formData.append('fileAttachments', attachment);
       } else {
         attachments = attachments.concat(attachment._id);
