@@ -28,6 +28,7 @@ export default function Templates({
   loading = false,
   templates = [],
   onOpenMoreActions,
+  onOpenTemplatePage,
   onOpenNewTemplatePage
 }) {
   const classes = useStyles();
@@ -63,7 +64,11 @@ export default function Templates({
               thumbnailVariant="image"
               image={thumbnailUrl}
               chip={template.item.category || null}
+              onClick={() => {
+                onOpenTemplatePage(template._id);
+              }}
               onOpenMoreActions={event => {
+                event.stopPropagation();
                 onOpenMoreActions(event.currentTarget, template._id);
               }}
             >

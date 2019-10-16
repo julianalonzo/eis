@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
-import NewTemplateForm from '../../components/NewTemplateForm';
+import TemplateForm from '../../components/TemplateForm';
 
 function NewTemplatePage({ onCreateTemplate, creatingTemplate, history }) {
   const createTemplateHandler = async templateData => {
@@ -40,9 +40,11 @@ function NewTemplatePage({ onCreateTemplate, creatingTemplate, history }) {
   };
 
   return (
-    <NewTemplateForm
+    <TemplateForm
+      title="New Template"
       onSubmit={createTemplateHandler}
       submitting={creatingTemplate}
+      initialValues={{}}
     />
   );
 }

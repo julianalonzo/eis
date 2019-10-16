@@ -11,12 +11,18 @@ export default function TemplateMoreActionsMenuListPopper({
   anchorEl,
   onClose,
   templateId,
+  onOpenTemplatePage,
   onRemoveTemplate
 }) {
   return (
     <MenuListPopper isOpen={isOpen} anchorEl={anchorEl} onClose={onClose}>
       <MenuList>
-        <MenuItem dense={true}>
+        <MenuItem
+          dense={true}
+          onClick={() => {
+            onOpenTemplatePage(templateId);
+          }}
+        >
           <Typography variant="body2">Open</Typography>
         </MenuItem>
         <MenuItem
