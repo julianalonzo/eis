@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, useHistory } from 'react-router-dom';
 
 import usePopperState from '../../hooks/usePopperState';
 
@@ -28,10 +28,11 @@ function TemplatesPage({
   fetchingTemplates,
   onResetTemplates,
   onFetchTemplates,
-  onRemoveTemplate,
-  history
+  onRemoveTemplate
 }) {
   const classes = useStyles();
+
+  const history = useHistory();
 
   const [
     templateMoreActionsAnchorEl,
@@ -55,6 +56,10 @@ function TemplatesPage({
   const NewTemplatePageLink = React.forwardRef((props, ref) => (
     <Link innerRef={ref} to="/new-template" {...props} />
   ));
+
+  const openTemplatePageHandler = templateId => {
+    history.push(`/templates/${templateId}`);
+  };
 
   const openNewTemplatePageHandler = () => {
     history.push('/new-template');
@@ -94,6 +99,7 @@ function TemplatesPage({
       )}
       <Templates
         templates={templates}
+        onOpenTemplatePage={openTemplatePageHandler}
         onOpenNewTemplatePage={openNewTemplatePageHandler}
         onOpenMoreActions={onOpenTemplateMoreActions}
       />
@@ -102,6 +108,7 @@ function TemplatesPage({
         anchorEl={templateMoreActionsAnchorEl}
         onClose={onCloseTemplateMoreActions}
         templateId={templateIdMoreActions}
+        onOpenTemplatePage={openTemplatePageHandler}
         onRemoveTemplate={onRemoveTemplate}
       />
     </React.Fragment>
