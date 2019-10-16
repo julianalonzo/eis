@@ -12,6 +12,12 @@ const createTemplateUpload = upload.fields([
 ]);
 router.post('/new', createTemplateUpload, templateController.createTemplate);
 
+const updateTemplateUpload = upload.fields([
+  { name: 'fileThumbnails' },
+  { name: 'fileAttachments' }
+]);
+router.put('/', updateTemplateUpload, templateController.updateTemplate);
+
 router.delete('/', templateController.removeTemplate);
 
 router.get('/:templateId', templateController.getTemplate);

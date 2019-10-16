@@ -1,5 +1,7 @@
 const { generateItemData } = require('./item');
 
+const { extractIdsFromNewFiles } = require('./file');
+
 const Template = require('../models/template');
 
 exports.getTemplates = async (req, res, next) => {
@@ -72,6 +74,53 @@ exports.createTemplate = async (req, res, next) => {
     const savedTemplate = await template.save();
 
     res.status(201).json({ template: savedTemplate });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.updateTemplate = async (req, res, next) => {
+  // @TODO Add validation
+
+  try {
+    const templateId = req.body.templateId;
+    const templateName = req.body.templateName;
+    const templateDescription = req.body.templateDescription;
+    const item = JSON.parse(req.body.item);
+
+    const newThumbnails = req.files.fileThumbnails
+      ? await extractIdsFromNewFiles('thumbnail', req.files.fileThumbnails)
+      : undefined;
+
+    const newAttachments = req.files.fileAttachments
+      ? await extractIdsFromNewFiles('attachment', req.files.fileAttachments)
+      : undefined;
+
+    await Template.updateOne(
+      { _id: templateId },
+      { name: templateName, description: templateDescription, item: item },
+      { omitUndefined: true }
+    );
+
+    await Template.updateOne(
+      { _id: templateId },
+      {
+        $addToSet: {
+          'item.thumbnails': newThumbnails,
+          'item.attachments': newAttachments
+        }
+      },
+      { omitUndefined: true }
+    );
+
+    const template = await Template.findById(templateId)
+      .populate('item.thumbnails')
+      .populate('item.attachments')
+      .exec();
+
+    res.status(200).json({
+      template: template
+    });
   } catch (err) {
     console.log(err);
   }
