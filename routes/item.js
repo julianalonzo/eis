@@ -39,4 +39,6 @@ router.delete('/attachment', itemController.removeAttachment);
 
 router.post('/remove', itemController.removeItem);
 
+router.post('/note', itemController.addNote);
+
 module.exports = router;

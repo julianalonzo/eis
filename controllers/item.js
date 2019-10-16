@@ -333,3 +333,33 @@ exports.removeItemsByFolderId = async folderId => {
 
   return folderItems.map(item => item.id);
 };
+
+exports.addNote = async (req, res, next) => {
+  // @TODO Add validation
+
+  try {
+    const itemId = req.body.itemId;
+    const content = req.body.content;
+
+    const newNote = {
+      _id: mongoose.Types.ObjectId(),
+      content: content,
+      datePosted: new Date().toISOString()
+    };
+
+    await Item.updateOne(
+      { _id: itemId },
+      {
+        $addToSet: {
+          notes: newNote
+        }
+      }
+    );
+
+    res.status(200).json({
+      note: { ...newNote }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
