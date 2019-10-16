@@ -57,7 +57,7 @@ export default function Attachments({ attachments, onOpenMoreActions }) {
                     <Typography variant="body2" color="textPrimary" noWrap>
                       {attachment.name}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" noWrap>
+                    <Typography variant="caption" color="textSecondary" noWrap>
                       <Moment format="MMM D, YYYY" withTitle>
                         {attachment.dateUploaded}
                       </Moment>

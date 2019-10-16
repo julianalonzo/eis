@@ -11,6 +11,7 @@ import PropertiesSection from '../../components/PropertiesSection';
 
 import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
+import NotesSection from '../../components/NotesSection';
 
 const useStyles = makeStyles(theme => ({
   sectionGridItem: {
@@ -23,9 +24,6 @@ function ItemPage({
   onFetchItem,
   fetchingItem,
   onResetItem,
-  onAddAttachments,
-  onRemoveAttachment,
-  addingAttachments,
   match: { params }
 }) {
   const classes = useStyles();
@@ -49,8 +47,8 @@ function ItemPage({
   }
 
   return (
-    <Grid container>
-      <Grid item xs={12} md={8} lg={6}>
+    <Grid container spacing={4}>
+      <Grid item xs={12} md={8} lg={7}>
         <Grid container>
           <Grid item xs={12} className={classes.sectionGridItem}>
             <ItemDetailsSection item={item} />
@@ -66,7 +64,9 @@ function ItemPage({
           </Grid>
         </Grid>
       </Grid>
-      <Grid item md={4}></Grid>
+      <Grid item xs={12} md={4}>
+        <NotesSection notes={item.notes} />
+      </Grid>
     </Grid>
   );
 }

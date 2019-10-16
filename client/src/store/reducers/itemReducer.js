@@ -9,7 +9,8 @@ const initialState = {
     condition: '',
     thumbnails: [],
     properties: [],
-    attachments: []
+    attachments: [],
+    notes: []
   },
   fetchingItems: false,
   fetchingItem: false,
@@ -64,7 +65,8 @@ const fetchItemFail = (state, action) => {
       condition: '',
       thumbnails: [],
       properties: [],
-      attachments: []
+      attachments: [],
+      notes: []
     }
   });
 };
@@ -77,7 +79,8 @@ const resetItem = (state, action) => {
       condition: '',
       thumbnails: [],
       properties: [],
-      attachments: []
+      attachments: [],
+      notes: []
     }
   });
 };
