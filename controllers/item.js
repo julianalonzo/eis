@@ -77,6 +77,7 @@ exports.createItems = async (req, res, next) => {
 
     const item = new Item({
       ...itemData,
+      notes: [],
       shown: true,
       folder: folder
     });

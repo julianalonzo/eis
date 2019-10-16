@@ -19,12 +19,32 @@ const itemSchema = new Schema({
     }
   ],
   properties: [
-    { name: { type: String, isRequired: true }, value: { type: String } }
+    {
+      name: {
+        type: String,
+        isRequired: true
+      },
+      value: {
+        type: String
+      }
+    }
   ],
   attachments: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'File'
+    }
+  ],
+  notes: [
+    {
+      content: {
+        type: String
+      },
+      datePosted: {
+        type: Date,
+        isRequired: true,
+        default: Date.now
+      }
     }
   ],
   shown: {
