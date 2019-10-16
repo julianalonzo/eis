@@ -114,6 +114,38 @@ export const createTemplate = template => {
   };
 };
 
+export const updateTemplateStart = () => {
+  return {
+    type: actionTypes.UPDATE_TEMPLATE_START
+  };
+};
+
+export const updateTemplateSuccess = template => {
+  return {
+    type: actionTypes.UPDATE_TEMPLATE_SUCCESS,
+    template: template
+  };
+};
+
+export const updateTemplateFail = error => {
+  return {
+    type: actionTypes.UPDATE_TEMPLATE_FAIL
+  };
+};
+
+export const updateTemplate = template => {
+  return async dispatch => {
+    dispatch(updateTemplateStart());
+
+    try {
+      const response = await axios.put('api/templates', template);
+      dispatch(updateTemplateSuccess(response.data.template));
+    } catch (err) {
+      dispatch(updateTemplateFail(err));
+    }
+  };
+};
+
 export const removeTemplateStart = () => {
   return {
     type: actionTypes.REMOVE_TEMPLATE_START

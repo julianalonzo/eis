@@ -4,6 +4,7 @@ import { updateObject } from '../utility';
 const initialState = {
   templates: [],
   creatingTemplate: false,
+  updatingTemplate: false,
   removingTemplate: false,
   removingTemplateError: null,
   fetchingTemplates: false,
@@ -99,6 +100,21 @@ const createTemplateSuccess = (state, action) => {
   });
 };
 
+const updateTemplateStart = (state, action) => {
+  return updateObject(state, { updatingTemplate: true });
+};
+
+const updateTemplateFail = (state, action) => {
+  return updateObject(state, { updatingTemplate: false });
+};
+
+const updateTemplateSuccess = (state, action) => {
+  return updateObject(state, {
+    updatingTemplate: false,
+    template: action.template
+  });
+};
+
 const removeTemplateStart = (state, action) => {
   return updateObject(state, { removingTemplate: true });
 };
@@ -143,6 +159,12 @@ const reducer = (state = initialState, action) => {
       return createTemplateSuccess(state, action);
     case actionTypes.CREATE_TEMPLATE_FAIL:
       return createTemplateFail(state, action);
+    case actionTypes.UPDATE_TEMPLATE_START:
+      return updateTemplateStart(state, action);
+    case actionTypes.UPDATE_TEMPLATE_SUCCESS:
+      return updateTemplateSuccess(state, action);
+    case actionTypes.UPDATE_TEMPLATE_FAIL:
+      return updateTemplateFail(state, action);
     case actionTypes.REMOVE_TEMPLATE_START:
       return removeTemplateStart(state, action);
     case actionTypes.REMOVE_TEMPLATE_SUCCESS:

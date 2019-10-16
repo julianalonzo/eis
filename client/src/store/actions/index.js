@@ -19,6 +19,7 @@ export {
   fetchTemplate,
   resetTemplate,
   createTemplate,
+  updateTemplate,
   removeTemplate
 } from './template';
 
