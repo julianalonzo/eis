@@ -10,6 +10,7 @@ import NewTemplatePage from './containers/NewTemplatePage';
 import MainPage from './containers/MainPage';
 import NewItemPage from './containers/NewItemPage';
 import SelectTemplatePage from './containers/SelectTemplatePage';
+import TemplatePage from './containers/TemplatePage';
 import TemplatesPage from './containers/TemplatesPage';
 
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -29,6 +30,11 @@ function App() {
         <Toolbar variant="dense" style={{ marginBottom: theme.spacing(4) }} />
         <Container maxWidth="xl">
           <Switch>
+            <Route
+              exact
+              path="/templates/:templateId"
+              component={TemplatePage}
+            />
             <Route path="/templates" component={TemplatesPage} />
             <Route path="/new-template" component={NewTemplatePage} />
             <Route
