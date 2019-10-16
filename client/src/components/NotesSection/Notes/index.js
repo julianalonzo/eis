@@ -2,16 +2,16 @@ import React from 'react';
 
 import Moment from 'react-moment';
 
-import { Divider, IconButton, Typography } from '@material-ui/core';
-import {
-  MoreVert as MoreVertIcon,
-  InsertDriveFile as NoteIcon
-} from '@material-ui/icons';
+import { Typography } from '@material-ui/core';
+import { InsertDriveFile as NoteIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   note: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(4),
+    '&:last-child': {
+      marginBottom: theme.spacing(2)
+    }
   },
   noteWrapper: {
     display: 'flex',
@@ -29,6 +29,14 @@ const useStyles = makeStyles(theme => ({
   },
   datePosted: {
     marginTop: theme.spacing(1)
+  },
+  deleteNote: {
+    textDecoration: 'underline',
+    color: theme.palette.text.hint,
+    '&:hover': {
+      color: theme.palette.grey[800],
+      cursor: 'pointer'
+    }
   }
 }));
 
@@ -55,9 +63,9 @@ export default function Notes({ notes }) {
                 </Typography>
               </div>
               <div>
-                <IconButton size="small">
-                  <MoreVertIcon fontSize="small" />
-                </IconButton>
+                <Typography variant="caption" className={classes.deleteNote}>
+                  Delete
+                </Typography>
               </div>
             </div>
           </div>
