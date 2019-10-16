@@ -28,7 +28,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NewTemplateForm({ onSubmit, submitting }) {
+export default function TemplateForm({
+  title,
+  initialValues,
+  onSubmit,
+  submitting
+}) {
   const classes = useStyles();
 
   const [
@@ -37,7 +42,7 @@ export default function NewTemplateForm({ onSubmit, submitting }) {
     setThumbnailsForm,
     addThumbnailsHandler,
     removeThumbnailHandler
-  ] = useThumbnailsForm([]);
+  ] = useThumbnailsForm(initialValues.thumbnails || []);
 
   const [
     attachmentsForm,
@@ -45,7 +50,7 @@ export default function NewTemplateForm({ onSubmit, submitting }) {
     setAttachmentsForm,
     addAttachmentsHandler,
     removeAttachmentHandler
-  ] = useAttachmentsForm([]);
+  ] = useAttachmentsForm(initialValues.attachments || []);
 
   const submitHandler = values => {
     const templateData = {
@@ -60,6 +65,7 @@ export default function NewTemplateForm({ onSubmit, submitting }) {
 
   return (
     <Form
+      initialValues={initialValues}
       onSubmit={values => {
         submitHandler(values);
       }}
@@ -76,7 +82,7 @@ export default function NewTemplateForm({ onSubmit, submitting }) {
               <Grid item md={2} />
               <Grid item xs={12} md={8} className={classes.formContainer}>
                 <Typography variant="h6" className={classes.pageHeading}>
-                  New Template
+                  {title}
                 </Typography>
                 <FormPaper
                   title="Template Details"
