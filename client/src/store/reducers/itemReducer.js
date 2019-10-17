@@ -21,6 +21,8 @@ const initialState = {
   removingProperty: false,
   addingAttachments: false,
   removingAttachment: false,
+  addingNote: false,
+  addingNoteError: null,
   removingNote: false,
   removingNoteError: null,
   updatingItemDetailsError: null,
@@ -250,6 +252,29 @@ const removeAttachmentFail = (state, action) => {
   });
 };
 
+const addNoteStart = (state, action) => {
+  return updateObject(state, {
+    addingNote: true
+  });
+};
+
+const addNoteSuccess = (state, action) => {
+  return updateObject(state, {
+    addingNote: false,
+    item: {
+      ...state.item,
+      notes: state.item.notes.concat(action.note)
+    }
+  });
+};
+
+const addNoteFail = (state, action) => {
+  return updateObject(state, {
+    addingNote: false,
+    addingNoteError: action.error
+  });
+};
+
 const removeNoteStart = (state, action) => {
   return updateObject(state, {
     removingNote: true
@@ -339,12 +364,6 @@ const reducer = (state = initialState, action) => {
       return removePropertySuccess(state, action);
     case actionTypes.REMOVE_PROPERTY_FAIL:
       return removePropertyFail(state, action);
-    case actionTypes.REMOVE_NOTE_START:
-      return removeNoteStart(state, action);
-    case actionTypes.REMOVE_NOTE_SUCCESS:
-      return removeNoteSuccess(state, action);
-    case actionTypes.REMOVE_NOTE_FAIL:
-      return removeNoteFail(state, action);
     case actionTypes.ADD_ATTACHMENTS_START:
       return addAttachmentsStart(state, action);
     case actionTypes.ADD_ATTACHMENTS_SUCCESS:
@@ -357,6 +376,18 @@ const reducer = (state = initialState, action) => {
       return removeAttachmentSuccess(state, action);
     case actionTypes.REMOVE_ATTACHMENT_FAIL:
       return removeAttachmentFail(state, action);
+    case actionTypes.REMOVE_NOTE_START:
+      return addNoteStart(state, action);
+    case actionTypes.ADD_NOTE_SUCCESS:
+      return addNoteSuccess(state, action);
+    case actionTypes.ADD_NOTE_FAIL:
+      return addNoteFail(state, action);
+    case actionTypes.ADD_NOTE_START:
+      return removeNoteStart(state, action);
+    case actionTypes.REMOVE_NOTE_SUCCESS:
+      return removeNoteSuccess(state, action);
+    case actionTypes.REMOVE_NOTE_FAIL:
+      return removeNoteFail(state, action);
     case actionTypes.REMOVE_ITEM_START:
       return removeItemStart(state, action);
     case actionTypes.REMOVE_ITEM_FAIL:

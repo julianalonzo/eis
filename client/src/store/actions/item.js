@@ -334,6 +334,40 @@ export const removeAttachment = (itemId, attachmentId) => {
   };
 };
 
+export const addNoteStart = () => {
+  return {
+    type: actionTypes.ADD_NOTE_START
+  };
+};
+
+export const addNoteSuccess = note => {
+  return {
+    type: actionTypes.ADD_NOTE_SUCCESS,
+    note: note
+  };
+};
+
+export const addNoteFail = error => {
+  return {
+    type: actionTypes.ADD_NOTE_FAIL,
+    error: error
+  };
+};
+
+export const addNote = (itemId, content) => {
+  return async dispatch => {
+    dispatch(addNoteStart());
+
+    try {
+      const response = await axios.post('api/items/note', { itemId, content });
+
+      dispatch(addNoteSuccess(response.data.note));
+    } catch (err) {
+      dispatch(addNoteFail(err));
+    }
+  };
+};
+
 export const removeNoteStart = () => {
   return {
     type: actionTypes.REMOVE_NOTE_START

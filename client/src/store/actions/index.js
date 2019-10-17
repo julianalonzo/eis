@@ -8,6 +8,7 @@ export {
   removeProperty,
   addAttachments,
   removeAttachment,
+  addNote,
   removeNote,
   resetItems,
   resetItem,
