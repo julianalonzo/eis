@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Notes({ notes }) {
+export default function Notes({ notes, onRemoveNote }) {
   const classes = useStyles();
 
   return (
@@ -63,7 +63,13 @@ export default function Notes({ notes }) {
                 </Typography>
               </div>
               <div>
-                <Typography variant="caption" className={classes.deleteNote}>
+                <Typography
+                  variant="caption"
+                  className={classes.deleteNote}
+                  onClick={() => {
+                    onRemoveNote(note._id);
+                  }}
+                >
                   Delete
                 </Typography>
               </div>
