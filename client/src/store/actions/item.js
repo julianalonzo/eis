@@ -334,6 +334,45 @@ export const removeAttachment = (itemId, attachmentId) => {
   };
 };
 
+export const removeNoteStart = () => {
+  return {
+    type: actionTypes.REMOVE_NOTE_START
+  };
+};
+
+export const removeNoteSuccess = noteId => {
+  return {
+    type: actionTypes.REMOVE_NOTE_SUCCESS,
+    noteId: noteId
+  };
+};
+
+export const removeNoteFail = error => {
+  return {
+    type: actionTypes.REMOVE_NOTE_FAIL,
+    error: error
+  };
+};
+
+export const removeNote = (itemId, noteId) => {
+  return async dispatch => {
+    dispatch(removeNoteStart());
+
+    try {
+      const response = await axios.delete('api/items/note', {
+        data: {
+          itemId: itemId,
+          noteId: noteId
+        }
+      });
+
+      dispatch(removeNoteSuccess(response.data.noteId));
+    } catch (err) {
+      dispatch(removeNoteFail(err));
+    }
+  };
+};
+
 export const removeItemStart = () => {
   return {
     type: actionTypes.REMOVE_ITEM_START

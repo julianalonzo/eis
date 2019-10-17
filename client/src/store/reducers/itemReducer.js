@@ -21,6 +21,8 @@ const initialState = {
   removingProperty: false,
   addingAttachments: false,
   removingAttachment: false,
+  removingNote: false,
+  removingNoteError: null,
   updatingItemDetailsError: null,
   addingPropertyError: null,
   updatingPropertyError: null,
@@ -248,6 +250,29 @@ const removeAttachmentFail = (state, action) => {
   });
 };
 
+const removeNoteStart = (state, action) => {
+  return updateObject(state, {
+    removingNote: true
+  });
+};
+
+const removeNoteSuccess = (state, action) => {
+  return updateObject(state, {
+    removingNote: false,
+    item: {
+      ...state.item,
+      notes: state.item.notes.filter(note => note._id !== action.noteId)
+    }
+  });
+};
+
+const removeNoteFail = (state, action) => {
+  return updateObject(state, {
+    removingNote: false,
+    removingNoteError: action.error
+  });
+};
+
 const removeItemStart = (state, action) => {
   return updateObject(state, { removingItem: true });
 };
@@ -314,6 +339,12 @@ const reducer = (state = initialState, action) => {
       return removePropertySuccess(state, action);
     case actionTypes.REMOVE_PROPERTY_FAIL:
       return removePropertyFail(state, action);
+    case actionTypes.REMOVE_NOTE_START:
+      return removeNoteStart(state, action);
+    case actionTypes.REMOVE_NOTE_SUCCESS:
+      return removeNoteSuccess(state, action);
+    case actionTypes.REMOVE_NOTE_FAIL:
+      return removeNoteFail(state, action);
     case actionTypes.ADD_ATTACHMENTS_START:
       return addAttachmentsStart(state, action);
     case actionTypes.ADD_ATTACHMENTS_SUCCESS:

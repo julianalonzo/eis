@@ -64,7 +64,7 @@ function ItemPage({
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={8} lg={4}>
         <NotesSection notes={item.notes} />
       </Grid>
     </Grid>
