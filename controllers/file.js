@@ -3,29 +3,6 @@ const path = require('path');
 
 const File = require('../models/file');
 
-// Route to create thumbnails
-exports.createThumbnails = async (req, res, next) => {
-  const savedThumbnails = [];
-  if (req.files.thumbnails) {
-    savedThumbnails = await this.saveFiles('thumbnail', req.files.thumbnails);
-  }
-
-  res.status(201).json({ thumbnails: savedThumbnails });
-};
-
-// Route to create attachments
-exports.createAttachments = async (req, res, next) => {
-  const savedAttachments = [];
-  if (req.files.attachments) {
-    savedAttachments = await this.saveFiles(
-      'attachment',
-      req.files.attachments
-    );
-  }
-
-  res.status(201).json({ attachments: savedAttachments });
-};
-
 // Route to get a file
 exports.getFile = (req, res, next) => {
   res.sendFile(path.join(__dirname, '..', 'uploads', req.params.filename));
