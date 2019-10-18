@@ -60,7 +60,7 @@ export const createFolder = folder => {
     dispatch(createFolderStart());
 
     try {
-      const response = await axios.post('api/folders/new', folder);
+      const response = await axios.post('api/folders', folder);
       dispatch(createFolderSuccess(response.data.folder));
     } catch (err) {
       dispatch(createFolderFail(err));
@@ -93,9 +93,7 @@ export const removeFolder = folderId => {
     dispatch(removeFolderStart());
 
     try {
-      const response = await axios.post('api/folders/remove', {
-        folderId: folderId
-      });
+      const response = await axios.delete(`api/folders/${folderId}`);
       dispatch(removeFolderSuccess(response.data));
     } catch (err) {
       dispatch(removeFolderFail(err));
