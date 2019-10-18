@@ -4,17 +4,15 @@ const upload = require('../util/fileStorage');
 
 const filesController = require('../controllers/file');
 
-const createThumbnailsUpload = upload.array('thumbnails');
 router.post(
-  '/new-thumbnails',
-  createThumbnailsUpload,
+  '/thumbnails',
+  upload.array('thumbnails'),
   filesController.createThumbnails
 );
 
-const createAttachmentsUpload = upload.array('attachments');
 router.post(
-  '/new-attachments',
-  createAttachmentsUpload,
+  '/attachments',
+  upload.array('attachments'),
   filesController.createAttachments
 );
 
