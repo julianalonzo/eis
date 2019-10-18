@@ -6,20 +6,20 @@ const templateController = require('../controllers/template');
 
 router.get('/', templateController.getTemplates);
 
-const createTemplateUpload = upload.fields([
-  { name: 'fileThumbnails' },
-  { name: 'fileAttachments' }
-]);
-router.post('/new', createTemplateUpload, templateController.createTemplate);
-
-const updateTemplateUpload = upload.fields([
-  { name: 'fileThumbnails' },
-  { name: 'fileAttachments' }
-]);
-router.put('/', updateTemplateUpload, templateController.updateTemplate);
-
-router.delete('/', templateController.removeTemplate);
-
 router.get('/:templateId', templateController.getTemplate);
+
+router.post(
+  '/',
+  upload.fields([{ name: 'fileThumbnails' }, { name: 'fileAttachments' }]),
+  templateController.createTemplate
+);
+
+router.put(
+  '/:templateId',
+  upload.fields([{ name: 'fileThumbnails' }, { name: 'fileAttachments' }]),
+  templateController.updateTemplate
+);
+
+router.delete('/:templateId', templateController.removeTemplate);
 
 module.exports = router;

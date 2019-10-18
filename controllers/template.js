@@ -83,7 +83,7 @@ exports.updateTemplate = async (req, res, next) => {
   // @TODO Add validation
 
   try {
-    const templateId = req.body.templateId;
+    const templateId = req.params.templateId;
     const templateName = req.body.templateName;
     const templateDescription = req.body.templateDescription;
     const item = JSON.parse(req.body.item);
@@ -130,7 +130,7 @@ exports.removeTemplate = async (req, res, next) => {
   // @TODO Add validation
 
   try {
-    const templateId = req.body.templateId;
+    const templateId = req.params.templateId;
 
     await Template.updateOne({ _id: templateId }, { $set: { shown: false } });
 
