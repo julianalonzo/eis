@@ -106,7 +106,7 @@ export const createTemplate = template => {
     dispatch(createTemplateStart());
 
     try {
-      const response = await axios.post('api/templates/new', template);
+      const response = await axios.post('api/templates', template);
       dispatch(createTemplateSuccess(response.data.template));
     } catch (err) {
       dispatch(createTemplateFail(err));
@@ -138,7 +138,10 @@ export const updateTemplate = template => {
     dispatch(updateTemplateStart());
 
     try {
-      const response = await axios.put('api/templates', template);
+      const response = await axios.put(
+        `api/templates/${template._id}`,
+        template
+      );
       dispatch(updateTemplateSuccess(response.data.template));
     } catch (err) {
       dispatch(updateTemplateFail(err));
@@ -170,9 +173,7 @@ export const removeTemplate = templateId => {
     dispatch(removeTemplateStart());
 
     try {
-      const response = await axios.delete('api/templates/', {
-        data: { templateId }
-      });
+      const response = await axios.delete(`api/templates/${templateId}`);
       dispatch(removeTemplateSuccess(response.data.templateId));
     } catch (err) {
       dispatch(removeTemplateFail(err));
