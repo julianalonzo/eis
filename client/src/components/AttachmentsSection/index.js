@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 
-import { connect } from 'react-redux';
-import * as actions from '../../store/actions';
-
 import useDialogState from '../../hooks/useDialogState';
 import usePopperState from '../../hooks/usePopperState';
 
@@ -13,13 +10,7 @@ import SectionPaper from '../UI/SectionPaper';
 
 import { Add as AddIcon } from '@material-ui/icons';
 
-function AttachmentsSection({
-  attachments,
-  itemId,
-  onAddAttachments,
-  addingAttachments,
-  onRemoveAttachment
-}) {
+function AttachmentsSection({ attachments, onUpdateItem, updatingItem }) {
   const [activeAttachment, setActiveAttachment] = useState({});
 
   const [
@@ -40,21 +31,17 @@ function AttachmentsSection({
   };
 
   const addAttachmentsHandler = async attachments => {
-    const formData = new FormData();
-
-    formData.append('itemId', itemId);
-
-    for (const attachment of attachments) {
-      formData.append('fileAttachments', attachment);
-    }
-
-    await onAddAttachments(formData);
+    await onUpdateItem({}, [], attachments);
 
     closeNewAttachmentsDialogHandler();
   };
 
   const removeAttachmentHandler = attachmentId => {
-    onRemoveAttachment(itemId, attachmentId);
+    const updatedAttachments = attachments.filter(
+      attachment => attachment._id !== attachmentId
+    );
+
+    onUpdateItem({ attachments: updatedAttachments }, [], []);
   };
 
   return (
@@ -87,28 +74,10 @@ function AttachmentsSection({
         isOpen={isNewAttachmentsDialogOpen}
         onClose={closeNewAttachmentsDialogHandler}
         onSubmit={addAttachmentsHandler}
-        submitting={addingAttachments}
+        submitting={updatingItem}
       />
     </>
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    addingAttachments: state.item.addingAttachments
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onAddAttachments: addAttachmentsData =>
-      dispatch(actions.addAttachments(addAttachmentsData)),
-    onRemoveAttachment: (itemId, attachmentId) =>
-      dispatch(actions.removeAttachment(itemId, attachmentId))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AttachmentsSection);
+export default AttachmentsSection;

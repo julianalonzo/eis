@@ -24,11 +24,49 @@ function ItemPage({
   onFetchItem,
   fetchingItem,
   onResetItem,
+  onUpdateItem,
+  updatingItem,
   match: { params }
 }) {
   const classes = useStyles();
 
   const [itemId, setItemId] = useState(params.itemId || null);
+
+  const updateItemHandler = async (
+    modifiedFields,
+    fileThumbnails,
+    fileAttachments
+  ) => {
+    const updatedItem = {
+      ...item,
+      ...modifiedFields
+    };
+
+    const formData = new FormData();
+
+    const thumbnailIds = updatedItem.thumbnails.map(thumbnail => thumbnail._id);
+    const attachmentIds = updatedItem.attachments.map(
+      attachment => attachment._id
+    );
+
+    formData.append('name', updatedItem.name);
+    formData.append('category', updatedItem.category || '');
+    formData.append('condition', updatedItem.condition || '');
+    formData.append('thumbnails', JSON.stringify(thumbnailIds));
+    formData.append('attachments', JSON.stringify(attachmentIds));
+    formData.append('properties', JSON.stringify(updatedItem.properties));
+    formData.append('notes', JSON.stringify(updatedItem.notes));
+
+    for (const fileThumbnail of fileThumbnails) {
+      formData.append('fileThumbnails', fileThumbnail);
+    }
+
+    for (const fileAttachment of fileAttachments) {
+      formData.append('fileAttachments', fileAttachment);
+    }
+
+    await onUpdateItem(updatedItem._id, formData);
+  };
 
   useEffect(() => {
     setItemId(params.itemId || null);
@@ -51,21 +89,34 @@ function ItemPage({
       <Grid item xs={12} md={8} lg={7}>
         <Grid container>
           <Grid item xs={12} className={classes.sectionGridItem}>
-            <ItemDetailsSection item={item} />
+            <ItemDetailsSection
+              item={item}
+              onUpdateItem={updateItemHandler}
+              updatingItem={updatingItem}
+            />
           </Grid>
           <Grid item xs={12} className={classes.sectionGridItem}>
-            <PropertiesSection properties={item.properties} itemId={item._id} />
+            <PropertiesSection
+              properties={item.properties}
+              onUpdateItem={updateItemHandler}
+              updatingItem={updatingItem}
+            />
           </Grid>
           <Grid item xs={12} className={classes.sectionGridItem}>
             <AttachmentsSection
-              itemId={item._id}
               attachments={item.attachments}
+              onUpdateItem={updateItemHandler}
+              updatingItem={updatingItem}
             />
           </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12} md={8} lg={4}>
-        <NotesSection itemId={item._id} notes={item.notes} />
+        <NotesSection
+          notes={item.notes}
+          onUpdateItem={updateItemHandler}
+          updatingItem={updatingItem}
+        />
       </Grid>
     </Grid>
   );
@@ -74,14 +125,17 @@ function ItemPage({
 const mapStateToProps = state => {
   return {
     item: state.item.item,
-    fetchingItem: state.item.fetchingItem
+    fetchingItem: state.item.fetchingItem,
+    updatingItem: state.item.updatingItem
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onFetchItem: itemId => dispatch(actions.fetchItem(itemId)),
-    onResetItem: () => dispatch(actions.resetItem())
+    onResetItem: () => dispatch(actions.resetItem()),
+    onUpdateItem: (itemId, formData) =>
+      dispatch(actions.updateItem(itemId, formData))
   };
 };
 

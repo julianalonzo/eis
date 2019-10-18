@@ -1,8 +1,5 @@
 import React from 'react';
 
-import { connect } from 'react-redux';
-import * as actions from '../../store/actions';
-
 import useDialogState from '../../hooks/useDialogState';
 
 import NewNoteDialogForm from './NewNoteDialogForm';
@@ -11,7 +8,7 @@ import SectionPaper from '../UI/SectionPaper';
 
 import { Add as AddIcon } from '@material-ui/icons';
 
-function NotesSection({ itemId, notes, onAddNote, addingNote, onRemoveNote }) {
+function NotesSection({ notes, onUpdateItem, updatingItem }) {
   const [
     isNewNoteDialogOpen,
     openNewNoteDialogHandler,
@@ -19,12 +16,16 @@ function NotesSection({ itemId, notes, onAddNote, addingNote, onRemoveNote }) {
   ] = useDialogState(false);
 
   const addNoteHandler = async content => {
-    await onAddNote(itemId, content);
+    const updatedNotes = notes.concat({ content: content });
+
+    await onUpdateItem({ notes: updatedNotes }, [], []);
     closeNewNoteDialogHandler();
   };
 
   const removeNoteHandler = async noteId => {
-    await onRemoveNote(itemId, noteId);
+    const updatedNotes = notes.filter(note => note._id !== noteId);
+
+    await onUpdateItem({ notes: updatedNotes }, [], []);
   };
 
   return (
@@ -39,28 +40,10 @@ function NotesSection({ itemId, notes, onAddNote, addingNote, onRemoveNote }) {
         isOpen={isNewNoteDialogOpen}
         onClose={closeNewNoteDialogHandler}
         onSubmit={addNoteHandler}
-        submitting={addingNote}
+        submitting={updatingItem}
       />
     </>
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    removingNote: state.item.removingNote,
-    addingNote: state.item.addingNote
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onAddNote: (itemId, note) => dispatch(actions.addNote(itemId, note)),
-    onRemoveNote: (itemId, noteId) =>
-      dispatch(actions.removeNote(itemId, noteId))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NotesSection);
+export default NotesSection;

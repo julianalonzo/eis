@@ -106,7 +106,7 @@ export const createItems = item => {
     dispatch(createItemsStart());
 
     try {
-      const response = await axios.post('api/items/new', item);
+      const response = await axios.post('api/items', item);
       dispatch(createItemsSuccess(response.data.item));
     } catch (err) {
       dispatch(createItemsFail(err));
@@ -114,295 +114,35 @@ export const createItems = item => {
   };
 };
 
-export const updateItemDetailsStart = () => {
+export const updateItemStart = () => {
   return {
-    type: actionTypes.UPDATE_ITEM_DETAILS_START
+    type: actionTypes.UPDATE_ITEM_START
   };
 };
 
-export const updateItemDetailsSuccess = updatedItemDetails => {
+export const updateItemSuccess = item => {
   return {
-    type: actionTypes.UPDATE_ITEM_DETAILS_SUCCESS,
-    updatedItemDetails: updatedItemDetails
+    type: actionTypes.UPDATE_ITEM_SUCCESS,
+    item: item
   };
 };
 
-export const updateItemDetailsFail = error => {
+export const updateItemFail = error => {
   return {
-    type: actionTypes.UPDATE_ITEM_DETAILS_FAIL,
+    type: actionTypes.UPDATE_ITEM_FAIL,
     error: error
   };
 };
 
-export const updateItemDetails = updatedItemData => {
+export const updateItem = (itemId, formData) => {
   return async dispatch => {
-    dispatch(updateItemDetailsStart());
+    dispatch(updateItemStart());
 
     try {
-      const response = await axios.put('api/items/details', updatedItemData);
-      dispatch(updateItemDetailsSuccess(response.data.updatedItemDetails));
+      const response = await axios.put(`api/items/${itemId}`, formData);
+      dispatch(updateItemSuccess(response.data.item));
     } catch (err) {
-      dispatch(updateItemDetailsFail(err));
-    }
-  };
-};
-
-export const addPropertyStart = () => {
-  return {
-    type: actionTypes.ADD_PROPERTY_START
-  };
-};
-
-export const addPropertySuccess = property => {
-  return {
-    type: actionTypes.ADD_PROPERTY_SUCCESS,
-    property: property
-  };
-};
-
-export const addPropertyFail = error => {
-  return {
-    type: actionTypes.ADD_PROPERTY_FAIL,
-    error: error
-  };
-};
-
-export const addProperty = (itemId, property) => {
-  return async dispatch => {
-    dispatch(addPropertyStart());
-
-    try {
-      const response = await axios.post('api/items/property', {
-        itemId: itemId,
-        property: property
-      });
-      dispatch(addPropertySuccess(response.data.property));
-    } catch (err) {
-      dispatch(addPropertyFail(err));
-    }
-  };
-};
-
-export const updatePropertyStart = () => {
-  return {
-    type: actionTypes.UPDATE_PROPERTY_START
-  };
-};
-
-export const updatePropertySuccess = property => {
-  return {
-    type: actionTypes.UPDATE_PROPERTY_SUCCESS,
-    property: property
-  };
-};
-
-export const updatePropertyFail = error => {
-  return {
-    type: actionTypes.UPDATE_PROPERTY_FAIL,
-    error: error
-  };
-};
-
-export const updateProperty = (itemId, property) => {
-  return async dispatch => {
-    dispatch(updatePropertyStart());
-
-    try {
-      const response = await axios.put('api/items/property', {
-        itemId: itemId,
-        property: property
-      });
-
-      dispatch(updatePropertySuccess(response.data.property));
-    } catch (err) {
-      dispatch(updatePropertyFail(err));
-    }
-  };
-};
-
-export const removePropertyStart = () => {
-  return {
-    type: actionTypes.REMOVE_PROPERTY_START
-  };
-};
-
-export const removePropertySuccess = propertyId => {
-  return {
-    type: actionTypes.REMOVE_PROPERTY_SUCCESS,
-    propertyId: propertyId
-  };
-};
-
-export const removePropertyFail = error => {
-  return {
-    type: actionTypes.REMOVE_PROPERTY_FAIL,
-    error: error
-  };
-};
-
-export const removeProperty = (itemId, propertyId) => {
-  return async dispatch => {
-    dispatch(removePropertyStart());
-
-    try {
-      const response = await axios.delete('api/items/property', {
-        data: {
-          itemId: itemId,
-          propertyId: propertyId
-        }
-      });
-
-      dispatch(removePropertySuccess(response.data.propertyId));
-    } catch (err) {
-      dispatch(removePropertyFail(err));
-    }
-  };
-};
-
-export const addAttachmentsStart = () => {
-  return {
-    type: actionTypes.ADD_ATTACHMENTS_START
-  };
-};
-
-export const addAttachmentsSuccess = attachments => {
-  return {
-    type: actionTypes.ADD_ATTACHMENTS_SUCCESS,
-    attachments: attachments
-  };
-};
-
-export const addAttachmentsFail = error => {
-  return {
-    type: actionTypes.ADD_ATTACHMENTS_FAIL,
-    error: error
-  };
-};
-
-export const addAttachments = addAttachmentsData => {
-  return async dispatch => {
-    dispatch(addAttachmentsStart());
-
-    try {
-      const response = await axios.post(
-        'api/items/attachments',
-        addAttachmentsData
-      );
-      dispatch(addAttachmentsSuccess(response.data.attachments));
-    } catch (err) {
-      dispatch(addAttachmentsFail(err));
-    }
-  };
-};
-
-export const removeAttachmentStart = () => {
-  return {
-    type: actionTypes.REMOVE_ATTACHMENT_START
-  };
-};
-
-export const removeAttachmentSuccess = attachmentId => {
-  return {
-    type: actionTypes.REMOVE_ATTACHMENT_SUCCESS,
-    attachmentId: attachmentId
-  };
-};
-
-export const removeAttachmentFail = error => {
-  return {
-    type: actionTypes.REMOVE_ATTACHMENT_FAIL,
-    error: error
-  };
-};
-
-export const removeAttachment = (itemId, attachmentId) => {
-  return async dispatch => {
-    dispatch(removeAttachmentStart());
-
-    try {
-      const response = await axios.delete('api/items/attachment', {
-        data: {
-          itemId: itemId,
-          attachmentId: attachmentId
-        }
-      });
-
-      dispatch(removeAttachmentSuccess(response.data.attachmentId));
-    } catch (err) {
-      dispatch(removeAttachmentFail(err));
-    }
-  };
-};
-
-export const addNoteStart = () => {
-  return {
-    type: actionTypes.ADD_NOTE_START
-  };
-};
-
-export const addNoteSuccess = note => {
-  return {
-    type: actionTypes.ADD_NOTE_SUCCESS,
-    note: note
-  };
-};
-
-export const addNoteFail = error => {
-  return {
-    type: actionTypes.ADD_NOTE_FAIL,
-    error: error
-  };
-};
-
-export const addNote = (itemId, content) => {
-  return async dispatch => {
-    dispatch(addNoteStart());
-
-    try {
-      const response = await axios.post('api/items/note', { itemId, content });
-
-      dispatch(addNoteSuccess(response.data.note));
-    } catch (err) {
-      dispatch(addNoteFail(err));
-    }
-  };
-};
-
-export const removeNoteStart = () => {
-  return {
-    type: actionTypes.REMOVE_NOTE_START
-  };
-};
-
-export const removeNoteSuccess = noteId => {
-  return {
-    type: actionTypes.REMOVE_NOTE_SUCCESS,
-    noteId: noteId
-  };
-};
-
-export const removeNoteFail = error => {
-  return {
-    type: actionTypes.REMOVE_NOTE_FAIL,
-    error: error
-  };
-};
-
-export const removeNote = (itemId, noteId) => {
-  return async dispatch => {
-    dispatch(removeNoteStart());
-
-    try {
-      const response = await axios.delete('api/items/note', {
-        data: {
-          itemId: itemId,
-          noteId: noteId
-        }
-      });
-
-      dispatch(removeNoteSuccess(response.data.noteId));
-    } catch (err) {
-      dispatch(removeNoteFail(err));
+      dispatch(updateItemFail(err));
     }
   };
 };
@@ -419,10 +159,10 @@ export const removeItemFail = error => {
   };
 };
 
-export const removeItemSuccess = removedItemId => {
+export const removeItemSuccess = itemId => {
   return {
     type: actionTypes.REMOVE_ITEM_SUCCESS,
-    removedItemId: removedItemId
+    itemId: itemId
   };
 };
 
@@ -431,8 +171,8 @@ export const removeItem = itemId => {
     dispatch(removeItemStart());
 
     try {
-      const response = await axios.post('api/items/remove', { itemId: itemId });
-      dispatch(removeItemSuccess(response.data.removedItemId));
+      const response = await axios.delete(`api/items/${itemId}`);
+      dispatch(removeItemSuccess(response.data.itemId));
     } catch (err) {
       dispatch(removeItemFail(err));
     }

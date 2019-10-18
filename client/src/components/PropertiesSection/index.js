@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 
-import { connect } from 'react-redux';
-import * as actions from '../../store/actions';
-
 import useDialogState from '../../hooks/useDialogState';
 import usePopperState from '../../hooks/usePopperState';
 
@@ -14,15 +11,7 @@ import SectionPaper from '../UI/SectionPaper';
 import { Add as AddIcon } from '@material-ui/icons';
 import NewPropertyDialogForm from './NewPropertyDialogForm';
 
-function PropertiesSection({
-  properties,
-  itemId,
-  onAddProperty,
-  addingProperty,
-  onUpdateProperty,
-  updatingProperty,
-  onRemoveProperty
-}) {
+function PropertiesSection({ properties, onUpdateItem, updatingItem }) {
   const [
     propertyMoreActionsAnchorEl,
     onOpenPropertyMoreActions,
@@ -58,18 +47,34 @@ function PropertiesSection({
   };
 
   const addNewPropertyHandler = async property => {
-    await onAddProperty(itemId, property);
+    const updatedProperties = properties.concat(property);
+
+    await onUpdateItem({ properties: updatedProperties }, [], []);
+
     closeNewPropertyDialogHandler();
   };
 
-  const updatePropertyHandler = async property => {
-    setActiveProperty(property);
-    await onUpdateProperty(itemId, property);
+  const updatePropertyHandler = async updatedProperty => {
+    setActiveProperty(updatedProperty);
+
+    const indexOfUpdatedProperty = properties.findIndex(
+      property => property._id === updatedProperty._id
+    );
+
+    const updatedProperties = [...properties];
+    updatedProperties[indexOfUpdatedProperty] = updatedProperty;
+
+    await onUpdateItem({ properties: updatedProperties }, [], []);
+
     closeEditPropertyDialogHandler();
   };
 
   const removePropertyHandler = propertyId => {
-    onRemoveProperty(itemId, propertyId);
+    const updatedProperties = properties.filter(
+      property => property._id !== propertyId
+    );
+
+    onUpdateItem({ properties: updatedProperties }, [], []);
   };
 
   return (
@@ -98,38 +103,17 @@ function PropertiesSection({
         isOpen={isNewPropertyDialogOpen}
         onClose={closeNewPropertyDialogHandler}
         onSubmit={addNewPropertyHandler}
-        submitting={addingProperty}
+        submitting={updatingItem}
       />
       <EditPropertyDialogForm
         isOpen={isEditPropertyDialogOpen}
         onClose={closeEditPropertyDialogHandler}
         onSubmit={updatePropertyHandler}
-        submitting={updatingProperty}
+        submitting={updatingItem}
         initialValues={propertyOnEdit}
       />
     </>
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    addingProperty: state.item.addingProperty,
-    updatingProperty: state.item.updatingProperty
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onAddProperty: (itemId, property) =>
-      dispatch(actions.addProperty(itemId, property)),
-    onUpdateProperty: (itemId, property) =>
-      dispatch(actions.updateProperty(itemId, property)),
-    onRemoveProperty: (itemId, propertyId) =>
-      dispatch(actions.removeProperty(itemId, propertyId))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PropertiesSection);
+export default PropertiesSection;
