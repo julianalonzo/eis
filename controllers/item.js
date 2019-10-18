@@ -1,6 +1,4 @@
-const mongoose = require('mongoose');
-
-const { extractIdsFromNewFiles, saveFiles } = require('./file');
+const { extractIdsFromNewFiles } = require('./file');
 
 const Item = require('../models/item');
 
@@ -90,6 +88,88 @@ exports.createItems = async (req, res, next) => {
   }
 };
 
+exports.updateItem = async (req, res, next) => {
+  // @TODO: Add validation
+
+  try {
+    const itemId = req.params.itemId;
+
+    const name = req.body.name;
+    const category = req.body.category || '';
+    const condition = req.body.condition || '';
+    const thumbnails = req.body.thumbnails
+      ? JSON.parse(req.body.thumbnails)
+      : undefined;
+    const attachments = req.body.attachments
+      ? JSON.parse(req.body.attachments)
+      : undefined;
+    const properties = req.body.properties
+      ? JSON.parse(req.body.properties)
+      : undefined;
+    const notes = req.body.notes ? JSON.parse(req.body.notes) : undefined;
+
+    const newThumbnailsIds = req.files.fileThumbnails
+      ? await extractIdsFromNewFiles('thumbnail', req.files.fileThumbnails)
+      : undefined;
+
+    const newAttachmentsIds = req.files.fileAttachments
+      ? await extractIdsFromNewFiles('attachment', req.files.fileAttachments)
+      : undefined;
+
+    await Item.updateOne(
+      { _id: itemId },
+      {
+        $set: {
+          name,
+          category,
+          condition,
+          thumbnails,
+          attachments,
+          properties,
+          notes
+        }
+      },
+      { omitUndefined: true }
+    );
+
+    await Item.updateOne(
+      { _id: itemId },
+      {
+        $addToSet: {
+          thumbnails: newThumbnailsIds,
+          attachments: newAttachmentsIds
+        }
+      },
+      { omitUndefined: true }
+    );
+
+    const item = await Item.findOne({ _id: itemId })
+      .populate('thumbnails')
+      .populate('attachments')
+      .exec();
+
+    res.status(200).json({
+      item: item
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.removeItem = async (req, res, next) => {
+  const itemId = req.params.itemId;
+
+  try {
+    if (itemId) {
+      await Item.updateOne({ _id: itemId }, { $set: { shown: false } });
+
+      res.status(200).json({ itemId: itemId });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.generateItemData = async (
   name,
   category,
@@ -138,191 +218,6 @@ exports.generateItemData = async (
   }
 };
 
-exports.updateItemDetails = async (req, res, next) => {
-  // @TODO: Add validation
-
-  try {
-    const itemId = req.body.itemId;
-    const name = req.body.name;
-    const category = req.body.category;
-    const condition = req.body.condition;
-    const thumbnails = req.body.thumbnails
-      ? JSON.parse(req.body.thumbnails)
-      : undefined;
-
-    const newThumbnailsIds = req.files.fileThumbnails
-      ? await extractIdsFromNewFiles('thumbnail', req.files.fileThumbnails)
-      : undefined;
-
-    await Item.updateOne(
-      { _id: itemId },
-      {
-        $set: {
-          name,
-          category,
-          condition,
-          thumbnails
-        }
-      },
-      { omitUndefined: true }
-    );
-
-    await Item.updateOne(
-      { _id: itemId },
-      {
-        $addToSet: {
-          thumbnails: newThumbnailsIds
-        }
-      },
-      { omitUndefined: true }
-    );
-
-    const modifiedItemDetails = await Item.findById(itemId).populate(
-      'thumbnails'
-    );
-
-    res.status(200).json({
-      updatedItemDetails: {
-        _id: modifiedItemDetails.id,
-        name: modifiedItemDetails.name,
-        category: modifiedItemDetails.category,
-        condition: modifiedItemDetails.condition,
-        thumbnails: modifiedItemDetails.thumbnails
-      }
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.addProperty = async (req, res, next) => {
-  try {
-    const itemId = req.body.itemId;
-    const property = req.body.property;
-
-    // @TODO: Add validators
-
-    const newProperty = {
-      _id: mongoose.Types.ObjectId(),
-      name: property.name,
-      value: property.value || ''
-    };
-
-    await Item.updateOne(
-      { _id: itemId },
-      {
-        $push: {
-          properties: newProperty
-        }
-      }
-    );
-
-    res.status(200).json({
-      property: newProperty
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.updateProperty = async (req, res, next) => {
-  try {
-    const itemId = req.body.itemId;
-    const property = req.body.property;
-
-    await Item.updateOne(
-      { _id: itemId, 'properties._id': property._id },
-      {
-        $set: {
-          'properties.$.name': property.name,
-          'properties.$.value': property.value
-        }
-      }
-    );
-
-    res.status(200).json({
-      property: property
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.removeProperty = async (req, res, next) => {
-  try {
-    const itemId = req.body.itemId;
-    const propertyId = req.body.propertyId;
-
-    await Item.updateOne(
-      { _id: itemId },
-      { $pull: { properties: { _id: propertyId } } }
-    );
-
-    res.status(200).json({
-      propertyId: propertyId
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.addAttachments = async (req, res, next) => {
-  try {
-    const itemId = req.body.itemId;
-    const fileAttachments = await saveFiles(
-      'attachment',
-      req.files.fileAttachments || []
-    );
-    const attachmentsIds = fileAttachments.map(attachment => attachment._id);
-
-    await Item.updateOne(
-      { _id: itemId },
-      {
-        $addToSet: {
-          attachments: attachmentsIds
-        }
-      }
-    );
-
-    res.status(200).json({
-      attachments: fileAttachments
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.removeAttachment = async (req, res, next) => {
-  try {
-    const itemId = req.body.itemId;
-    const attachmentId = req.body.attachmentId;
-
-    await Item.updateOne(
-      { _id: itemId },
-      { $pull: { attachments: attachmentId } }
-    );
-
-    res.status(200).json({
-      attachmentId: attachmentId
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.removeItem = async (req, res, next) => {
-  const itemId = req.body.itemId;
-  try {
-    if (itemId) {
-      await Item.updateOne({ _id: itemId }, { $set: { shown: false } });
-
-      res.status(200).json({ removedItemId: itemId });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 exports.removeItemsByFolderId = async folderId => {
   const folderItems = await Item.find({ folder: folderId, shown: true });
 
@@ -332,54 +227,4 @@ exports.removeItemsByFolderId = async folderId => {
   );
 
   return folderItems.map(item => item.id);
-};
-
-exports.addNote = async (req, res, next) => {
-  // @TODO Add validation
-
-  try {
-    const itemId = req.body.itemId;
-    const content = req.body.content;
-
-    const newNote = {
-      _id: mongoose.Types.ObjectId(),
-      content: content,
-      datePosted: new Date().toISOString()
-    };
-
-    await Item.updateOne(
-      { _id: itemId },
-      {
-        $addToSet: {
-          notes: newNote
-        }
-      }
-    );
-
-    res.status(200).json({
-      note: { ...newNote }
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.removeNote = async (req, res, next) => {
-  // @TODO Add validation
-
-  try {
-    const itemId = req.body.itemId;
-    const noteId = req.body.noteId;
-
-    await Item.updateOne(
-      { _id: itemId },
-      { $pull: { notes: { _id: noteId } } }
-    );
-
-    res.status(200).json({
-      noteId: noteId
-    });
-  } catch (err) {
-    console.log(err);
-  }
 };
