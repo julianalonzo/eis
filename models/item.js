@@ -57,7 +57,7 @@ const itemSchema = new Schema({
   }
 });
 
-itemSchema.indexes({
+itemSchema.index({
   name: 'text',
   category: 'text',
   condition: 'text',
