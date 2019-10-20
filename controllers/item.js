@@ -14,14 +14,19 @@ exports.getItems = async (req, res, next) => {
         'thumbnails'
       );
     } else if (Boolean(searchQuery)) {
-      const searchedItems = await Item.find({
-        $text: { $search: searchQuery },
-        shown: true
-      }).populate('thumbnails');
+      const searchedItems = await Item.find(
+        {
+          $text: { $search: searchQuery },
+          shown: true
+        },
+        {
+          score: { $meta: 'textScore' }
+        }
+      )
+        .sort({ score: { $meta: 'textScore' } })
+        .populate('thumbnails');
 
       items = searchedItems;
-    } else {
-      items = await Item.find().populate('thumbnails');
     }
 
     res.status(200).json({ items: items });
