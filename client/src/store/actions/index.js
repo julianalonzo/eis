@@ -1,6 +1,8 @@
 export {
   fetchItems,
   fetchItem,
+  searchItems,
+  resetSearchedItems,
   createItems,
   updateItem,
   resetItems,

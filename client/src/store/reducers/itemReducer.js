@@ -12,7 +12,9 @@ const initialState = {
     attachments: [],
     notes: []
   },
+  searchedItems: [],
   fetchingItems: false,
+  searchingItems: false,
   fetchingItem: false,
   creatingItem: false,
   creatingItemsError: null,
@@ -36,6 +38,25 @@ const fetchItemsFail = (state, action) => {
 
 const resetItems = (state, action) => {
   return updateObject(state, { items: [] });
+};
+
+const searchItemsStart = (state, action) => {
+  return updateObject(state, { searchingItems: true });
+};
+
+const searchItemsSuccess = (state, action) => {
+  return updateObject(state, {
+    searchedItems: action.items,
+    searchingItems: false
+  });
+};
+
+const searchItemsFail = (state, action) => {
+  return updateObject(state, { searchingItems: false });
+};
+
+const resetSearchItems = (state, action) => {
+  return updateObject(state, { searchedItems: [] });
 };
 
 const fetchItemStart = (state, action) => {
@@ -137,6 +158,14 @@ const reducer = (state = initialState, action) => {
       return fetchItemsFail(state, action);
     case actionTypes.RESET_ITEMS:
       return resetItems(state, action);
+    case actionTypes.SEARCH_ITEMS_START:
+      return searchItemsStart(state, action);
+    case actionTypes.SEARCH_ITEMS_SUCCESS:
+      return searchItemsSuccess(state, action);
+    case actionTypes.SEARCH_ITEMS_FAIL:
+      return searchItemsFail(state, action);
+    case actionTypes.RESET_SEARCH_ITEMS:
+      return resetSearchItems(state, action);
     case actionTypes.FETCH_ITEM_START:
       return fetchItemStart(state, action);
     case actionTypes.FETCH_ITEM_SUCCESS:

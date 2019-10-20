@@ -36,15 +36,55 @@ export const fetchItems = folderId => {
   };
 };
 
-export const fetchItemStart = () => {
-  return {
-    type: actionTypes.FETCH_ITEM_START
-  };
-};
-
 export const resetItems = () => {
   return {
     type: actionTypes.RESET_ITEMS
+  };
+};
+
+export const searchItemsStart = () => {
+  return {
+    type: actionTypes.SEARCH_ITEMS_START
+  };
+};
+
+export const searchItemsSuccess = items => {
+  return {
+    type: actionTypes.SEARCH_ITEMS_SUCCESS,
+    items: items
+  };
+};
+
+export const searchItemsFail = error => {
+  return {
+    type: actionTypes.SEARCH_ITEMS_FAIL,
+    error: error
+  };
+};
+
+export const searchItems = searchQuery => {
+  return dispatch => {
+    dispatch(searchItemsStart());
+    axios
+      .get(`/api/items?search=${searchQuery}`)
+      .then(res => {
+        dispatch(searchItemsSuccess(res.data.items));
+      })
+      .catch(error => {
+        dispatch(searchItemsFail(error));
+      });
+  };
+};
+
+export const resetSearchedItems = () => {
+  return {
+    type: actionTypes.RESET_SEARCH_ITEMS
+  };
+};
+
+export const fetchItemStart = () => {
+  return {
+    type: actionTypes.FETCH_ITEM_START
   };
 };
 
