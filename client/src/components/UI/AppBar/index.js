@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 
+import SearchBar from './SearchBar';
+
 import { makeStyles } from '@material-ui/styles';
 import {
   AccountCircle as AccountIcon,
@@ -29,6 +31,9 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       textDecoration: 'underline'
     }
+  },
+  searchBarContainer: {
+    marginRight: theme.spacing(2)
   },
   desktopNav: {
     display: 'flex',
@@ -58,6 +63,9 @@ export default function AppBar() {
           </Typography>
           <Box className={classes.grow}></Box>
           <Box className={classes.desktopNav}>
+            <Box className={classes.searchBarContainer}>
+              <SearchBar />
+            </Box>
             <Box className={classes.navButtons}>
               <IconButton color="inherit">
                 <DashboardIcon />
