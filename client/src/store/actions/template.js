@@ -133,15 +133,12 @@ export const updateTemplateFail = error => {
   };
 };
 
-export const updateTemplate = template => {
+export const updateTemplate = (templateId, template) => {
   return async dispatch => {
     dispatch(updateTemplateStart());
 
     try {
-      const response = await axios.put(
-        `api/templates/${template._id}`,
-        template
-      );
+      const response = await axios.put(`api/templates/${templateId}`, template);
       dispatch(updateTemplateSuccess(response.data.template));
     } catch (err) {
       dispatch(updateTemplateFail(err));

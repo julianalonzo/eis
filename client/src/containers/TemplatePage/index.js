@@ -57,7 +57,7 @@ function TemplatePage({
 
     formData.append('item', JSON.stringify(item));
 
-    await onUpdateTemplate(formData);
+    await onUpdateTemplate(templateId, formData);
 
     history.push('/templates');
   };
@@ -96,7 +96,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchTemplate: templateId => dispatch(actions.fetchTemplate(templateId)),
-    onUpdateTemplate: template => dispatch(actions.updateTemplate(template))
+    onUpdateTemplate: (templateId, template) =>
+      dispatch(actions.updateTemplate(templateId, template))
   };
 };
 
