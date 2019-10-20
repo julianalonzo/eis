@@ -9,6 +9,8 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   searchResult: {
+    maxHeight: 300,
+    overflowY: 'auto',
     width: 'inherit',
     position: 'absolute',
     marginTop: theme.spacing(0.25)
