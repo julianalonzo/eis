@@ -6,11 +6,20 @@ exports.getItems = async (req, res, next) => {
   try {
     const folderId = req.query.folderId || null;
 
+    const searchQuery = req.query.search || null;
+
     let items = [];
     if (Boolean(folderId)) {
       items = await Item.find({ folder: folderId, shown: true }).populate(
         'thumbnails'
       );
+    } else if (Boolean(searchQuery)) {
+      const searchedItems = await Item.find({
+        $text: { $search: searchQuery },
+        shown: true
+      }).populate('thumbnails');
+
+      items = searchedItems;
     } else {
       items = await Item.find().populate('thumbnails');
     }
