@@ -5,6 +5,8 @@ const foldersController = require('../controllers/folder');
 
 router.get('/', foldersController.getFolders);
 
+router.get('/:folderId/hierarchy', foldersController.getFolderHierarchy);
+
 router.post('/', foldersController.createFolder);
 
 router.delete('/:folderId', foldersController.removeFolder);
