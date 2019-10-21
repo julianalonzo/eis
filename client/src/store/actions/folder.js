@@ -36,6 +36,40 @@ export const fetchFolders = () => {
   };
 };
 
+export const fetchFolderHierarchyStart = () => {
+  return {
+    type: actionTypes.FETCH_FOLDER_HIERARCHY_START
+  };
+};
+
+export const fetchFolderHierarchySuccess = folderHierarchy => {
+  return {
+    type: actionTypes.FETCH_FOLDER_HIERARCHY_SUCCESS,
+    folderHierarchy: folderHierarchy
+  };
+};
+
+export const fetchFolderHierarchyFail = error => {
+  return {
+    type: actionTypes.FETCH_FOLDER_HIERARCHY_FAIL,
+    error: error
+  };
+};
+
+export const fetchFolderHierarchy = folderId => {
+  return async dispatch => {
+    dispatch(fetchFolderHierarchyStart());
+
+    try {
+      const response = axios.get(`/api/folders/${folderId}/hierarchy`);
+
+      dispatch(fetchFolderHierarchySuccess(response.data.folderHierarchy));
+    } catch (err) {
+      dispatch(fetchFolderHierarchyFail(err));
+    }
+  };
+};
+
 export const createFolderStart = () => {
   return {
     type: actionTypes.CREATE_FOLDER_START

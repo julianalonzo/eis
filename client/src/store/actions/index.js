@@ -20,4 +20,9 @@ export {
   removeTemplate
 } from './template';
 
-export { fetchFolders, createFolder, removeFolder } from './folder';
+export {
+  fetchFolders,
+  fetchFolderHierarchy,
+  createFolder,
+  removeFolder
+} from './folder';

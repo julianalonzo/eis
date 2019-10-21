@@ -5,6 +5,8 @@ import { createFolderFail } from '../actions/folder';
 const initialState = {
   folders: [],
   fetchingFolders: false,
+  folderHierarchy: [],
+  fetchingFolderHierarchy: false,
   creatingFolder: false,
   removingFolder: false,
   removingFolderError: null
@@ -23,6 +25,21 @@ const fetchFoldersSuccess = (state, action) => {
 
 const fetchFoldersFail = (state, action) => {
   return updateObject(state, { fetchingFolders: false });
+};
+
+const fetchFolderHierarchyStart = (state, action) => {
+  return updateObject(state, { fetchingFolderHierarchy: true });
+};
+
+const fetchFolderHierarchySuccess = (state, action) => {
+  return updateObject(state, {
+    folderHierarchy: action.folderHierarchy,
+    fetchingFolderHierarchy: false
+  });
+};
+
+const fetchFolderHierarchyFail = (state, action) => {
+  return updateObject(state, { fetchingFolderHierarchy: false });
 };
 
 const createFolderStart = (state, action) => {
@@ -70,6 +87,12 @@ const reducer = (state = initialState, action) => {
       return fetchFoldersSuccess(state, action);
     case actionTypes.FETCH_FOLDERS_FAIL:
       return fetchFoldersFail(state, action);
+    case actionTypes.FETCH_FOLDER_HIERARCHY_START:
+      return fetchFolderHierarchyStart(state, action);
+    case actionTypes.FETCH_FOLDER_HIERARCHY_SUCCESS:
+      return fetchFolderHierarchySuccess(state, action);
+    case actionTypes.FETCH_FOLDER_HIERARCHY_FAIL:
+      return fetchFolderHierarchyFail(state, action);
     case actionTypes.CREATE_FOLDER_START:
       return createFolderStart(state, action);
     case actionTypes.CREATE_FOLDER_SUCCESS:
