@@ -1,6 +1,6 @@
 import React from 'react';
 
-import customTheme from '../../util/theme';
+import customTheme from '../../../util/theme';
 
 import { storiesOf } from '@storybook/react';
 import { muiTheme } from 'storybook-addon-material-ui';
