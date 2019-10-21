@@ -102,6 +102,7 @@ const mapDispatchToProps = dispatch => {
     onResetSearchedItems: () => dispatch(actions.resetSearchedItems())
   };
 };
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
