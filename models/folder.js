@@ -9,7 +9,8 @@ const folderSchema = new Schema({
   },
   shown: {
     type: Boolean,
-    isRequired: true
+    isRequired: true,
+    select: false
   }
 });
 

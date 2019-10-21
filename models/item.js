@@ -49,7 +49,8 @@ const itemSchema = new Schema({
   ],
   shown: {
     type: Boolean,
-    isRequired: true
+    isRequired: true,
+    select: false
   },
   folder: {
     type: mongoose.Schema.Types.ObjectId,

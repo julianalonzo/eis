@@ -5,7 +5,7 @@ const foldersController = require('../controllers/folder');
 
 router.get('/', foldersController.getFolders);
 
-router.get('/:folderId/hierarchy', foldersController.getFolderHierarchy);
+router.get('/:folderId', foldersController.getFolder);
 
 router.post('/', foldersController.createFolder);
 
