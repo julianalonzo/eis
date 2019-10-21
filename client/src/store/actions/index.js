@@ -22,7 +22,7 @@ export {
 
 export {
   fetchFolders,
-  fetchFolderHierarchy,
+  fetchFolder,
   createFolder,
   removeFolder
 } from './folder';

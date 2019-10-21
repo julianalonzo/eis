@@ -36,36 +36,36 @@ export const fetchFolders = () => {
   };
 };
 
-export const fetchFolderHierarchyStart = () => {
+export const fetchFolderStart = () => {
   return {
-    type: actionTypes.FETCH_FOLDER_HIERARCHY_START
+    type: actionTypes.FETCH_FOLDER_START
   };
 };
 
-export const fetchFolderHierarchySuccess = folderHierarchy => {
+export const fetchFolderSuccess = folder => {
   return {
-    type: actionTypes.FETCH_FOLDER_HIERARCHY_SUCCESS,
-    folderHierarchy: folderHierarchy
+    type: actionTypes.FETCH_FOLDER_SUCCESS,
+    folder: folder
   };
 };
 
-export const fetchFolderHierarchyFail = error => {
+export const fetchFolderFail = error => {
   return {
-    type: actionTypes.FETCH_FOLDER_HIERARCHY_FAIL,
+    type: actionTypes.FETCH_FOLDER_FAIL,
     error: error
   };
 };
 
-export const fetchFolderHierarchy = folderId => {
+export const fetchFolder = folderId => {
   return async dispatch => {
-    dispatch(fetchFolderHierarchyStart());
+    dispatch(fetchFolderStart());
 
     try {
-      const response = axios.get(`/api/folders/${folderId}/hierarchy`);
+      const response = await axios.get(`/api/folders/${folderId}`);
 
-      dispatch(fetchFolderHierarchySuccess(response.data.folderHierarchy));
+      dispatch(fetchFolderSuccess(response.data.folder));
     } catch (err) {
-      dispatch(fetchFolderHierarchyFail(err));
+      dispatch(fetchFolderFail(err));
     }
   };
 };

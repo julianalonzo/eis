@@ -5,8 +5,14 @@ import { createFolderFail } from '../actions/folder';
 const initialState = {
   folders: [],
   fetchingFolders: false,
-  folderHierarchy: [],
-  fetchingFolderHierarchy: false,
+  folder: {
+    _id: '',
+    name: '',
+    parent: '',
+    children: [],
+    hierarchy: []
+  },
+  fetchingFolder: false,
   creatingFolder: false,
   removingFolder: false,
   removingFolderError: null
@@ -27,19 +33,19 @@ const fetchFoldersFail = (state, action) => {
   return updateObject(state, { fetchingFolders: false });
 };
 
-const fetchFolderHierarchyStart = (state, action) => {
-  return updateObject(state, { fetchingFolderHierarchy: true });
+const fetchFolderStart = (state, action) => {
+  return updateObject(state, { fetchingFolder: true });
 };
 
-const fetchFolderHierarchySuccess = (state, action) => {
+const fetchFolderSuccess = (state, action) => {
   return updateObject(state, {
-    folderHierarchy: action.folderHierarchy,
-    fetchingFolderHierarchy: false
+    folder: action.folder,
+    fetchingFolder: false
   });
 };
 
-const fetchFolderHierarchyFail = (state, action) => {
-  return updateObject(state, { fetchingFolderHierarchy: false });
+const fetchFolderFail = (state, action) => {
+  return updateObject(state, { fetchingFolder: false });
 };
 
 const createFolderStart = (state, action) => {
@@ -87,12 +93,12 @@ const reducer = (state = initialState, action) => {
       return fetchFoldersSuccess(state, action);
     case actionTypes.FETCH_FOLDERS_FAIL:
       return fetchFoldersFail(state, action);
-    case actionTypes.FETCH_FOLDER_HIERARCHY_START:
-      return fetchFolderHierarchyStart(state, action);
-    case actionTypes.FETCH_FOLDER_HIERARCHY_SUCCESS:
-      return fetchFolderHierarchySuccess(state, action);
-    case actionTypes.FETCH_FOLDER_HIERARCHY_FAIL:
-      return fetchFolderHierarchyFail(state, action);
+    case actionTypes.FETCH_FOLDER_START:
+      return fetchFolderStart(state, action);
+    case actionTypes.FETCH_FOLDER_SUCCESS:
+      return fetchFolderSuccess(state, action);
+    case actionTypes.FETCH_FOLDER_FAIL:
+      return fetchFolderFail(state, action);
     case actionTypes.CREATE_FOLDER_START:
       return createFolderStart(state, action);
     case actionTypes.CREATE_FOLDER_SUCCESS:
