@@ -17,7 +17,7 @@ exports.getFolder = async (req, res, next) => {
     const { folderId } = req.params;
 
     const currentFolder = await Folder.findById(folderId);
-    const children = await this.findChildren(folderId);
+    const children = await this.findImmediateChildren(folderId);
     const folderHierarchy = await this.getFolderHierarchy(folderId);
 
     res.status(200).json({
@@ -57,7 +57,7 @@ exports.removeFolder = async (req, res, next) => {
 
   try {
     if (folderId) {
-      const folderChildren = await this.findChildren(folderId);
+      const folderChildren = await this.findAllChildren(folderId);
 
       let removedFoldersIds = [];
       let removedItemsIds = [];
@@ -100,11 +100,20 @@ exports.clearFolder = async folderId => {
   };
 };
 
-exports.findChildren = async folderId => {
+exports.findImmediateChildren = async folderId => {
+  const immediateChildren = await Folder.find({
+    parent: folderId,
+    shown: true
+  });
+
+  return immediateChildren;
+};
+
+exports.findAllChildren = async folderId => {
   let children = await Folder.find({ parent: folderId, shown: true });
 
   for (const childFolder of children) {
-    const childrenOfChildFolder = await this.findChildren(childFolder.id);
+    const childrenOfChildFolder = await this.findAllChildren(childFolder.id);
 
     children = children.concat(childrenOfChildFolder);
   }
