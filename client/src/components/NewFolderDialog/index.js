@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { isRequired } from '../../util/validators';
 
@@ -19,6 +19,14 @@ export default function NewFolderDialog({
   onSubmit,
   submitting
 }) {
+  let newFolderForm;
+
+  useEffect(() => {
+    if (isOpen) {
+      newFolderForm.reset();
+    }
+  }, [isOpen, newFolderForm]);
+
   const submitHandler = async (folderName, parentId) => {
     const folderData = {
       parent: parentId || null,
@@ -35,7 +43,9 @@ export default function NewFolderDialog({
       onSubmit={values => {
         submitHandler(values.folderName, currentFolder || '');
       }}
-      render={({ handleSubmit }) => {
+      render={({ handleSubmit, form }) => {
+        newFolderForm = form;
+
         return (
           <form onSubmit={handleSubmit}>
             <Dialog
@@ -50,7 +60,7 @@ export default function NewFolderDialog({
                   {({ input, meta }) => {
                     return (
                       <TextField
-                        label="Folder Name"
+                        margin="dense"
                         variant="outlined"
                         fullWidth
                         {...input}
