@@ -26,7 +26,8 @@ function ItemPage({
   fetchingItem,
   onResetItem,
   onUpdateItem,
-  updatingItem
+  updatingItem,
+  folder
 }) {
   const classes = useStyles();
 
@@ -84,7 +85,7 @@ function ItemPage({
     <Grid container spacing={4}>
       <Grid item xs={12}>
         <Breadcrumbs
-          breadcrumbs={item.folderHierarchy
+          breadcrumbs={folder.hierarchy
             .map(folder => {
               return {
                 link: `/folders/${folder._id}`,
@@ -136,7 +137,8 @@ const mapStateToProps = state => {
   return {
     item: state.item.item,
     fetchingItem: state.item.fetchingItem,
-    updatingItem: state.item.updatingItem
+    updatingItem: state.item.updatingItem,
+    folder: state.folder.folder
   };
 };
 
