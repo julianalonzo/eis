@@ -27,20 +27,20 @@ exports.getItems = async (req, res, next) => {
         .sort({ score: { $meta: 'textScore' } })
         .populate('thumbnails');
 
-      items = searchedItems;
+      let itemsWithFolderHierarchy = [];
+      for (const item of searchedItems) {
+        const folderHierarchy = await getFolderHierarchy(item.folder);
+
+        itemsWithFolderHierarchy = itemsWithFolderHierarchy.concat({
+          ...item._doc,
+          folderHierarchy: folderHierarchy
+        });
+      }
+
+      items = itemsWithFolderHierarchy;
     }
 
-    let itemsWithFolderHierarchy = [];
-    for (const item of items) {
-      const folderHierarchy = await getFolderHierarchy(item.folder);
-
-      itemsWithFolderHierarchy = itemsWithFolderHierarchy.concat({
-        ...item._doc,
-        folderHierarchy: folderHierarchy
-      });
-    }
-
-    res.status(200).json({ items: itemsWithFolderHierarchy });
+    res.status(200).json({ items: items });
   } catch (err) {
     console.log(err);
   }
@@ -57,10 +57,12 @@ exports.getItem = async (req, res, next) => {
         .exec();
 
       if (Boolean(item)) {
+        const folderHierarchy = await getFolderHierarchy(item.folder);
+
         res.status(200).json({
           item: {
             ...item._doc,
-            folderHierarchy: await getFolderHierarchy(item.folder)
+            folderHierarchy: folderHierarchy
           }
         });
       } else {
@@ -178,8 +180,13 @@ exports.updateItem = async (req, res, next) => {
       .populate('attachments')
       .exec();
 
+    const folderHierarchy = await getFolderHierarchy(item.folder);
+
     res.status(200).json({
-      item: item
+      item: {
+        ...item._doc,
+        folderHierarchy: folderHierarchy
+      }
     });
   } catch (err) {
     console.log(err);
