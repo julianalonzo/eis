@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Breadcrumbs from '../UI/Breadcrumbs';
 import Button from '../UI/Button';
 
 import { makeStyles } from '@material-ui/styles';
@@ -16,11 +17,20 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MainPageToolBar({ onOpenNewButtonMenu }) {
+export default function MainPageToolBar({ onOpenNewButtonMenu, breadcrumbs }) {
   const classes = useStyles();
 
   return (
-    <Grid container justify="flex-end" spacing={4} className={classes.root}>
+    <Grid
+      container
+      justify="flex-end"
+      alignItems="center"
+      spacing={4}
+      className={classes.root}
+    >
+      <Grid item md={10}>
+        <Breadcrumbs breadcrumbs={breadcrumbs} />
+      </Grid>
       <Grid item md={2} className={classes.primaryActionGrid}>
         <Button
           color="primary"
