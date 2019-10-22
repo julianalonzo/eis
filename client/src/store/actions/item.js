@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import { setFolder } from './folder';
 
 import axios from 'axios';
 
@@ -103,16 +104,20 @@ export const fetchItemFail = error => {
 };
 
 export const fetchItem = itemId => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(fetchItemStart());
-    axios
-      .get(`/api/items/${itemId}`)
-      .then(res => {
-        dispatch(fetchItemSuccess(res.data.item));
-      })
-      .catch(error => {
-        dispatch(fetchItemFail(error));
-      });
+
+    try {
+      const fetchItemResponse = await axios.get(`/api/items/${itemId}`);
+      const fetchFolderResponse = await axios.get(
+        `/api/folders/${fetchItemResponse.data.item.folder}`
+      );
+
+      dispatch(setFolder(fetchFolderResponse.data.folder));
+      dispatch(fetchItemSuccess(fetchItemResponse.data.item));
+    } catch (err) {
+      dispatch(fetchItemFail(err));
+    }
   };
 };
 
