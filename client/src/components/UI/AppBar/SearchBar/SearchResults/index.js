@@ -2,6 +2,7 @@ import React from 'react';
 
 import { HOST } from '../../../../../util/constants';
 
+import Breadcrumbs from '../../../Breadcrumbs';
 import Thumbnail from '../../../Thumbnail';
 
 import { List, ListItem, Paper, Typography } from '@material-ui/core';
@@ -72,6 +73,12 @@ export default function SearchResults({ searchedItems, onOpenItem }) {
                     <Typography variant="body2" className={classes.mainText}>
                       {item.name}
                     </Typography>
+                    <Breadcrumbs
+                      disabled
+                      breadcrumbs={item.folderHierarchy.map(i => {
+                        return { label: i.name };
+                      })}
+                    />
                   </div>
                 </div>
               </ListItem>
