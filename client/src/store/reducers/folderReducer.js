@@ -48,6 +48,12 @@ const fetchFolderFail = (state, action) => {
   return updateObject(state, { fetchingFolder: false });
 };
 
+const setFolder = (state, action) => {
+  return updateObject(state, {
+    folder: action.folder
+  });
+};
+
 const resetFolder = (state, action) => {
   return updateObject(state, {
     folder: {
@@ -115,6 +121,8 @@ const reducer = (state = initialState, action) => {
       return fetchFolderSuccess(state, action);
     case actionTypes.FETCH_FOLDER_FAIL:
       return fetchFolderFail(state, action);
+    case actionTypes.SET_FOLDER:
+      return setFolder(state, action);
     case actionTypes.RESET_FOLDER:
       return resetFolder(state, action);
     case actionTypes.CREATE_FOLDER_START:
