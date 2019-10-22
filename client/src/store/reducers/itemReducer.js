@@ -10,8 +10,7 @@ const initialState = {
     thumbnails: [],
     properties: [],
     attachments: [],
-    notes: [],
-    folderHierarchy: []
+    notes: []
   },
   searchedItems: [],
   fetchingItems: false,
@@ -78,8 +77,7 @@ const fetchItemFail = (state, action) => {
       thumbnails: [],
       properties: [],
       attachments: [],
-      notes: [],
-      folderHierarchy: []
+      notes: []
     }
   });
 };
@@ -93,8 +91,7 @@ const resetItem = (state, action) => {
       thumbnails: [],
       properties: [],
       attachments: [],
-      notes: [],
-      folderHierarchy: []
+      notes: []
     }
   });
 };
