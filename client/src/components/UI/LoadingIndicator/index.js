@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function LoadingIndicator({ label = '' }) {
+export default function LoadingIndicator() {
   const classes = useStyles();
 
   const [isLoadingDisplayed, setIsLoadingDisplayed] = useState(false);
@@ -41,15 +40,6 @@ export default function LoadingIndicator({ label = '' }) {
     <div className={classes.root}>
       <Box className={classes.wrapper}>
         <CircularProgress />
-        {label ? (
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            className={classes.label}
-          >
-            {label}
-          </Typography>
-        ) : null}
       </Box>
     </div>
   );
