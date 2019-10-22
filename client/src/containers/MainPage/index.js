@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { withRouter } from 'react-router-dom';
+import { useHistory, useParams, withRouter } from 'react-router-dom';
 
 import useDialogState from '../../hooks/useDialogState';
 import usePopperState from '../../hooks/usePopperState';
@@ -21,9 +21,7 @@ import NewFolderDialog from '../../components/NewFolderDialog';
 import NoFoldersllustration from '../../assets/illustrations/select_folder.svg';
 
 import { makeStyles } from '@material-ui/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
+import { CssBaseline, Drawer, Hidden } from '@material-ui/core/';
 
 const drawerWidth = 300;
 
@@ -53,6 +51,10 @@ function MainPage({
   folders,
   onFetchFolders,
   fetchingFolders,
+  folder,
+  onFetchFolder,
+  fetchingFolder,
+  onResetFolder,
   onCreateFolder,
   creatingFolder,
   onRemoveFolder,
@@ -60,15 +62,10 @@ function MainPage({
   onFetchItems,
   fetchingItems,
   onResetItems,
-  onRemoveItem,
-  match: { params },
-  history
+  onRemoveItem
 }) {
-  const [currentFolder, setCurrentFolder] = useState(params.folderId || null);
-
-  const [folderChildren, setFolderChildren] = useState(
-    folders.filter(folder => folder.parent === currentFolder) || []
-  );
+  const { folderId } = useParams();
+  const history = useHistory();
 
   const [
     folderMoreActionsAnchorEl,
@@ -121,91 +118,30 @@ function MainPage({
   };
 
   const openFolderHandler = folderId => {
-    setCurrentFolder(folderId);
+    history.push(`/folders/${folderId}`);
   };
 
-  const openSelectTemplatePageHandler = () => {
-    history.push(`/folders/${currentFolder}/select-template`);
+  const openSelectTemplatePageHandler = folderId => {
+    history.push(`/folders/${folderId}/select-template`);
   };
 
   const openItemDetailsPageHandler = itemId => {
     history.push(`/items/${itemId}`);
   };
 
-  const getFolderChildren = useCallback(
-    folderId => {
-      return folders.filter(folder => folder.parent === folderId);
-    },
-    [folders]
-  );
-
-  const getAllFolderParents = useCallback(
-    folderId => {
-      if (folderId === null) {
-        return [];
-      }
-
-      const allFolderParents = [];
-      let hasFoundAllFolderParents = false;
-      let folderIdToBeEvaluated = folderId;
-
-      while (!hasFoundAllFolderParents) {
-        let parentFolder = null;
-        // eslint-disable-next-line no-loop-func
-        const folder = folders.filter(f => f._id === folderIdToBeEvaluated);
-
-        if (folder.length > 0) {
-          parentFolder = folder[0].parent;
-        }
-
-        if (parentFolder !== null) {
-          allFolderParents.push(parentFolder);
-          folderIdToBeEvaluated = parentFolder;
-        } else {
-          hasFoundAllFolderParents = true;
-        }
-      }
-
-      return allFolderParents;
-    },
-    [folders]
-  );
-
-  const [openedFolders, setOpenedFolders] = useState(
-    getAllFolderParents(currentFolder)
-  );
-
   useEffect(() => {
     onFetchFolders();
   }, [onFetchFolders]);
 
   useEffect(() => {
-    setCurrentFolder(params.folderId || null);
-  }, [params]);
-
-  useEffect(() => {
-    if (currentFolder !== null) {
-      history.push(`/folders/${currentFolder}`);
-    } else {
-      history.push(`/`);
-    }
-  }, [history, currentFolder]);
-
-  useEffect(() => {
-    if (currentFolder !== null) {
-      onFetchItems(currentFolder);
+    if (Boolean(folderId)) {
+      onFetchFolder(folderId);
+      onFetchItems(folderId);
     } else {
       onResetItems();
+      onResetFolder();
     }
-  }, [onFetchItems, currentFolder, onResetItems]);
-
-  useEffect(() => {
-    setFolderChildren(getFolderChildren(currentFolder));
-  }, [getFolderChildren, currentFolder]);
-
-  useEffect(() => {
-    setOpenedFolders(getAllFolderParents(currentFolder).concat(currentFolder));
-  }, [getAllFolderParents, currentFolder]);
+  }, [onFetchItems, onFetchFolder, folderId, onResetItems, onResetFolder]);
 
   const classes = useStyles();
 
@@ -229,13 +165,21 @@ function MainPage({
           <NewFolderDialog
             isOpen={isNewFolderDialogOpen}
             onClose={closeNewFolderDialogHandler}
-            currentFolder={currentFolder}
+            currentFolder={folderId}
             submitting={creatingFolder}
             onSubmit={onCreateFolder}
           />
         ) : null}
       </React.Fragment>
     );
+  }
+
+  // Show root folders on root route (i.e., /)
+  let folderChildren;
+  if (Boolean(folderId)) {
+    folderChildren = folder.children;
+  } else {
+    folderChildren = folders.filter(f => f.parent === null);
   }
 
   return (
@@ -252,23 +196,31 @@ function MainPage({
             <FoldersTreeView
               folders={folders}
               onOpenFolder={openFolderHandler}
-              currentFolder={currentFolder}
-              openedFolders={openedFolders}
+              currentFolder={folderId}
+              openedFolders={folder.hierarchy.map(f => f._id)}
             />
           </Drawer>
         </Hidden>
         <main className={classes.content}>
-          <MainPageToolBar onOpenNewButtonMenu={openNewButtonHandler} />
-          <NewButtonMenuListPopper
-            isOpen={Boolean(newButtonAnchorEl)}
-            anchorEl={newButtonAnchorEl}
-            onClose={closeNewButtonHandler}
-            currentFolder={currentFolder}
-            onOpenSelectTemplatePage={openSelectTemplatePageHandler}
-            onOpenNewFolderDialog={openNewFolderDialogHandler}
-          />
-          {!fetchingItems ? (
+          {!fetchingItems && !fetchingFolder ? (
             <React.Fragment>
+              <MainPageToolBar
+                onOpenNewButtonMenu={openNewButtonHandler}
+                breadcrumbs={folder.hierarchy.map(f => {
+                  return {
+                    link: `${f._id}`,
+                    label: f.name
+                  };
+                })}
+              />
+              <NewButtonMenuListPopper
+                isOpen={Boolean(newButtonAnchorEl)}
+                anchorEl={newButtonAnchorEl}
+                onClose={closeNewButtonHandler}
+                currentFolder={folderId}
+                onOpenSelectTemplatePage={openSelectTemplatePageHandler}
+                onOpenNewFolderDialog={openNewFolderDialogHandler}
+              />
               {folderChildren.length === 0 && items.length === 0 ? (
                 <IllustrationPlaceholder
                   title="This folder seems to be empty"
@@ -305,19 +257,17 @@ function MainPage({
               )}
             </React.Fragment>
           ) : (
-            <LoadingIndicator label="Fetching items..." />
+            <LoadingIndicator />
           )}
         </main>
       </div>
-      {isNewFolderDialogOpen ? (
-        <NewFolderDialog
-          isOpen={isNewFolderDialogOpen}
-          onClose={closeNewFolderDialogHandler}
-          currentFolder={currentFolder}
-          submitting={creatingFolder}
-          onSubmit={onCreateFolder}
-        />
-      ) : null}
+      <NewFolderDialog
+        isOpen={isNewFolderDialogOpen}
+        onClose={closeNewFolderDialogHandler}
+        currentFolder={folderId}
+        submitting={creatingFolder}
+        onSubmit={onCreateFolder}
+      />
     </React.Fragment>
   );
 }
@@ -326,6 +276,8 @@ const mapStateToProps = state => {
   return {
     folders: state.folder.folders,
     fetchingFolders: state.folder.fetchingFolders,
+    folder: state.folder.folder,
+    fetchingFolder: state.folder.fetchingFolder,
     creatingFolder: state.folder.creatingFolder,
     items: state.item.items,
     fetchingItems: state.item.fetchingItems
@@ -335,6 +287,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchFolders: () => dispatch(actions.fetchFolders()),
+    onFetchFolder: folderId => dispatch(actions.fetchFolder(folderId)),
+    onResetFolder: () => dispatch(actions.resetFolder()),
     onCreateFolder: folder => dispatch(actions.createFolder(folder)),
     onRemoveFolder: folderId => dispatch(actions.removeFolder(folderId)),
     onFetchItems: folderId => dispatch(actions.fetchItems(folderId)),
