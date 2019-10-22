@@ -21,11 +21,11 @@ export default function Breadcrumbs({ breadcrumbs, disabled = false }) {
   if (disabled) {
     return (
       <MuiBreadcrumbs maxItems={4}>
-        {breadcrumbs.map(breadcrumb => {
+        {breadcrumbs.map((breadcrumb, index) => {
           return (
             <Typography
               variant="body2"
-              key={breadcrumb.link}
+              key={`${breadcrumb.label}_${index}`}
               color="textSecondary"
             >
               {breadcrumb.label}
@@ -52,7 +52,7 @@ export default function Breadcrumbs({ breadcrumbs, disabled = false }) {
         }
 
         return (
-          <Typography key={breadcrumb.link} color="textPrimary">
+          <Typography key={`${breadcrumb.label}_${index}`} color="textPrimary">
             {breadcrumb.label}
           </Typography>
         );
