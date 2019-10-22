@@ -1,4 +1,5 @@
 const { extractIdsFromNewFiles } = require('./file');
+const { getFolderHierarchy } = require('./folder');
 
 const Item = require('../models/item');
 
@@ -29,7 +30,17 @@ exports.getItems = async (req, res, next) => {
       items = searchedItems;
     }
 
-    res.status(200).json({ items: items });
+    let itemsWithFolderHierarchy = [];
+    for (const item of items) {
+      const folderHierarchy = await getFolderHierarchy(item.folder);
+
+      itemsWithFolderHierarchy = itemsWithFolderHierarchy.concat({
+        ...item._doc,
+        folderHierarchy: folderHierarchy
+      });
+    }
+
+    res.status(200).json({ items: itemsWithFolderHierarchy });
   } catch (err) {
     console.log(err);
   }
@@ -46,7 +57,12 @@ exports.getItem = async (req, res, next) => {
         .exec();
 
       if (Boolean(item)) {
-        res.status(200).json({ item: item });
+        res.status(200).json({
+          item: {
+            ...item._doc,
+            folderHierarchy: await getFolderHierarchy(item.folder)
+          }
+        });
       } else {
         res.status(404).json({ item: null, message: 'Item not found' });
       }
