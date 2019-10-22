@@ -78,7 +78,8 @@ const fetchItemFail = (state, action) => {
       thumbnails: [],
       properties: [],
       attachments: [],
-      notes: []
+      notes: [],
+      folderHierarchy: []
     }
   });
 };

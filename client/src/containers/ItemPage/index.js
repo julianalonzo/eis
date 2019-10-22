@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { withRouter } from 'react-router-dom';
+import { useParams, withRouter } from 'react-router-dom';
 
 import AttachmentsSection from '../../components/AttachmentsSection';
 import Breadcrumbs from '../../components/UI/Breadcrumbs';
@@ -26,12 +26,11 @@ function ItemPage({
   fetchingItem,
   onResetItem,
   onUpdateItem,
-  updatingItem,
-  match: { params }
+  updatingItem
 }) {
   const classes = useStyles();
 
-  const [itemId, setItemId] = useState(params.itemId || null);
+  const { itemId } = useParams();
 
   const updateItemHandler = async (
     modifiedFields,
@@ -68,10 +67,6 @@ function ItemPage({
 
     await onUpdateItem(updatedItem._id, formData);
   };
-
-  useEffect(() => {
-    setItemId(params.itemId || null);
-  }, [params]);
 
   useEffect(() => {
     onFetchItem(itemId);
