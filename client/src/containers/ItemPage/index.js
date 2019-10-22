@@ -5,6 +5,7 @@ import * as actions from '../../store/actions';
 import { withRouter } from 'react-router-dom';
 
 import AttachmentsSection from '../../components/AttachmentsSection';
+import Breadcrumbs from '../../components/UI/Breadcrumbs';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import PropertiesSection from '../../components/PropertiesSection';
@@ -86,6 +87,20 @@ function ItemPage({
 
   return (
     <Grid container spacing={4}>
+      <Grid item xs={12}>
+        <Breadcrumbs
+          breadcrumbs={item.folderHierarchy
+            .map(folder => {
+              return {
+                link: `/folders/${folder._id}`,
+                label: folder.name
+              };
+            })
+            .concat({
+              label: item.name
+            })}
+        />
+      </Grid>
       <Grid item xs={12} md={8} lg={7}>
         <Grid container>
           <Grid item xs={12} className={classes.sectionGridItem}>
