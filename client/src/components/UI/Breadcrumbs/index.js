@@ -15,11 +15,29 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Breadcrumbs({ breadcrumbs }) {
+export default function Breadcrumbs({ breadcrumbs, disabled = false }) {
   const classes = useStyles();
 
+  if (disabled) {
+    return (
+      <MuiBreadcrumbs maxItems={4}>
+        {breadcrumbs.map(breadcrumb => {
+          return (
+            <Typography
+              variant="body2"
+              key={breadcrumb.link}
+              color="textSecondary"
+            >
+              {breadcrumb.label}
+            </Typography>
+          );
+        })}
+      </MuiBreadcrumbs>
+    );
+  }
+
   return (
-    <MuiBreadcrumbs>
+    <MuiBreadcrumbs maxItems={4}>
       {breadcrumbs.map((breadcrumb, index) => {
         if (index + 1 < breadcrumbs.length) {
           return (
