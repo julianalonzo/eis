@@ -57,13 +57,8 @@ exports.getItem = async (req, res, next) => {
         .exec();
 
       if (Boolean(item)) {
-        const folderHierarchy = await getFolderHierarchy(item.folder);
-
         res.status(200).json({
-          item: {
-            ...item._doc,
-            folderHierarchy: folderHierarchy
-          }
+          item: item
         });
       } else {
         res.status(404).json({ item: null, message: 'Item not found' });
@@ -180,13 +175,8 @@ exports.updateItem = async (req, res, next) => {
       .populate('attachments')
       .exec();
 
-    const folderHierarchy = await getFolderHierarchy(item.folder);
-
     res.status(200).json({
-      item: {
-        ...item._doc,
-        folderHierarchy: folderHierarchy
-      }
+      item: item
     });
   } catch (err) {
     console.log(err);
