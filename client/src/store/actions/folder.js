@@ -70,6 +70,12 @@ export const fetchFolder = folderId => {
   };
 };
 
+export const resetFolder = () => {
+  return {
+    type: actionTypes.RESET_FOLDER
+  };
+};
+
 export const createFolderStart = () => {
   return {
     type: actionTypes.CREATE_FOLDER_START

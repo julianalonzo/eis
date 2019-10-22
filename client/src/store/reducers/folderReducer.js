@@ -48,6 +48,18 @@ const fetchFolderFail = (state, action) => {
   return updateObject(state, { fetchingFolder: false });
 };
 
+const resetFolder = (state, action) => {
+  return updateObject(state, {
+    folder: {
+      _id: '',
+      name: '',
+      parent: '',
+      children: [],
+      hierarchy: []
+    }
+  });
+};
+
 const createFolderStart = (state, action) => {
   return updateObject(state, { creatingFolder: true });
 };
@@ -55,7 +67,11 @@ const createFolderStart = (state, action) => {
 const createFolderSuccess = (state, action) => {
   return updateObject(state, {
     creatingFolder: false,
-    folders: state.folders.concat(action.folder)
+    folders: state.folders.concat(action.folder),
+    folder: {
+      ...state.folder,
+      children: state.folder.children.concat(action.folder)
+    }
   });
 };
 
@@ -99,6 +115,8 @@ const reducer = (state = initialState, action) => {
       return fetchFolderSuccess(state, action);
     case actionTypes.FETCH_FOLDER_FAIL:
       return fetchFolderFail(state, action);
+    case actionTypes.RESET_FOLDER:
+      return resetFolder(state, action);
     case actionTypes.CREATE_FOLDER_START:
       return createFolderStart(state, action);
     case actionTypes.CREATE_FOLDER_SUCCESS:

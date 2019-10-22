@@ -23,6 +23,7 @@ export {
 export {
   fetchFolders,
   fetchFolder,
+  resetFolder,
   createFolder,
   removeFolder
 } from './folder';
