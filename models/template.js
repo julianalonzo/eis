@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const Item = require('./item');
+
 const templateSchema = new Schema({
   name: {
     type: String,
@@ -22,8 +24,14 @@ const templateSchema = new Schema({
     },
     thumbnails: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'File'
+        isPrimary: {
+          type: Boolean,
+          default: false
+        },
+        file: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'File'
+        }
       }
     ],
     properties: [
