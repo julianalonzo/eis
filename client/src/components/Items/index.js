@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { HOST } from '../../util/constants';
-
 import Card from '../UI/Card';
 import LoadingIndicator from '../UI/LoadingIndicator';
 
@@ -55,7 +53,7 @@ export default function Items({
           let thumbnailUrl = null;
 
           if (item.thumbnails.length > 0) {
-            thumbnailUrl = `${HOST}/api/files/${item.thumbnails[0].filename}`;
+            thumbnailUrl = item.thumbnails[0].path;
           }
 
           return (

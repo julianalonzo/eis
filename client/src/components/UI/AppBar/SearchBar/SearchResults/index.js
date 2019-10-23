@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { HOST } from '../../../../../util/constants';
-
 import Breadcrumbs from '../../../Breadcrumbs';
 import Thumbnail from '../../../Thumbnail';
 
@@ -50,7 +48,7 @@ export default function SearchResults({ searchedItems, onOpenItem }) {
             let thumbnailUrl;
 
             if (item.thumbnails.length > 0) {
-              thumbnailUrl = `${HOST}/api/files/${item.thumbnails[0].filename}`;
+              thumbnailUrl = item.thumbnails[0].path;
             }
 
             return (

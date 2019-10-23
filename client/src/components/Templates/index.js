@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { HOST } from '../../util/constants';
-
 import Truncate from 'react-truncate';
 
 import Card from '../UI/Card';
@@ -54,7 +52,7 @@ export default function Templates({
         let thumbnailUrl = null;
 
         if (template.item.thumbnails.length > 0) {
-          thumbnailUrl = `${HOST}/api/files/${template.item.thumbnails[0].filename}`;
+          thumbnailUrl = template.item.thumbnails[0].path;
         }
 
         return (

@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 
-import { HOST } from '../../util/constants';
-
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import Truncate from 'react-truncate';
@@ -96,7 +94,7 @@ function SelectTemplatePage({
             let thumbnailUrl = null;
 
             if (template.item.thumbnails.length > 0) {
-              thumbnailUrl = `${HOST}/api/files/${template.item.thumbnails[0].filename}`;
+              thumbnailUrl = template.item.thumbnails[0].path;
             }
 
             return (

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { HOST } from '../../../../util/constants';
-
 import MenuListPopper from '../../../UI/MenuListPopper';
 
 import MenuItem from '@material-ui/core/MenuItem';
@@ -22,7 +20,7 @@ export default function AttachmentMoreActionsMenuListPopper({
           <Typography
             variant="body2"
             onClick={() => {
-              window.open(`${HOST}/api/files/${attachment.filename}`, '_blank');
+              window.open(attachment.path, '_blank');
               onClose();
             }}
           >

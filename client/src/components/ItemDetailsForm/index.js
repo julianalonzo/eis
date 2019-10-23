@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { HOST } from '../../util/constants';
 import { isRequired } from '../../util/validators';
 
 import { Field } from 'react-final-form';
@@ -56,7 +55,7 @@ export default function ItemDetailsForm({
     if (thumbnail instanceof File) {
       image = URL.createObjectURL(thumbnail);
     } else {
-      image = `${HOST}/api/files/${thumbnail.filename}`;
+      image = thumbnail.path;
     }
 
     return image;
