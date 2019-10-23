@@ -27,13 +27,8 @@ export default function NewFolderDialog({
     }
   }, [isOpen, newFolderForm]);
 
-  const submitHandler = async (folderName, parentId) => {
-    const folderData = {
-      parent: parentId || null,
-      name: folderName
-    };
-
-    await onSubmit(folderData);
+  const submitHandler = async (name, parentId) => {
+    await onSubmit(name, parentId);
 
     onClose();
   };

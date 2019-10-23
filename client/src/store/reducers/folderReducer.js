@@ -94,7 +94,6 @@ const removeFolderFail = (state, action) => {
 
 const removeFolderSuccess = (state, action) => {
   let updatedFolders = state.folders;
-
   for (const removedFolderId of action.removedFoldersIds) {
     updatedFolders = updatedFolders.filter(
       folder => folder._id !== removedFolderId
@@ -103,7 +102,11 @@ const removeFolderSuccess = (state, action) => {
 
   return updateObject(state, {
     removingFolder: false,
-    folders: updatedFolders
+    folders: updatedFolders,
+    folder: {
+      ...state.folder,
+      children: updatedFolders.filter(f => f.parent === state.folder._id)
+    }
   });
 };
 

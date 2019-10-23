@@ -102,12 +102,14 @@ export const createFolderFail = error => {
   };
 };
 
-export const createFolder = folder => {
+export const createFolder = (name, parentId) => {
   return async dispatch => {
     dispatch(createFolderStart());
 
     try {
-      const response = await axios.post('api/folders', folder);
+      const response = await axios.post(`api/folders/${parentId}`, {
+        name: name
+      });
       dispatch(createFolderSuccess(response.data.folder));
     } catch (err) {
       dispatch(createFolderFail(err));
