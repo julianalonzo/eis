@@ -10,12 +10,10 @@ const s3 = new aws.S3({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
 
-exports.saveFileToBucket = async file => {
+async function saveFileToBucket(file) {
   const filePath = path.join(__dirname, '..', 'tmp', file.filename);
 
   const fileContent = fs.readFileSync(filePath);
-
-  fs.unlinkSync(filePath);
 
   const uploadParams = {
     Bucket: process.env.S3_BUCKET_NAME,
@@ -26,4 +24,8 @@ exports.saveFileToBucket = async file => {
   await s3.upload(uploadParams).promise();
 
   return `https://${process.env.S3_BUCKET_NAME}.s3-us-west-2.amazonaws.com/${file.filename}`;
+}
+
+module.exports = {
+  saveFileToBucket
 };

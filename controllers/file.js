@@ -1,23 +1,26 @@
+const fs = require('fs');
+const path = require('path');
+
 const { saveFileToBucket } = require('../modules/s3_upload');
 const { toArray, parseElementsToJSON } = require('../util/helperFunctions');
 
 const File = require('../models/file');
 
-exports.saveFiles = async (type, uploadedFiles) => {
+async function saveFiles(type, uploadedFiles) {
   const savedFiles = [];
 
   processedFiles = toArray(uploadedFiles);
   for (let i = 0; i < processedFiles.length; i++) {
-    const savedFile = await this.saveFile(type, processedFiles[i]);
+    const savedFile = await saveFile(type, processedFiles[i]);
     savedFiles.push(savedFile);
   }
 
   return savedFiles;
-};
+}
 
 // Function to save a file to the database. The type parameter must be thumbnail
 // or attachment
-exports.saveFile = async (type, uploadedFile) => {
+async function saveFile(type, uploadedFile) {
   const bucketPath = await saveFileToBucket(uploadedFile);
 
   const file = new File({
@@ -29,7 +32,8 @@ exports.saveFile = async (type, uploadedFile) => {
     size: uploadedFile.size
   });
 
-  // Delete tmp file
+  const fileTemporaryPath = path.join(__dirname, '..', 'tmp', file.filename);
+  fs.unlinkSync(fileTemporaryPath);
 
   try {
     const savedFile = await file.save();
@@ -38,9 +42,9 @@ exports.saveFile = async (type, uploadedFile) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.extractIdsFromExistingFiles = (type, existingFiles) => {
+function extractIdsFromExistingFiles(type, existingFiles) {
   const idsOfExistingFiles = existingFiles
     ? parseElementsToJSON(existingFiles).map(existingFile => {
         return existingFile._id;
@@ -48,14 +52,21 @@ exports.extractIdsFromExistingFiles = (type, existingFiles) => {
     : [];
 
   return idsOfExistingFiles;
-};
+}
 
-exports.extractIdsFromNewFiles = async (type, newFiles) => {
-  const savedFiles = await this.saveFiles(type, newFiles);
+async function extractIdsFromNewFiles(type, newFiles) {
+  const savedFiles = await saveFiles(type, newFiles);
 
   const idsOfSavedFiles = savedFiles.map(savedFile => {
     return savedFile.id;
   });
 
   return idsOfSavedFiles;
+}
+
+module.exports = {
+  saveFiles,
+  saveFile,
+  extractIdsFromExistingFiles,
+  extractIdsFromNewFiles
 };

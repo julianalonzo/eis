@@ -4,7 +4,7 @@ const { extractIdsFromNewFiles } = require('./file');
 
 const Template = require('../models/template');
 
-exports.getTemplates = async (req, res, next) => {
+async function getTemplates(req, res, next) {
   try {
     const templates = await Template.find({ shown: true }).populate(
       'item.thumbnails'
@@ -14,9 +14,9 @@ exports.getTemplates = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.getTemplate = async (req, res, next) => {
+async function getTemplate(req, res, next) {
   try {
     const templateId = req.params.templateId || '';
 
@@ -29,9 +29,9 @@ exports.getTemplate = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.createTemplate = async (req, res, next) => {
+async function createTemplate(req, res, next) {
   // @TODO: Add validation
 
   try {
@@ -77,9 +77,9 @@ exports.createTemplate = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.updateTemplate = async (req, res, next) => {
+async function updateTemplate(req, res, next) {
   // @TODO Add validation
 
   try {
@@ -124,9 +124,9 @@ exports.updateTemplate = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.removeTemplate = async (req, res, next) => {
+async function removeTemplate(req, res, next) {
   // @TODO Add validation
 
   try {
@@ -138,4 +138,12 @@ exports.removeTemplate = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
+}
+
+module.exports = {
+  getTemplates,
+  getTemplate,
+  createTemplate,
+  updateTemplate,
+  removeTemplate
 };

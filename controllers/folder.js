@@ -1,8 +1,7 @@
+const Item = require('../models/item');
 const Folder = require('../models/folder');
 
-const { removeItemsByFolderId } = require('./item');
-
-exports.getFolders = async (req, res, next) => {
+async function getFolders(req, res, next) {
   try {
     const folders = await Folder.find({ shown: true });
 
@@ -10,15 +9,15 @@ exports.getFolders = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.getFolder = async (req, res, next) => {
+async function getFolder(req, res, next) {
   try {
     const { folderId } = req.params;
 
     const currentFolder = await Folder.findById(folderId);
-    const children = await this.findImmediateChildren(folderId);
-    const folderHierarchy = await this.getFolderHierarchy(folderId);
+    const children = await findImmediateChildren(folderId);
+    const folderHierarchy = await getFolderHierarchy(folderId);
 
     res.status(200).json({
       folder: {
@@ -32,12 +31,12 @@ exports.getFolder = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.createFolder = async (req, res, next) => {
+async function createFolder(req, res, next) {
   try {
+    const folderParent = req.params.folderId || null;
     const folderName = req.body.name || '';
-    const folderParent = req.body.parent || null;
 
     const folder = new Folder({
       name: folderName,
@@ -50,25 +49,25 @@ exports.createFolder = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.removeFolder = async (req, res, next) => {
+async function removeFolder(req, res, next) {
   const folderId = req.params.folderId;
 
   try {
     if (folderId) {
-      const folderChildren = await this.findAllChildren(folderId);
+      const folderChildren = await findAllChildren(folderId);
 
       let removedFoldersIds = [];
       let removedItemsIds = [];
       for (const folderChild of folderChildren) {
-        const clearedFolder = await this.clearFolder(folderChild.id);
+        const clearedFolder = await clearFolder(folderChild.id);
 
         removedFoldersIds = removedFoldersIds.concat(clearedFolder.folderId);
         removedItemsIds = removedItemsIds.concat(clearedFolder.removedItems);
       }
 
-      const clearedParentFolder = await this.clearFolder(folderId);
+      const clearedParentFolder = await clearFolder(folderId);
       removedFoldersIds = removedFoldersIds.concat(
         clearedParentFolder.folderId
       );
@@ -84,9 +83,9 @@ exports.removeFolder = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.clearFolder = async folderId => {
+async function clearFolder(folderId) {
   await Folder.updateOne(
     { _id: folderId, shown: true },
     { $set: { shown: false } }
@@ -98,30 +97,41 @@ exports.clearFolder = async folderId => {
     folderId: folderId,
     removedItems: removedItems
   };
-};
+}
 
-exports.findImmediateChildren = async folderId => {
+async function removeItemsByFolderId(folderId) {
+  const folderItems = await Item.find({ folder: folderId, shown: true });
+
+  await Item.updateMany(
+    { folder: folderId, shown: true },
+    { $set: { shown: false } }
+  );
+
+  return folderItems.map(item => item.id);
+}
+
+async function findImmediateChildren(folderId) {
   const immediateChildren = await Folder.find({
     parent: folderId,
     shown: true
   });
 
   return immediateChildren;
-};
+}
 
-exports.findAllChildren = async folderId => {
+async function findAllChildren(folderId) {
   let children = await Folder.find({ parent: folderId, shown: true });
 
   for (const childFolder of children) {
-    const childrenOfChildFolder = await this.findAllChildren(childFolder.id);
+    const childrenOfChildFolder = await findAllChildren(childFolder.id);
 
     children = children.concat(childrenOfChildFolder);
   }
 
   return children;
-};
+}
 
-exports.getFolderHierarchy = async folderId => {
+async function getFolderHierarchy(folderId) {
   const folderHierarchy = [];
 
   // Push the first folder (i.e., in the request body) to the folder heirarchy
@@ -131,7 +141,7 @@ exports.getFolderHierarchy = async folderId => {
   let currentFolderId = folderId;
 
   while (!isFolderHierarchyComplete) {
-    const parentFolder = await this.findParent(currentFolderId);
+    const parentFolder = await findParent(currentFolderId);
 
     if (parentFolder !== null) {
       folderHierarchy.push(parentFolder);
@@ -142,12 +152,24 @@ exports.getFolderHierarchy = async folderId => {
   }
 
   return folderHierarchy.reverse();
-};
+}
 
-exports.findParent = async folderId => {
+async function findParent(folderId) {
   const folder = await Folder.findById(folderId);
   const folderParent =
     (await Folder.findById(folder.parent).select('-parent')) || null;
 
   return folderParent;
+}
+
+module.exports = {
+  getFolders,
+  getFolder,
+  createFolder,
+  removeFolder,
+  clearFolder,
+  findImmediateChildren,
+  findAllChildren,
+  getFolderHierarchy,
+  findParent
 };

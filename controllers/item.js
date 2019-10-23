@@ -3,7 +3,7 @@ const { getFolderHierarchy } = require('./folder');
 
 const Item = require('../models/item');
 
-exports.getItems = async (req, res, next) => {
+async function getItems(req, res, next) {
   try {
     const folderId = req.query.folderId || null;
 
@@ -44,9 +44,9 @@ exports.getItems = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.getItem = async (req, res, next) => {
+async function getItem(req, res, next) {
   try {
     const itemId = req.params.itemId || null;
 
@@ -67,9 +67,9 @@ exports.getItem = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.createItems = async (req, res, next) => {
+async function createItems(req, res, next) {
   // @TODO: Add validation
 
   try {
@@ -89,7 +89,7 @@ exports.createItems = async (req, res, next) => {
     const fileAttachments = req.files.fileAttachments || [];
     const folder = req.body.folder || '';
 
-    const itemData = await this.generateItemData(
+    const itemData = await generateItemData(
       name,
       category,
       condition,
@@ -113,9 +113,9 @@ exports.createItems = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.updateItem = async (req, res, next) => {
+async function updateItem(req, res, next) {
   // @TODO: Add validation
 
   try {
@@ -181,9 +181,9 @@ exports.updateItem = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.removeItem = async (req, res, next) => {
+async function removeItem(req, res, next) {
   const itemId = req.params.itemId;
 
   try {
@@ -195,9 +195,9 @@ exports.removeItem = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.generateItemData = async (
+async function generateItemData(
   name,
   category,
   condition,
@@ -206,7 +206,7 @@ exports.generateItemData = async (
   fileThumbnails,
   templateAttachments,
   fileAttachments
-) => {
+) {
   try {
     /**
      * Ensure that an array is passed to the Item's properties field since it is
@@ -243,15 +243,13 @@ exports.generateItemData = async (
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.removeItemsByFolderId = async folderId => {
-  const folderItems = await Item.find({ folder: folderId, shown: true });
-
-  await Item.updateMany(
-    { folder: folderId, shown: true },
-    { $set: { shown: false } }
-  );
-
-  return folderItems.map(item => item.id);
+module.exports = {
+  getItems,
+  getItem,
+  createItems,
+  updateItem,
+  removeItem,
+  generateItemData
 };
