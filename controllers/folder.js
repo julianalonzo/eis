@@ -91,6 +91,23 @@ async function createFolder(req, res, next) {
   }
 }
 
+async function updateFolder(req, res, next) {
+  try {
+    const { folderId } = req.params;
+    const { name, parent } = req.body;
+
+    const updatedFolder = await Folder.findOneAndUpdate(
+      { _id: folderId },
+      { $set: { name: name, parent: Boolean(parent) ? parent : null } },
+      { new: true, useFindAndModify: false }
+    );
+
+    res.status(200).json({ folder: updatedFolder });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function removeFolder(req, res, next) {
   const folderId = req.params.folderId;
 
@@ -167,5 +184,6 @@ module.exports = {
   getFolder,
   getFolderHierarchy,
   createFolder,
+  updateFolder,
   removeFolder
 };

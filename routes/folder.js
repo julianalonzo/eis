@@ -9,6 +9,8 @@ router.get('/:folderId', foldersController.getFolder);
 
 router.post('/', foldersController.createFolder);
 
+router.put('/:folderId', foldersController.updateFolder);
+
 router.post('/:folderId', foldersController.createFolder);
 
 router.delete('/:folderId', foldersController.removeFolder);
