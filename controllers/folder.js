@@ -167,9 +167,5 @@ module.exports = {
   getFolder,
   createFolder,
   removeFolder,
-  clearFolder,
-  findImmediateChildren,
-  findAllChildren,
-  getFolderHierarchy,
-  findParent
+  getFolderHierarchy
 };

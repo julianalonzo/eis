@@ -65,8 +65,6 @@ async function extractIdsFromNewFiles(type, newFiles) {
 }
 
 module.exports = {
-  saveFiles,
-  saveFile,
   extractIdsFromExistingFiles,
   extractIdsFromNewFiles
 };
