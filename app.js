@@ -7,8 +7,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const itemRoutes = require('./routes/item');
-const templateRoutes = require('./routes/template');
 const folderRoutes = require('./routes/folder');
+const templateRoutes = require('./routes/template');
 
 const app = express();
 
@@ -17,8 +17,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api/items', itemRoutes);
-app.use('/api/templates', templateRoutes);
 app.use('/api/folders', folderRoutes);
+app.use('/api/templates', templateRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client', 'build')));
