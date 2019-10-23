@@ -289,7 +289,8 @@ const mapDispatchToProps = dispatch => {
     onFetchFolders: () => dispatch(actions.fetchFolders()),
     onFetchFolder: folderId => dispatch(actions.fetchFolder(folderId)),
     onResetFolder: () => dispatch(actions.resetFolder()),
-    onCreateFolder: folder => dispatch(actions.createFolder(folder)),
+    onCreateFolder: (name, parentId) =>
+      dispatch(actions.createFolder(name, parentId)),
     onRemoveFolder: folderId => dispatch(actions.removeFolder(folderId)),
     onFetchItems: folderId => dispatch(actions.fetchItems(folderId)),
     onRemoveItem: itemId => dispatch(actions.removeItem(itemId)),
