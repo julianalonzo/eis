@@ -1,12 +1,7 @@
+const { saveFileToBucket } = require('../modules/s3_upload');
 const { toArray, parseElementsToJSON } = require('../util/helperFunctions');
-const path = require('path');
 
 const File = require('../models/file');
-
-// Route to get a file
-exports.getFile = (req, res, next) => {
-  res.sendFile(path.join(__dirname, '..', 'uploads', req.params.filename));
-};
 
 exports.saveFiles = async (type, uploadedFiles) => {
   const savedFiles = [];
@@ -23,14 +18,18 @@ exports.saveFiles = async (type, uploadedFiles) => {
 // Function to save a file to the database. The type parameter must be thumbnail
 // or attachment
 exports.saveFile = async (type, uploadedFile) => {
+  const bucketPath = await saveFileToBucket(uploadedFile);
+
   const file = new File({
     type: type,
     originalname: uploadedFile.originalname,
     mimetype: uploadedFile.mimetype,
     filename: uploadedFile.filename,
-    path: uploadedFile.path,
+    path: bucketPath,
     size: uploadedFile.size
   });
+
+  // Delete tmp file
 
   try {
     const savedFile = await file.save();

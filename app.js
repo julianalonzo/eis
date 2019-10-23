@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 
 const express = require('express');
@@ -7,7 +8,6 @@ const cors = require('cors');
 
 const itemRoutes = require('./routes/item');
 const templateRoutes = require('./routes/template');
-const fileRoutes = require('./routes/file');
 const folderRoutes = require('./routes/folder');
 
 const app = express();
@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 
 app.use('/api/items', itemRoutes);
 app.use('/api/templates', templateRoutes);
-app.use('/api/files', fileRoutes);
 app.use('/api/folders', folderRoutes);
 
 if (process.env.NODE_ENV === 'production') {
