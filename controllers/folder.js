@@ -33,6 +33,46 @@ async function getFolder(req, res, next) {
   }
 }
 
+async function findImmediateChildren(folderId) {
+  const immediateChildren = await Folder.find({
+    parent: folderId,
+    shown: true
+  });
+
+  return immediateChildren;
+}
+
+async function getFolderHierarchy(folderId) {
+  const folderHierarchy = [];
+
+  // Push the first folder (i.e., in the request body) to the folder heirarchy
+  folderHierarchy.push(await Folder.findById(folderId).select('-parent'));
+
+  let isFolderHierarchyComplete = false;
+  let currentFolderId = folderId;
+
+  while (!isFolderHierarchyComplete) {
+    const parentFolder = await findParent(currentFolderId);
+
+    if (parentFolder !== null) {
+      folderHierarchy.push(parentFolder);
+      currentFolderId = parentFolder.id;
+    } else {
+      isFolderHierarchyComplete = true;
+    }
+  }
+
+  return folderHierarchy.reverse();
+}
+
+async function findParent(folderId) {
+  const folder = await Folder.findById(folderId);
+  const folderParent =
+    (await Folder.findById(folder.parent).select('-parent')) || null;
+
+  return folderParent;
+}
+
 async function createFolder(req, res, next) {
   try {
     const folderParent = req.params.folderId || null;
@@ -85,6 +125,18 @@ async function removeFolder(req, res, next) {
   }
 }
 
+async function findAllChildren(folderId) {
+  let children = await Folder.find({ parent: folderId, shown: true });
+
+  for (const childFolder of children) {
+    const childrenOfChildFolder = await findAllChildren(childFolder.id);
+
+    children = children.concat(childrenOfChildFolder);
+  }
+
+  return children;
+}
+
 async function clearFolder(folderId) {
   await Folder.updateOne(
     { _id: folderId, shown: true },
@@ -110,62 +162,10 @@ async function removeItemsByFolderId(folderId) {
   return folderItems.map(item => item.id);
 }
 
-async function findImmediateChildren(folderId) {
-  const immediateChildren = await Folder.find({
-    parent: folderId,
-    shown: true
-  });
-
-  return immediateChildren;
-}
-
-async function findAllChildren(folderId) {
-  let children = await Folder.find({ parent: folderId, shown: true });
-
-  for (const childFolder of children) {
-    const childrenOfChildFolder = await findAllChildren(childFolder.id);
-
-    children = children.concat(childrenOfChildFolder);
-  }
-
-  return children;
-}
-
-async function getFolderHierarchy(folderId) {
-  const folderHierarchy = [];
-
-  // Push the first folder (i.e., in the request body) to the folder heirarchy
-  folderHierarchy.push(await Folder.findById(folderId).select('-parent'));
-
-  let isFolderHierarchyComplete = false;
-  let currentFolderId = folderId;
-
-  while (!isFolderHierarchyComplete) {
-    const parentFolder = await findParent(currentFolderId);
-
-    if (parentFolder !== null) {
-      folderHierarchy.push(parentFolder);
-      currentFolderId = parentFolder.id;
-    } else {
-      isFolderHierarchyComplete = true;
-    }
-  }
-
-  return folderHierarchy.reverse();
-}
-
-async function findParent(folderId) {
-  const folder = await Folder.findById(folderId);
-  const folderParent =
-    (await Folder.findById(folder.parent).select('-parent')) || null;
-
-  return folderParent;
-}
-
 module.exports = {
   getFolders,
   getFolder,
+  getFolderHierarchy,
   createFolder,
-  removeFolder,
-  getFolderHierarchy
+  removeFolder
 };
