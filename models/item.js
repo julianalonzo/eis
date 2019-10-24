@@ -14,14 +14,8 @@ const itemSchema = new Schema({
   },
   thumbnails: [
     {
-      isPrimary: {
-        type: Boolean,
-        default: false
-      },
-      file: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'File'
-      }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File'
     }
   ],
   properties: [
