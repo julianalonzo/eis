@@ -3,24 +3,67 @@ const router = express.Router();
 
 const upload = require('../util/fileStorage');
 
+const {
+  getItemsValidator,
+  getItemValidator,
+  createItemValidator,
+  updateItemValidator,
+  deleteItemValidator
+} = require('../validators/item');
+
+const {
+  createItemSanitizer,
+  updateItemSanitizer
+} = require('../sanitizers/item');
+
 const itemController = require('../controllers/item');
 
-router.get('/', itemController.getItems);
+/**
+ * GET /api/items
+ * Gets all shown or searched/filtered items in the collection
+ */
+router.get('/', getItemsValidator, itemController.getItems);
 
-router.get('/:itemId', itemController.getItem);
+/**
+ * GET /api/items/{itemId}
+ * Gets an item based on the id provided
+ */
+router.get('/:itemId', getItemValidator, itemController.getItem);
 
+/**
+ * POST /api/items
+ * Creates a new item
+ */
 router.post(
   '/',
-  upload.fields([{ name: 'fileThumbnails' }, { name: 'fileAttachments' }]),
-  itemController.createItems
+  upload.fields([
+    { name: 'newThumbnails', maxCount: 3 },
+    { name: 'newAttachments', maxCount: 10 }
+  ]),
+  createItemValidator,
+  createItemSanitizer,
+  itemController.createItem
 );
 
+/**
+ * PUT /api/items/{itemId}
+ * Updates an existing item
+ */
 router.put(
   '/:itemId',
-  upload.fields([{ name: 'fileThumbnails' }, { name: 'fileAttachments' }]),
+  upload.fields([
+    { name: 'newThumbnails', maxCount: 3 },
+    { name: 'newAttachments', maxCount: 10 }
+  ]),
+  updateItemValidator,
+  updateItemSanitizer,
   itemController.updateItem
 );
 
-router.delete('/:itemId', itemController.removeItem);
+/**
+ * DELETE /api/items/${itemId}
+ * Permanently deletes an item
+ */
+router.delete('/:itemId', deleteItemValidator, itemController.deleteItem);
 
 module.exports = router;

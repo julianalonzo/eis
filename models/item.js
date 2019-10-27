@@ -7,10 +7,12 @@ const itemSchema = new Schema({
     isRequired: true
   },
   category: {
-    type: String
+    type: String,
+    default: ''
   },
   condition: {
-    type: String
+    type: String,
+    default: ''
   },
   thumbnails: [
     {
@@ -25,7 +27,8 @@ const itemSchema = new Schema({
         isRequired: true
       },
       value: {
-        type: String
+        type: String,
+        default: ''
       }
     }
   ],
@@ -38,30 +41,37 @@ const itemSchema = new Schema({
   notes: [
     {
       content: {
-        type: String
+        type: String,
+        isRequired: true
       },
       datePosted: {
         type: Date,
-        isRequired: true,
         default: Date.now
       }
     }
   ],
   shown: {
     type: Boolean,
-    isRequired: true,
+    default: true,
     select: false
   },
   folder: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Folder'
+  },
+  isTemplate: {
+    type: Boolean,
+    default: false,
+    select: false
   }
 });
 
 itemSchema.index({
+  _id: 'text',
   name: 'text',
   category: 'text',
   condition: 'text',
+  'properties.name': 'text',
   'properties.value': 'text',
   'notes.content': 'text'
 });

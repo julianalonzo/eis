@@ -1,200 +1,275 @@
-const { extractIdsFromNewFiles } = require('./file');
+const { validationResult } = require('express-validator');
+
+const { saveFiles } = require('./file');
 const { getFolderHierarchy } = require('./folder');
 
 const Item = require('../models/item');
 
-async function getItems(req, res, next) {
-  try {
-    const folderId = req.query.folderId || null;
-
-    const searchQuery = req.query.search || null;
-
-    let items = [];
-    if (Boolean(folderId)) {
-      items = await Item.find({ folder: folderId, shown: true }).populate(
-        'thumbnails'
-      );
-    } else if (Boolean(searchQuery)) {
-      const searchedItems = await Item.find(
-        {
-          $text: { $search: searchQuery },
-          shown: true
-        },
-        {
-          score: { $meta: 'textScore' }
-        }
-      )
-        .sort({ score: { $meta: 'textScore' } })
-        .populate('thumbnails');
-
-      let itemsWithFolderHierarchy = [];
-      for (const item of searchedItems) {
-        const folderHierarchy = await getFolderHierarchy(item.folder);
-
-        itemsWithFolderHierarchy = itemsWithFolderHierarchy.concat({
-          ...item._doc,
-          folderHierarchy: folderHierarchy
-        });
-      }
-
-      items = itemsWithFolderHierarchy;
-    }
-
-    res.status(200).json({ items: items });
-  } catch (err) {
-    console.log(err);
+/**
+ * Gets all shown or searched/filtered items in the collection
+ * @param {Object} req Request object
+ * @param {Object} req.query Request queries
+ * @param {string} req.query.search Request query parameter for full-text search
+ * @param {Object} res Response object
+ */
+async function getItems(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
-}
 
-async function getItem(req, res, next) {
-  try {
-    const itemId = req.params.itemId || null;
+  let items = [];
 
-    if (Boolean(itemId)) {
-      const item = await Item.findOne({ _id: itemId })
-        .populate('thumbnails')
-        .populate('attachments')
-        .exec();
-
-      if (Boolean(item)) {
-        res.status(200).json({
-          item: item
-        });
-      } else {
-        res.status(404).json({ item: null, message: 'Item not found' });
-      }
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function createItems(req, res, next) {
-  // @TODO: Add validation
-
-  try {
-    const name = req.body.name || '';
-    const category = req.body.category || '';
-    const condition = req.body.condition || '';
-    const properties = req.body.properties
-      ? JSON.parse(req.body.properties)
-      : [];
-    const templateThumbnails = req.body.templateThumbnails
-      ? JSON.parse(req.body.templateThumbnails)
-      : [];
-    const fileThumbnails = req.files.fileThumbnails || [];
-    const templateAttachments = req.body.templateAttachments
-      ? JSON.parse(req.body.templateAttachments)
-      : [];
-    const fileAttachments = req.files.fileAttachments || [];
-    const folder = req.body.folder || '';
-
-    const itemData = await generateItemData(
-      name,
-      category,
-      condition,
-      properties,
-      templateThumbnails,
-      fileThumbnails,
-      templateAttachments,
-      fileAttachments
-    );
-
-    const item = new Item({
-      ...itemData,
-      notes: [],
-      shown: true,
-      folder: folder
-    });
-
-    const savedItem = await item.save();
-
-    res.status(201).json({ item: savedItem });
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function updateItem(req, res, next) {
-  // @TODO: Add validation
-
-  try {
-    const itemId = req.params.itemId;
-
-    const name = req.body.name;
-    const category = req.body.category || '';
-    const condition = req.body.condition || '';
-    const thumbnails = req.body.thumbnails
-      ? JSON.parse(req.body.thumbnails)
-      : undefined;
-    const attachments = req.body.attachments
-      ? JSON.parse(req.body.attachments)
-      : undefined;
-    const properties = req.body.properties
-      ? JSON.parse(req.body.properties)
-      : undefined;
-    const notes = req.body.notes ? JSON.parse(req.body.notes) : undefined;
-
-    const newThumbnailsIds = req.files.fileThumbnails
-      ? await extractIdsFromNewFiles('thumbnail', req.files.fileThumbnails)
-      : undefined;
-
-    const newAttachmentsIds = req.files.fileAttachments
-      ? await extractIdsFromNewFiles('attachment', req.files.fileAttachments)
-      : undefined;
-
-    await Item.updateOne(
-      { _id: itemId },
+  const searchQuery = req.query.search || '';
+  if (Boolean(searchQuery)) {
+    items = await Item.find(
       {
-        $set: {
-          name,
-          category,
-          condition,
-          thumbnails,
-          attachments,
-          properties,
-          notes
-        }
+        $text: { $search: searchQuery },
+        isTemplate: false,
+        shown: true
       },
-      { omitUndefined: true }
-    );
-
-    await Item.updateOne(
-      { _id: itemId },
       {
-        $addToSet: {
-          thumbnails: newThumbnailsIds,
-          attachments: newAttachmentsIds
-        }
-      },
-      { omitUndefined: true }
-    );
-
-    const item = await Item.findOne({ _id: itemId })
+        score: { $meta: 'textScore' }
+      }
+    )
+      .sort({ score: { $meta: 'textScore' } })
       .populate('thumbnails')
       .populate('attachments')
       .exec();
+  } else {
+    items = await Item.find({ ...req.query, shown: true })
+      .populate('thumbnails')
+      .populate('attachments')
+      .exec();
+  }
 
-    res.status(200).json({
-      item: item
+  for (let i = 0; i < items.length; i++) {
+    const folderHierarchy = await getFolderHierarchy(items[i].folder);
+
+    items[i] = {
+      ...items[i]._doc,
+      folderHierarchy: folderHierarchy
+    };
+  }
+
+  if (items.length === 0) {
+    return res.status(404).json({ items: [] });
+  }
+
+  return res.status(200).json({ items: items });
+}
+
+/**
+ * Gets an item based on the id provided
+ * @param {Object} req Request object
+ * @param {Object} req.params Request parameters
+ * @param {mongoose.SchemaTypes.ObjectId} req.params.itemId ID of the item to be fetched (required)
+ * @param {Object} res Response object
+ */
+async function getItem(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const itemId = req.params.itemId;
+  const item = await Item.findOne({
+    _id: itemId,
+    isTemplate: false,
+    shown: true
+  })
+    .populate('thumbnails')
+    .populate('attachments')
+    .exec();
+
+  if (Boolean(item)) {
+    const folderHierarchy = await getFolderHierarchy(item.folder);
+
+    return res.status(200).json({
+      item: {
+        ...item._doc,
+        folderHierarchy: folderHierarchy
+      }
     });
-  } catch (err) {
-    console.log(err);
+  } else {
+    return res.status(404).json({
+      item: null,
+      error: { status: 404, userMessage: 'Item does not exist' }
+    });
   }
 }
 
-async function removeItem(req, res, next) {
+/**
+ * Creates a new item
+ * @param {Object} req Request object
+ * @param {Object} req.body Request body
+ * @param {Object} req.body.item Item to be added
+ * @param {string} req.body.item.name Name of the item (required)
+ * @param {string} req.body.item.category Category of the item
+ * @param {string} req.body.item.condition Condition of the item
+ * @param {mongoose.SchemaTypes.ObjectId[]} req.body.item.thumbnails Thumbnail IDs of an item
+ * @param {Object[]} req.body.item.properties Properties of an item
+ * @param {string} req.body.item.properties[].name Name of the property (required)
+ * @param {string} req.body.item.properties[].value Value of the property
+ * @param {mongoose.SchemaTypes.ObjectId[]} req.body.item.attachments Attachment IDs of an item
+ * @param {mongoose.SchemaTypes.ObjectId} req.body.item.folder Folder ID that represents where the item is located
+ * @param {Object} req.files Request files (handled by multer)
+ * @param {File[]} req.files.newThumbnails Newly uploaded thumbnails for the item
+ * @param {File[]} req.files.newAttachments Newly uploaded attachments for the item
+ * @param {Object} res Response object
+ */
+async function createItem(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const {
+    name,
+    category,
+    condition,
+    properties,
+    thumbnails,
+    attachments,
+    folder
+  } = req.body.item;
+
+  const { newThumbnails, newAttachments } = req.files;
+
+  const newThumbnailsIds = await saveFiles('thumbnail', newThumbnails || []);
+  const newAttachmentsIds = await saveFiles('attachment', newAttachments || []);
+
+  const item = new Item({
+    name: name,
+    category: category,
+    condition: condition,
+    thumbnails: thumbnails.concat(newThumbnailsIds),
+    properties: properties,
+    attachments: attachments.concat(newAttachmentsIds),
+    notes: [],
+    folder: folder
+  });
+
+  const savedItem = await item.save();
+
+  const folderHierarchy = await getFolderHierarchy(item.folder);
+
+  return res
+    .status(201)
+    .json({ item: { ...savedItem._doc, folderHierarchy: folderHierarchy } });
+}
+
+/**
+ * Updates an existing item
+ * @param {Object} req Request object
+ * @param {Object} req.body Request body
+ * @param {Object} req.body.item Item to be updated
+ * @param {string} req.body.item.name Name of the item
+ * @param {string} req.body.item.category Category of the item
+ * @param {string} req.body.item.condition Condition of the item
+ * @param {mongoose.SchemaTypes.ObjectId[]} req.body.item.thumbnails Thumbnail IDs of an item
+ * @param {Object[]} req.body.item.properties Properties of an item
+ * @param {string} req.body.item.properties[].name Name of the property
+ * @param {string} req.body.item.properties[].value Value of the property
+ * @param {mongoose.SchemaTypes.ObjectId[]} req.body.item.attachments Attachment IDs of an item
+ * @param {mongoose.SchemaTypes.ObjectId} req.body.item.folder Folder ID that represents where the item is located
+ * @param {Object} req.files Request files (handled by multer)
+ * @param {File[]} req.files.newThumbnails Newly uploaded thumbnails for the item
+ * @param {File[]} req.files.newAttachments Newly uploaded attachments for the item
+ * @param {Object} res Response object
+ */
+async function updateItem(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
   const itemId = req.params.itemId;
 
-  try {
-    if (itemId) {
-      await Item.updateOne({ _id: itemId }, { $set: { shown: false } });
-
-      res.status(200).json({ itemId: itemId });
-    }
-  } catch (err) {
-    console.log(err);
+  let newThumbnailsId;
+  let newAttachmentsId;
+  if (req.files) {
+    newThumbnailsId = req.files.newThumbnails
+      ? await saveFiles('thumbnail', req.files.newThumbnails)
+      : undefined;
+    newAttachmentsId = req.files.newAttachments
+      ? await saveFiles('attachment', req.files.newAttachments)
+      : undefined;
   }
+
+  await Item.updateOne(
+    { _id: itemId },
+    {
+      $set: {
+        ...req.body.item
+      }
+    },
+    { omitUndefined: true }
+  );
+
+  await Item.updateOne(
+    { _id: itemId },
+    {
+      $addToSet: {
+        thumbnails: newThumbnailsId,
+        attachments: newAttachmentsId
+      }
+    },
+    { omitUndefined: true }
+  );
+
+  const item = await Item.findOne({ _id: itemId })
+    .populate('thumbnails')
+    .populate('attachments')
+    .exec();
+
+  if (item === null) {
+    return res.status(404).json({
+      item: null,
+      error: { status: 404, userMessage: 'Item does not exist' }
+    });
+  }
+
+  const folderHierarchy = await getFolderHierarchy(item.folder);
+
+  return res.status(200).json({
+    item: {
+      ...item._doc,
+      folderHierarchy: folderHierarchy
+    }
+  });
+}
+
+/**
+ * Permanently deletes the item
+ * @param {Object} req Request object
+ * @param {Object} res Response object
+ * @param {Object} req.params Request parameters
+ * @param {Object} req.params.itemId Item ID of the item to be deleted
+ */
+async function deleteItem(req, res) {
+  const itemId = req.params.itemId;
+
+  const deletedItem = await Item.findOneAndDelete({
+    _id: itemId,
+    isTemplate: false
+  });
+
+  if (deletedItem === null) {
+    return res.status(404).json({
+      itemId: null,
+      error: {
+        status: 404,
+        userMessage: 'Item does not exist'
+      }
+    });
+  }
+
+  const folderHierarchy = await getFolderHierarchy(deletedItem.folder);
+
+  return res
+    .status(204)
+    .json({ itemId: deletedItem.id, folderHierarchy: folderHierarchy });
 }
 
 async function generateItemData(
@@ -248,8 +323,8 @@ async function generateItemData(
 module.exports = {
   getItems,
   getItem,
-  createItems,
+  createItem,
   updateItem,
-  removeItem,
+  deleteItem,
   generateItemData
 };
