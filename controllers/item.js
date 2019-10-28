@@ -37,7 +37,7 @@ async function getItems(req, res) {
       .populate('attachments')
       .exec();
   } else {
-    items = await Item.find({ ...req.query, shown: true })
+    items = await Item.find({ ...req.query, isTemplate: false, shown: true })
       .populate('thumbnails')
       .populate('attachments')
       .exec();
@@ -139,7 +139,7 @@ async function createItem(req, res) {
   const newThumbnailsIds = await saveFiles('thumbnail', newThumbnails || []);
   const newAttachmentsIds = await saveFiles('attachment', newAttachments || []);
 
-  const item = new Item({
+  const savedItem = await new Item({
     name: name,
     category: category,
     condition: condition,
@@ -148,15 +148,18 @@ async function createItem(req, res) {
     attachments: attachments.concat(newAttachmentsIds),
     notes: [],
     folder: folder
-  });
+  }).save();
 
-  const savedItem = await item.save();
+  const item = await savedItem
+    .populate('thumbnails')
+    .populate('attachments')
+    .execPopulate();
 
   const folderHierarchy = await getFolderHierarchy(item.folder);
 
   return res
     .status(201)
-    .json({ item: { ...savedItem._doc, folderHierarchy: folderHierarchy } });
+    .json({ item: { ...item._doc, folderHierarchy: folderHierarchy } });
 }
 
 /**
@@ -186,58 +189,63 @@ async function updateItem(req, res) {
 
   const itemId = req.params.itemId;
 
-  let newThumbnailsId;
-  let newAttachmentsId;
-  if (req.files) {
-    newThumbnailsId = req.files.newThumbnails
-      ? await saveFiles('thumbnail', req.files.newThumbnails)
-      : undefined;
-    newAttachmentsId = req.files.newAttachments
-      ? await saveFiles('attachment', req.files.newAttachments)
-      : undefined;
-  }
+  const item = await Item.findById(itemId);
 
-  await Item.updateOne(
-    { _id: itemId },
-    {
-      $set: {
-        ...req.body.item
+  if (item !== null) {
+    let newThumbnailsIds;
+    let newAttachmentsIds;
+    if (req.files) {
+      const { newThumbnails, newAttachments } = req.files;
+
+      newThumbnailsIds = newThumbnails
+        ? await saveFiles('thumbnail', newThumbnails)
+        : undefined;
+      newAttachmentsIds = newAttachments
+        ? await saveFiles('attachment', newAttachments)
+        : undefined;
+    }
+
+    await Item.updateOne(
+      { _id: itemId },
+      {
+        $set: {
+          _id: itemId,
+          ...req.body.item
+        }
+      },
+      { omitUndefined: true }
+    );
+
+    await Item.updateOne(
+      { _id: itemId },
+      {
+        $addToSet: {
+          thumbnails: newThumbnailsIds,
+          attachments: newAttachmentsIds
+        }
+      },
+      { omitUndefined: true }
+    );
+
+    const updatedItem = await Item.findById(itemId)
+      .populate('thumbnails')
+      .populate('attachments')
+      .exec();
+
+    const folderHierarchy = await getFolderHierarchy(item.folder);
+
+    return res.status(200).json({
+      item: {
+        ...updatedItem._doc,
+        folderHierarchy: folderHierarchy
       }
-    },
-    { omitUndefined: true }
-  );
-
-  await Item.updateOne(
-    { _id: itemId },
-    {
-      $addToSet: {
-        thumbnails: newThumbnailsId,
-        attachments: newAttachmentsId
-      }
-    },
-    { omitUndefined: true }
-  );
-
-  const item = await Item.findOne({ _id: itemId })
-    .populate('thumbnails')
-    .populate('attachments')
-    .exec();
-
-  if (item === null) {
+    });
+  } else {
     return res.status(404).json({
       item: null,
       error: { status: 404, userMessage: 'Item does not exist' }
     });
   }
-
-  const folderHierarchy = await getFolderHierarchy(item.folder);
-
-  return res.status(200).json({
-    item: {
-      ...item._doc,
-      folderHierarchy: folderHierarchy
-    }
-  });
 }
 
 /**
@@ -245,7 +253,7 @@ async function updateItem(req, res) {
  * @param {Object} req Request object
  * @param {Object} res Response object
  * @param {Object} req.params Request parameters
- * @param {Object} req.params.itemId Item ID of the item to be deleted
+ * @param {Object} req.params.itemId ID of the item to be deleted
  */
 async function deleteItem(req, res) {
   const itemId = req.params.itemId;
@@ -272,59 +280,10 @@ async function deleteItem(req, res) {
     .json({ itemId: deletedItem.id, folderHierarchy: folderHierarchy });
 }
 
-async function generateItemData(
-  name,
-  category,
-  condition,
-  properties,
-  templateThumbnails,
-  fileThumbnails,
-  templateAttachments,
-  fileAttachments
-) {
-  try {
-    /**
-     * Ensure that an array is passed to the Item's properties field since it is
-     * possible that req.body.properties is not an array but a single value
-     */
-    const processedProperties = properties || [];
-
-    const processedTemplateThumbnails = templateThumbnails || [];
-    const processedNewThumbnails = fileThumbnails
-      ? await extractIdsFromNewFiles('thumbnail', fileThumbnails)
-      : [];
-    const processedThumbnails = processedTemplateThumbnails.concat(
-      processedNewThumbnails
-    );
-
-    const processedTemplateAttachments = templateAttachments || [];
-    const processedNewAttachments = fileAttachments
-      ? await extractIdsFromNewFiles('attachment', fileAttachments)
-      : [];
-    const processedAttachments = processedTemplateAttachments.concat(
-      processedNewAttachments
-    );
-
-    const item = {
-      name: name || '',
-      category: category || '',
-      condition: condition || '',
-      thumbnails: processedThumbnails,
-      properties: processedProperties,
-      attachments: processedAttachments
-    };
-
-    return item;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 module.exports = {
   getItems,
   getItem,
   createItem,
   updateItem,
-  deleteItem,
-  generateItemData
+  deleteItem
 };

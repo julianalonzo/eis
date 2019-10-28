@@ -1,47 +1,31 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Item = require('./item');
-
 const templateSchema = new Schema({
   name: {
     type: String,
     isRequired: true
   },
   description: {
-    type: String
+    type: String,
+    default: ''
   },
   item: {
-    name: {
-      type: String,
-      isRequired: true
-    },
-    category: {
-      type: String
-    },
-    condition: {
-      type: String
-    },
-    thumbnails: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'File'
-      }
-    ],
-    properties: [
-      { name: { type: String, isRequired: true }, value: { type: String } }
-    ],
-    attachments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'File'
-      }
-    ]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Item',
+    isRequired: true
   },
   shown: {
     type: Boolean,
-    isRequired: true
+    default: true,
+    select: false
   }
+});
+
+templateSchema.index({
+  _id: 'text',
+  name: 'text',
+  description: 'text'
 });
 
 module.exports = mongoose.model('Template', templateSchema);

@@ -8,20 +8,20 @@ const Folder = require('../models/folder');
  * Validates whether the folder and _id query params are valid object IDs
  */
 const getItemsValidator = [
-  query('folder').custom(value => {
-    if (value === undefined) {
-      return true;
-    } else if (!mongoose.Types.ObjectId.isValid(value)) {
-      throw new Error(`Folder ID "${value}" is not a valid ObjectId`);
-    }
-
-    return true;
-  }),
   query('_id').custom(value => {
     if (value === undefined) {
       return true;
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`ID "${value}" is not a valid ObjectId`);
+    }
+
+    return true;
+  }),
+  query('folder').custom(value => {
+    if (value === undefined) {
+      return true;
+    } else if (!mongoose.Types.ObjectId.isValid(value)) {
+      throw new Error(`Folder ID "${value}" is not a valid ObjectId`);
     }
 
     return true;
@@ -68,6 +68,17 @@ async function isFileFound(type, file) {
 const createItemValidator = body('item').custom(async value => {
   await validateItemCreate(value);
 
+  const item = JSON.parse(value);
+
+  const folder = item.folder || '';
+  if (folder.trim() === '') {
+    throw new Error('Folder is required');
+  } else if (!mongoose.Types.ObjectId.isValid(folder)) {
+    throw new Error(`Folder ${folder} is not a valid Object ID`);
+  } else if (!(await isFolderFound(folder))) {
+    throw new Error(`Folder ${folder} was not found`);
+  }
+
   return true;
 });
 
@@ -85,45 +96,16 @@ const updateItemValidator = [
     return true;
   }),
   body('item').custom(async value => {
-    let item;
-
     // Ignore if item is not in request body
     if (!Boolean(value)) {
       return true;
     }
 
-    try {
-      item = JSON.parse(value);
-    } catch (err) {
-      throw new Error('Item must be JSON');
-    }
+    await validateItemUpdate(value);
 
-    const name = item.name !== undefined ? '' + item.name.trim() : undefined;
-    if (name !== undefined) {
-      if (name.trim() === '') {
-        throw new Error('Item name is required');
-      }
-    }
-
-    const thumbnails = item.thumbnails || [];
-    await validateThumbnails(thumbnails);
-
-    const properties = item.properties || [];
-    await validateProperties(properties);
-
-    const attachments = item.attachments || [];
-    await validateAttachments(attachments);
-
-    const notes = item.notes || [];
-    for (const note of notes) {
-      if (note.content.trim() === '') {
-        throw new Error('A note must not be empty');
-      }
-    }
-
-    const folder = item.folder;
+    const { folder } = JSON.parse(value);
     if (folder !== undefined) {
-      if (folder.trim() === '') {
+      if (('' + folder).trim() === '') {
         throw new Error('Folder is required');
       } else if (!mongoose.Types.ObjectId.isValid(folder)) {
         throw new Error(`Folder ${folder} is not a valid Object ID`);
@@ -247,18 +229,45 @@ async function validateItemCreate(value) {
       throw new Error('A note must not be empty');
     }
   }
+}
 
-  const isTemplate = item.isTemplate || false;
-  const folder = item.folder || '';
-  if (!isTemplate) {
-    if (folder.trim() === '') {
-      throw new Error('Folder is required');
-    } else if (!mongoose.Types.ObjectId.isValid(folder)) {
-      throw new Error(`Folder ${folder} is not a valid Object ID`);
-    } else if (!(await isFolderFound(folder))) {
-      throw new Error(`Folder ${folder} was not found`);
+/**
+ * Validate an item object for update
+ * @param {string} value Item that will be parsed to JSON and validated
+ */
+async function validateItemUpdate(value) {
+  let item;
+
+  try {
+    item = JSON.parse(value);
+  } catch (err) {
+    throw new Error('Item must be JSON');
+  }
+
+  const name = item.name !== undefined ? '' + item.name.trim() : undefined;
+  if (name !== undefined) {
+    if (name.trim() === '') {
+      throw new Error('Item name is required');
     }
   }
+
+  const thumbnails = item.thumbnails || [];
+  await validateThumbnails(thumbnails);
+
+  const properties = item.properties || [];
+  await validateProperties(properties);
+
+  const attachments = item.attachments || [];
+  await validateAttachments(attachments);
+
+  const notes = item.notes || [];
+  for (const note of notes) {
+    if (note.content.trim() === '') {
+      throw new Error('A note must not be empty');
+    }
+  }
+
+  return true;
 }
 
 module.exports = {
@@ -266,5 +275,7 @@ module.exports = {
   getItemValidator,
   createItemValidator,
   updateItemValidator,
-  deleteItemValidator
+  deleteItemValidator,
+  validateItemCreate,
+  validateItemUpdate
 };

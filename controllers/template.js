@@ -1,143 +1,292 @@
-const { generateItemData } = require('./item');
+const mongoose = require('mongoose');
+const { validationResult } = require('express-validator');
 
-const { extractIdsFromNewFiles } = require('./file');
-
+const Item = require('../models/item');
 const Template = require('../models/template');
 
-async function getTemplates(req, res, next) {
-  try {
-    const templates = await Template.find({ shown: true }).populate(
-      'item.thumbnails'
-    );
+const { saveFiles } = require('./file');
 
-    res.status(200).json({ templates: templates });
-  } catch (err) {
-    console.log(err);
+/**
+ * Gets all shown or searched/filtered templates
+ * @param {Object} req Request object
+ * @param {Object} req.query Request queries
+ * @param {string} req.query.search Request query parameter for full-text search
+ * @param {Object} res Response object
+ */
+async function getTemplates(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
-}
 
-async function getTemplate(req, res, next) {
-  try {
-    const templateId = req.params.templateId || '';
+  let templates = [];
 
-    const template = await Template.findOne({ _id: templateId, shown: true })
+  const searchQuery = req.query.search || '';
+  if (Boolean(searchQuery)) {
+    templates = await Template.find(
+      {
+        $text: { $search: searchQuery },
+        shown: true
+      },
+      { score: { $meta: 'textScore' } }
+    )
+      .sort({ score: { $meta: 'textScore' } })
+      .populate('item')
       .populate('item.thumbnails')
       .populate('item.attachments')
       .exec();
+  } else {
+    templates = await Template.find({ ...req.query, shown: true })
+      .populate('item')
+      .populate('item.thumbnails')
+      .populate('item.attachments')
+      .exec();
+  }
 
-    res.status(200).json({ template: template });
-  } catch (err) {
-    console.log(err);
+  if (templates.length > 0) {
+    return res.status(200).json({ templates: templates });
+  } else {
+    return res.status(404).json({ templates: [] });
   }
 }
 
-async function createTemplate(req, res, next) {
-  // @TODO: Add validation
+/**
+ * Get a template based on the id provided
+ * @param {Object} req Request object
+ * @param {Object} req.params Request parameters
+ * @param {mongoose.SchemaTypes.ObjectId} req.params.templateId ID of the template to be fetched (required)
+ * @param {Object} res Response object
+ */
+async function getTemplate(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
 
-  try {
-    const templateName = req.body.name || '';
-    const templateDescription = req.body.description || '';
-    const itemName = req.body.itemName || '';
-    const itemCategory = req.body.itemCategory || '';
-    const itemCondition = req.body.itemCondition || '';
-    const properties = req.body.properties
-      ? JSON.parse(req.body.properties)
-      : [];
-    const fileThumbnails = req.files.fileThumbnails || [];
-    const fileAttachments = req.files.fileAttachments || [];
+  const templateId = req.params.templateId;
+  const template = await Template.findOne({ _id: templateId, shown: true })
+    .populate('item')
+    .populate('item.thumbnails')
+    .populate('item.attachments')
+    .exec();
 
-    const itemData = await generateItemData(
-      itemName,
-      itemCategory,
-      itemCondition,
-      properties,
-      [],
-      fileThumbnails,
-      [],
-      fileAttachments
-    );
-
-    const template = new Template({
-      name: templateName,
-      description: templateDescription,
-      item: {
-        name: itemData.name,
-        category: itemData.category,
-        condition: itemData.condition,
-        thumbnails: itemData.thumbnails,
-        attachments: itemData.attachments,
-        properties: itemData.properties
-      },
-      shown: true
+  if (Boolean(template)) {
+    return res.status(200).json({ template: template });
+  } else {
+    return res.status(404).json({
+      template: null,
+      error: { status: 404, userMessage: 'Template does not exist' }
     });
-
-    const savedTemplate = await template.save();
-
-    res.status(201).json({ template: savedTemplate });
-  } catch (err) {
-    console.log(err);
   }
 }
 
-async function updateTemplate(req, res, next) {
-  // @TODO Add validation
+/**
+ * Creates a new template
+ * @param {Object} req Request object
+ * @param {Object} req.body Request body
+ * @param {Object} req.body.template Template to be added
+ * @param {string} req.body.template.name Name of the template (required)
+ * @param {string} req.body.template.description Describes the template
+ * @param {Object} req.body.template.item Item to be added
+ * @param {string} req.body.template.item.name Name of the item (required)
+ * @param {string} req.body.template.item.category Category of the item
+ * @param {string} req.body.template.item.condition Condition of the item
+ * @param {Object[]} req.body.item.properties Properties of an item
+ * @param {string} req.body.item.properties[].name Name of the property (required)
+ * @param {string} req.body.item.properties[].value Value of the property
+ * @param {Object} req.files Request files (handled by multer)
+ * @param {File[]} req.files.newThumbnails Newly uploaded thumbnails for the template
+ * @param {File[]} req.files.newAttachments Newly uploaded attachments for the template
+ * @param {Object} res Response object
+ */
+async function createTemplate(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
 
-  try {
-    const templateId = req.params.templateId;
-    const templateName = req.body.templateName;
-    const templateDescription = req.body.templateDescription;
-    const item = JSON.parse(req.body.item);
+  const {
+    name: templateName,
+    description,
+    item: { name: itemName, category, condition, properties }
+  } = req.body.template;
 
-    const newThumbnails = req.files.fileThumbnails
-      ? await extractIdsFromNewFiles('thumbnail', req.files.fileThumbnails)
-      : undefined;
+  const { newThumbnails, newAttachments } = req.files;
 
-    const newAttachments = req.files.fileAttachments
-      ? await extractIdsFromNewFiles('attachment', req.files.fileAttachments)
-      : undefined;
+  const newThumbnailsIds = await saveFiles('thumbnail', newThumbnails || []);
+  const newAttachmentsIds = await saveFiles('attachment', newAttachments || []);
+
+  const savedItem = await new Item({
+    name: itemName,
+    category: category,
+    condition: condition,
+    thumbnails: newThumbnailsIds,
+    properties: properties,
+    attachments: newAttachmentsIds,
+    notes: [],
+    folder: null,
+    isTemplate: true
+  }).save();
+
+  const savedTemplate = await new Template({
+    name: templateName,
+    description: description,
+    item: savedItem.id
+  }).save();
+
+  const template = await savedTemplate
+    .populate({
+      path: 'item',
+      populate: [
+        {
+          path: 'thumbnails',
+          model: 'File'
+        },
+        {
+          path: 'attachments',
+          model: 'File'
+        }
+      ]
+    })
+    .execPopulate();
+
+  return res.status(201).json({ template: template });
+}
+
+/**
+ * Updates a new template
+ * @param {Object} req Request object
+ * @param {Object} req.body Request body
+ * @param {Object} req.body.template Template to be updated
+ * @param {string} req.body.template.name Name of the template
+ * @param {string} req.body.template.description Describes the template
+ * @param {Object} req.body.template.item Item to be updated
+ * @param {string} req.body.template.item.name Name of the item
+ * @param {string} req.body.template.item.category Category of the item
+ * @param {string} req.body.template.item.condition Condition of the item
+ * @param {Object[]} req.body.item.properties Properties of an item
+ * @param {string} req.body.item.properties[].name Name of the property
+ * @param {string} req.body.item.properties[].value Value of the property
+ * @param {Object} req.files Request files (handled by multer)
+ * @param {File[]} req.files.newThumbnails Newly uploaded thumbnails for the template
+ * @param {File[]} req.files.newAttachments Newly uploaded attachments for the template
+ * @param {Object} res Response object
+ */
+async function updateTemplate(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const templateId = req.params.templateId;
+  const { name: templateName, description, item } = req.body.template;
+
+  const template = await Template.findById(templateId);
+
+  if (template !== null) {
+    let newThumbnailsIds;
+    let newAttachmentsIds;
+    if (req.files) {
+      const { newThumbnails, newAttachments } = req.files;
+
+      newThumbnailsIds = newThumbnails
+        ? await saveFiles('thumbnail', newThumbnails)
+        : undefined;
+      newAttachmentsIds = newAttachments
+        ? await saveFiles('attachment', newAttachments)
+        : undefined;
+    }
 
     await Template.updateOne(
       { _id: templateId },
-      { name: templateName, description: templateDescription, item: item },
+      { name: templateName, description: description },
       { omitUndefined: true }
     );
 
-    await Template.updateOne(
-      { _id: templateId },
+    await Item.updateOne(
+      { _id: template.item },
       {
-        $addToSet: {
-          'item.thumbnails': newThumbnails,
-          'item.attachments': newAttachments
+        $set: {
+          _id: template.item,
+          ...item
         }
       },
       { omitUndefined: true }
     );
 
-    const template = await Template.findById(templateId)
-      .populate('item.thumbnails')
-      .populate('item.attachments')
+    await Item.updateOne(
+      { _id: template.item },
+      {
+        $addToSet: {
+          thumbnails: newThumbnailsIds,
+          attachments: newAttachmentsIds
+        }
+      },
+      { omitUndefined: true }
+    );
+
+    const updatedTemplate = await Template.findById(templateId)
+      .populate({
+        path: 'item',
+        populate: [
+          {
+            path: 'thumbnails',
+            model: 'File'
+          },
+          {
+            path: 'attachments',
+            model: 'File'
+          }
+        ]
+      })
       .exec();
 
-    res.status(200).json({
-      template: template
+    return res.status(200).json({
+      template: updatedTemplate
     });
-  } catch (err) {
-    console.log(err);
+  } else {
+    return res.status(404).json({
+      template: null,
+      error: { status: 404, userMessage: 'Template does not exist' }
+    });
   }
 }
 
-async function removeTemplate(req, res, next) {
-  // @TODO Add validation
-
-  try {
-    const templateId = req.params.templateId;
-
-    await Template.updateOne({ _id: templateId }, { $set: { shown: false } });
-
-    res.status(200).json({ templateId: templateId });
-  } catch (err) {
-    console.log(err);
+/**
+ * Permanently deletes the template
+ * @param {Object} req Request object
+ * @param {Object} res Response object
+ * @param {Object} req.params Request parameters
+ * @param {Object} req.params.templateId ID of the template to be deleted
+ */
+async function deleteTemplate(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
+
+  const templateId = req.params.templateId;
+
+  const template = await Template.findById(templateId);
+
+  if (template === null) {
+    return res.status(404).json({
+      templateId: null,
+      error: {
+        status: 404,
+        userMessage: 'Template does not exist'
+      }
+    });
+  }
+
+  const templateItemId = template.item;
+
+  template.remove();
+  await template.save();
+
+  await Item.findOneAndDelete({ _id: templateItemId });
+
+  return res.status(200).json({ templateId: templateId });
 }
 
 module.exports = {
@@ -145,5 +294,5 @@ module.exports = {
   getTemplate,
   createTemplate,
   updateTemplate,
-  removeTemplate
+  deleteTemplate
 };
