@@ -4,15 +4,18 @@ const Schema = mongoose.Schema;
 const itemSchema = new Schema({
   name: {
     type: String,
-    isRequired: true
+    isRequired: true,
+    trim: true
   },
   category: {
     type: String,
-    default: ''
+    default: '',
+    trim: true
   },
   condition: {
     type: String,
-    default: ''
+    default: '',
+    trim: true
   },
   thumbnails: [
     {
@@ -24,11 +27,13 @@ const itemSchema = new Schema({
     {
       name: {
         type: String,
-        isRequired: true
+        isRequired: true,
+        trim: true
       },
       value: {
         type: String,
-        default: ''
+        default: '',
+        trim: true
       }
     }
   ],
@@ -42,7 +47,8 @@ const itemSchema = new Schema({
     {
       content: {
         type: String,
-        isRequired: true
+        isRequired: true,
+        trim: true
       },
       datePosted: {
         type: Date,

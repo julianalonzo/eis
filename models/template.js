@@ -4,11 +4,13 @@ const Schema = mongoose.Schema;
 const templateSchema = new Schema({
   name: {
     type: String,
-    isRequired: true
+    isRequired: true,
+    trim: true
   },
   description: {
     type: String,
-    default: ''
+    default: '',
+    trim: true
   },
   item: {
     type: mongoose.Schema.Types.ObjectId,
