@@ -1,18 +1,48 @@
 const express = require('express');
 const router = express.Router();
 
+const {
+  getFoldersValidator,
+  getFolderValidator,
+  createFolderValidator,
+  updateFolderValidator,
+  deleteFolderValidator
+} = require('../validators/folder');
+
 const foldersController = require('../controllers/folder');
 
-router.get('/', foldersController.getFolders);
+/**
+ * GET /api/folders
+ * Gets all shown or searched/filtered folders in the collection
+ */
+router.get('/', getFoldersValidator, foldersController.getFolders);
 
-router.get('/:folderId', foldersController.getFolder);
+/**
+ * GET /api/folders/{folderId}
+ * Gets a folder based on the id provided
+ */
+router.get('/:folderId', getFolderValidator, foldersController.getFolder);
 
-router.post('/', foldersController.createFolder);
+/**
+ * POST /api/folders
+ * Creates a new folder
+ */
+router.post('/', createFolderValidator, foldersController.createFolder);
 
-router.put('/:folderId', foldersController.updateFolder);
+/**
+ * PUT /api/folders
+ * Updates a folder
+ */
+router.put('/:folderId', updateFolderValidator, foldersController.updateFolder);
 
-router.post('/:folderId', foldersController.createFolder);
-
-router.delete('/:folderId', foldersController.removeFolder);
+/**
+ * DELETE /api/folders
+ * Permanently deletes a folder
+ */
+router.delete(
+  '/:folderId',
+  deleteFolderValidator,
+  foldersController.deleteFolder
+);
 
 module.exports = router;

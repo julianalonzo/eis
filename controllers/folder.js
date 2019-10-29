@@ -1,39 +1,88 @@
+const { validationResult } = require('express-validator');
+
 const Item = require('../models/item');
 const Folder = require('../models/folder');
 
-async function getFolders(req, res, next) {
-  try {
-    const folders = await Folder.find({ shown: true });
-
-    res.status(200).json({ folders: folders });
-  } catch (err) {
-    console.log(err);
+/**
+ * Gets all shown or searched/filtered folders in the collection
+ * @param {Object} req Request object
+ * @param {Object} req.query Request queries
+ * @param {string} req.query.search Request query parameter for full-text search
+ * @param {Object} res Response object
+ */
+async function getFolders(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
+
+  let folders = [];
+
+  const searchQuery = req.query.search || '';
+  if (Boolean(searchQuery)) {
+    folders = await Folder.find(
+      {
+        $text: { $search: searchQuery },
+        shown: true
+      },
+      {
+        score: { $meta: 'textScore' }
+      }
+    ).sort({ score: { $meta: 'textScore' } });
+  } else {
+    folders = await Folder.find({ ...req.query, shown: true });
+  }
+
+  if (folders.length === 0) {
+    return res.status(404).json({ folders: [] });
+  }
+
+  return res.status(200).json({ folders: folders });
 }
 
-async function getFolder(req, res, next) {
-  try {
-    const { folderId } = req.params;
+/**
+ * Gets a folder based on the id provided
+ * @param {Object} req Request object
+ * @param {Object} req.params Request parameters
+ * @param {mongoose.SchemaTypes.ObjectId} req.params.folderId ID of the folder to be fetched (required)
+ * @param {Object} res Response object
+ */
+async function getFolder(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
 
-    const currentFolder = await Folder.findById(folderId);
-    const children = await findImmediateChildren(folderId);
-    const folderHierarchy = await getFolderHierarchy(folderId);
+  const { folderId } = req.params;
 
-    res.status(200).json({
-      folder: {
-        _id: currentFolder._id,
-        name: currentFolder.name,
-        parent: currentFolder.parent,
-        children: children,
-        hierarchy: folderHierarchy
+  const currentFolder = await Folder.findOne({ _id: folderId, shown: true });
+  if (currentFolder === null) {
+    return res.status(404).json({
+      folder: null,
+      error: {
+        status: 404,
+        userMessage: 'Folder does not exist'
       }
     });
-  } catch (err) {
-    console.log(err);
   }
+
+  const children = await findChildren(folderId);
+  const folderHierarchy = await getFolderHierarchy(folderId);
+
+  return res.status(200).json({
+    folder: {
+      ...currentFolder._doc,
+      children: children,
+      hierarchy: folderHierarchy
+    }
+  });
 }
 
-async function findImmediateChildren(folderId) {
+/**
+ * Finds children of a folder
+ * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the parent folder
+ */
+async function findChildren(folderId) {
   const immediateChildren = await Folder.find({
     parent: folderId,
     shown: true
@@ -42,21 +91,25 @@ async function findImmediateChildren(folderId) {
   return immediateChildren;
 }
 
+/**
+ * Generates the folder hierarchy (all parent folders) of a folder
+ * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the last folder
+ */
 async function getFolderHierarchy(folderId) {
   const folderHierarchy = [];
 
-  // Push the first folder (i.e., in the request body) to the folder heirarchy
-  folderHierarchy.push(await Folder.findById(folderId).select('-parent'));
+  let currentFolder = await Folder.findById(folderId);
+  let isFolderHierarchyComplete = currentFolder.parent === null;
 
-  let isFolderHierarchyComplete = false;
-  let currentFolderId = folderId;
+  // Push the first folder to the folder heirarchy
+  folderHierarchy.push(currentFolder);
 
   while (!isFolderHierarchyComplete) {
-    const parentFolder = await findParent(currentFolderId);
+    const parentFolder = await Folder.findById(currentFolder.parent);
+    folderHierarchy.push(parentFolder);
 
-    if (parentFolder !== null) {
-      folderHierarchy.push(parentFolder);
-      currentFolderId = parentFolder.id;
+    if (parentFolder.parent !== null) {
+      currentFolder = parentFolder;
     } else {
       isFolderHierarchyComplete = true;
     }
@@ -65,88 +118,127 @@ async function getFolderHierarchy(folderId) {
   return folderHierarchy.reverse();
 }
 
-async function findParent(folderId) {
-  const folder = await Folder.findById(folderId);
-  const folderParent =
-    (await Folder.findById(folder.parent).select('-parent')) || null;
+/**
+ * Creates a new folder
+ * @param {Object} req Request object
+ * @param {Object} req.body Request body
+ * @param {string} req.body.name Name of the folder (required)
+ * @param {mongoose.SchemaTypes.ObjectId} req.body.parent ID of the parent
+ * @param {Object} res Response object
+ */
+async function createFolder(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
 
-  return folderParent;
+  const { name, parent } = req.body;
+
+  const folder = await new Folder({
+    name: name,
+    parent: Boolean(parent) ? parent : null,
+    shown: true
+  }).save();
+
+  return res.status(201).json({ folder: folder });
 }
 
-async function createFolder(req, res, next) {
-  try {
-    const folderParent = req.params.folderId || null;
-    const folderName = req.body.name || '';
+/**
+ * Updates a folder
+ * @param {Object} req Request object
+ * @param {Object} req.params Request parameters
+ * @param {mongoose.SchemaTypes.ObjectId} req.params.folderId ID of the folder to be updated (required)
+ * @param {Object} req.body Request body
+ * @param {string} req.body.name Name of the folder
+ * @param {mongoose.SchemaTypes.ObjectId} req.body.parent ID of the parent
+ * @param {Object} res Response object
+ */
+async function updateFolder(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
 
-    const folder = new Folder({
-      name: folderName,
-      parent: folderParent,
-      shown: true
+  const { folderId } = req.params;
+  const { name, parent } = req.body;
+
+  const updatedFolder = await Folder.findOneAndUpdate(
+    { _id: folderId },
+    { $set: { name: name, parent: Boolean(parent) ? parent : null } },
+    { new: true, omitUndefined: true, useFindAndModify: false }
+  );
+
+  if (updatedFolder === null) {
+    return res.status(404).json({
+      folder: null,
+      error: {
+        status: 404,
+        userMessage: 'Folder does not exist'
+      }
     });
-    const createdFolder = await folder.save();
-
-    res.status(201).json({ folder: createdFolder });
-  } catch (err) {
-    console.log(err);
   }
+
+  return res.status(200).json({ folder: updatedFolder });
 }
 
-async function updateFolder(req, res, next) {
-  try {
-    const { folderId } = req.params;
-    const { name, parent } = req.body;
-
-    const updatedFolder = await Folder.findOneAndUpdate(
-      { _id: folderId },
-      { $set: { name: name, parent: Boolean(parent) ? parent : null } },
-      { new: true, useFindAndModify: false }
-    );
-
-    res.status(200).json({ folder: updatedFolder });
-  } catch (err) {
-    console.log(err);
+/**
+ * Permanently deletes a folder and all of its children and items
+ * @param {Object} req Request object
+ * @param {Object} req.params Request parameters
+ * @param {mongoose.SchemaTypes.ObjectId} req.params.folderId ID of the folder to be deleted (required)
+ * @param {Object} res Response object
+ */
+async function deleteFolder(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
-}
 
-async function removeFolder(req, res, next) {
   const folderId = req.params.folderId;
 
-  try {
-    if (folderId) {
-      const folderChildren = await findAllChildren(folderId);
-
-      let removedFoldersIds = [];
-      let removedItemsIds = [];
-      for (const folderChild of folderChildren) {
-        const clearedFolder = await clearFolder(folderChild.id);
-
-        removedFoldersIds = removedFoldersIds.concat(clearedFolder.folderId);
-        removedItemsIds = removedItemsIds.concat(clearedFolder.removedItems);
+  const folder = await Folder.findById(folderId);
+  if (folder === null) {
+    return res.status(404).json({
+      removedFoldersIds: [],
+      removedItemsIds: [],
+      error: {
+        status: 404,
+        userMessage: 'Folder does not exist'
       }
-
-      const clearedParentFolder = await clearFolder(folderId);
-      removedFoldersIds = removedFoldersIds.concat(
-        clearedParentFolder.folderId
-      );
-      removedItemsIds = removedItemsIds.concat(
-        clearedParentFolder.removedItems
-      );
-
-      res.status(200).json({
-        removedFoldersIds: removedFoldersIds,
-        removedItemsIds: removedItemsIds
-      });
-    }
-  } catch (err) {
-    console.log(err);
+    });
   }
+
+  const folderChildren = await findDescendants(folderId);
+
+  let deletedFoldersIds = [];
+  let deletedItemsIds = [];
+  for (const folderChild of folderChildren) {
+    const clearedFolder = await clearFolder(folderChild.id);
+
+    deletedFoldersIds = deletedFoldersIds.concat(clearedFolder.folderId);
+    deletedItemsIds = deletedItemsIds.concat(clearedFolder.items);
+  }
+
+  const clearedParentFolder = await clearFolder(folderId);
+  deletedFoldersIds = deletedFoldersIds.concat(clearedParentFolder.folderId);
+  deletedItemsIds = deletedItemsIds.concat(clearedParentFolder.items);
+
+  return res.status(200).json({
+    removedFoldersIds: deletedFoldersIds,
+    removedItemsIds: deletedItemsIds
+  });
 }
 
-async function findAllChildren(folderId) {
-  let children = await Folder.find({ parent: folderId, shown: true });
+/**
+ * Finds all descendants of a folder
+ * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the folder (required)
+ * @returns All folder descendants
+ */
+async function findDescendants(folderId) {
+  let children = await Folder.find({ parent: folderId });
 
   for (const childFolder of children) {
-    const childrenOfChildFolder = await findAllChildren(childFolder.id);
+    const childrenOfChildFolder = await findDescendants(childFolder.id);
 
     children = children.concat(childrenOfChildFolder);
   }
@@ -154,29 +246,33 @@ async function findAllChildren(folderId) {
   return children;
 }
 
+/**
+ * Deletes the folder and all items in that folder
+ * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the folder to be cleared (required)
+ * @returns IDs of all deleted folders and items
+ */
 async function clearFolder(folderId) {
-  await Folder.updateOne(
-    { _id: folderId, shown: true },
-    { $set: { shown: false } }
-  );
+  await Folder.deleteOne({ _id: folderId });
 
-  const removedItems = await removeItemsByFolderId(folderId);
+  const deletedItems = await deleteItemsByFolderId(folderId);
 
   return {
     folderId: folderId,
-    removedItems: removedItems
+    items: deletedItems
   };
 }
 
-async function removeItemsByFolderId(folderId) {
-  const folderItems = await Item.find({ folder: folderId, shown: true });
+/**
+ * Deletes all items of a folder
+ * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the folder
+ * @returns IDs of all deleted items
+ */
+async function deleteItemsByFolderId(folderId) {
+  const items = await Item.find({ folder: folderId });
 
-  await Item.updateMany(
-    { folder: folderId, shown: true },
-    { $set: { shown: false } }
-  );
+  await Item.deleteMany({ folder: folderId });
 
-  return folderItems.map(item => item.id);
+  return items.map(item => item.id);
 }
 
 module.exports = {
@@ -185,5 +281,5 @@ module.exports = {
   getFolderHierarchy,
   createFolder,
   updateFolder,
-  removeFolder
+  deleteFolder
 };

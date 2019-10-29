@@ -1,8 +1,9 @@
 const { body, param, query } = require('express-validator');
 const mongoose = require('mongoose');
 
+const { isFolderFound } = require('./folder');
+
 const File = require('../models/file');
-const Folder = require('../models/folder');
 
 /**
  * Validates whether the folder and _id query params are valid object IDs
@@ -130,24 +131,6 @@ const deleteItemValidator = [
     }
   })
 ];
-
-/**
- * Checks whether the folder id is found in the Folder collection
- * @param {mongoose.Types.ObjectId} folderId
- * @returns true when the folder is found, otherwise false
- */
-async function isFolderFound(folderId) {
-  const folder = await Folder.findOne({
-    _id: folderId,
-    shown: true
-  });
-
-  if (folder === null) {
-    return false;
-  }
-
-  return true;
-}
 
 /**
  * Validates thumbnails if they are a valid ObjectId and if they exist in the collection
