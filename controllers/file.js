@@ -2,10 +2,16 @@ const fs = require('fs');
 const path = require('path');
 
 const { saveFileToBucket } = require('../modules/s3_upload');
-const { toArray, parseElementsToJSON } = require('../util/helperFunctions');
+const { toArray } = require('../util/helperFunctions');
 
 const File = require('../models/file');
 
+/**
+ *
+ * @param {string} type Either 'thumbnail' or 'attachment'
+ * @param {[File]} uploadedFiles An array of files from the multer middleware
+ * @returns {[mongoose.Types.ObjectId]} An array of Object ID of the saved files
+ */
 async function saveFiles(type, uploadedFiles) {
   const savedFiles = [];
 
@@ -18,8 +24,12 @@ async function saveFiles(type, uploadedFiles) {
   return savedFiles;
 }
 
-// Function to save a file to the database. The type parameter must be thumbnail
-// or attachment
+/**
+ *
+ * @param {string} type Either 'thumbnail' or 'attachment'
+ * @param {File} uploadedFile File from the multer middleware
+ * @returns {mongoose.Types.ObjectId} Object ID of the saved file
+ */
 async function saveFile(type, uploadedFile) {
   const bucketPath = await saveFileToBucket(uploadedFile);
 
@@ -35,36 +45,11 @@ async function saveFile(type, uploadedFile) {
   const fileTemporaryPath = path.join(__dirname, '..', 'tmp', file.filename);
   fs.unlinkSync(fileTemporaryPath);
 
-  try {
-    const savedFile = await file.save();
+  const savedFile = await file.save();
 
-    return savedFile;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function extractIdsFromExistingFiles(type, existingFiles) {
-  const idsOfExistingFiles = existingFiles
-    ? parseElementsToJSON(existingFiles).map(existingFile => {
-        return existingFile._id;
-      })
-    : [];
-
-  return idsOfExistingFiles;
-}
-
-async function extractIdsFromNewFiles(type, newFiles) {
-  const savedFiles = await saveFiles(type, newFiles);
-
-  const idsOfSavedFiles = savedFiles.map(savedFile => {
-    return savedFile.id;
-  });
-
-  return idsOfSavedFiles;
+  return savedFile._id;
 }
 
 module.exports = {
-  extractIdsFromExistingFiles,
-  extractIdsFromNewFiles
+  saveFiles
 };

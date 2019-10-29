@@ -6,7 +6,7 @@ const fileSchema = new Schema({
   mimetype: { type: String, isRequired: true },
   filename: { type: String, isRequired: true },
   path: { type: String, isRequired: true },
-  type: { type: String, isRequired: true },
+  type: { type: String, isRequired: true, enum: ['thumbnail', 'attachment'] },
   size: { type: Number, isRequired: true },
   dateUploaded: { type: Date, isRequired: true, default: Date.now }
 });
