@@ -55,8 +55,8 @@ async function getFolder(req, res) {
 
   const { folderId } = req.params;
 
-  const currentFolder = await Folder.findOne({ _id: folderId, shown: true });
-  if (currentFolder === null) {
+  const folder = await Folder.findOne({ _id: folderId, shown: true });
+  if (folder === null) {
     return res.status(404).json({
       folder: null,
       error: {
@@ -71,10 +71,39 @@ async function getFolder(req, res) {
 
   return res.status(200).json({
     folder: {
-      ...currentFolder._doc,
+      ...folder._doc,
       children: children,
       hierarchy: folderHierarchy
     }
+  });
+}
+
+async function getFolderItems(req, res) {
+  const { folderId } = req.params;
+
+  const folder = await Folder.findOne({ _id: folderId, shown: true });
+  if (folder === null) {
+    return res.status(404).json({
+      folder: null,
+      items: [],
+      error: {
+        status: 404,
+        userMessage: 'Folder does not exist'
+      }
+    });
+  }
+
+  const children = await findChildren(folderId);
+  const folderHierarchy = await getFolderHierarchy(folderId);
+  const items = await Item.find({ folder: folderId });
+
+  return res.status(200).json({
+    folder: {
+      ...folder._doc,
+      children: children,
+      hierarchy: folderHierarchy
+    },
+    items: items
   });
 }
 
@@ -278,6 +307,7 @@ async function deleteItemsByFolderId(folderId) {
 module.exports = {
   getFolders,
   getFolder,
+  getFolderItems,
   getFolderHierarchy,
   createFolder,
   updateFolder,

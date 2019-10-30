@@ -24,6 +24,16 @@ router.get('/', getFoldersValidator, foldersController.getFolders);
 router.get('/:folderId', getFolderValidator, foldersController.getFolder);
 
 /**
+ * GET /api/folders/{folderId}/items
+ * Gets items of a folder based on the folder id provided
+ */
+router.get(
+  '/:folderId/items',
+  getFolderValidator,
+  foldersController.getFolderItems
+);
+
+/**
  * POST /api/folders
  * Creates a new folder
  */
