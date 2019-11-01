@@ -9,11 +9,7 @@ const {
   createTemplateValidator,
   updateTemplateValidator,
   deleteTemplateValidator
-} = require('../validators/template');
-const {
-  createTemplateSanitizer,
-  updateTemplateSanitizer
-} = require('../sanitizers/template');
+} = require('../validator_sanitizer/template');
 
 const templateController = require('../controllers/template');
 
@@ -44,7 +40,6 @@ router.post(
     { name: 'newAttachments', maxCount: 10 }
   ]),
   createTemplateValidator,
-  createTemplateSanitizer,
   templateController.createTemplate
 );
 
@@ -59,7 +54,6 @@ router.put(
     { name: 'newAttachments', maxCount: 10 }
   ]),
   updateTemplateValidator,
-  updateTemplateSanitizer,
   templateController.updateTemplate
 );
 

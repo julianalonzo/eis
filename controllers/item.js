@@ -103,16 +103,15 @@ async function getItem(req, res) {
  * Creates a new item
  * @param {Object} req Request object
  * @param {Object} req.body Request body
- * @param {Object} req.body.item Item to be added
- * @param {string} req.body.item.name Name of the item (required)
- * @param {string} req.body.item.category Category of the item
- * @param {string} req.body.item.condition Condition of the item
- * @param {mongoose.SchemaTypes.ObjectId[]} req.body.item.thumbnails Thumbnail IDs of an item
- * @param {Object[]} req.body.item.properties Properties of an item
- * @param {string} req.body.item.properties[].name Name of the property (required)
- * @param {string} req.body.item.properties[].value Value of the property
- * @param {mongoose.SchemaTypes.ObjectId[]} req.body.item.attachments Attachment IDs of an item
- * @param {mongoose.SchemaTypes.ObjectId} req.body.item.folder Folder ID that represents where the item is located
+ * @param {string} req.body.name Name of the item (required)
+ * @param {string} req.body.category Category of the item
+ * @param {string} req.body.condition Condition of the item
+ * @param {mongoose.SchemaTypes.ObjectId[]} req.body.thumbnails Thumbnail IDs of an item
+ * @param {Object[]} req.body.properties Properties of an item
+ * @param {string} req.body.properties[].name Name of the property (required)
+ * @param {string} req.body.properties[].value Value of the property
+ * @param {mongoose.SchemaTypes.ObjectId[]} req.body.attachments Attachment IDs of an item
+ * @param {mongoose.SchemaTypes.ObjectId} req.body.folder Folder ID that represents where the item is located
  * @param {Object} req.files Request files (handled by multer)
  * @param {File[]} req.files.newThumbnails Newly uploaded thumbnails for the item
  * @param {File[]} req.files.newAttachments Newly uploaded attachments for the item
@@ -132,7 +131,7 @@ async function createItem(req, res) {
     thumbnails,
     attachments,
     folder
-  } = req.body.item;
+  } = req.body;
 
   const { newThumbnails, newAttachments } = req.files;
 
@@ -143,9 +142,13 @@ async function createItem(req, res) {
     name: name,
     category: category,
     condition: condition,
-    thumbnails: thumbnails.concat(newThumbnailsIds),
+    thumbnails: thumbnails
+      ? thumbnails.concat(newThumbnailsIds)
+      : newThumbnailsIds,
     properties: properties,
-    attachments: attachments.concat(newAttachmentsIds),
+    attachments: attachments
+      ? attachments.concat(newAttachmentsIds)
+      : newAttachmentsIds,
     notes: [],
     folder: folder
   }).save();
@@ -166,16 +169,15 @@ async function createItem(req, res) {
  * Updates an existing item
  * @param {Object} req Request object
  * @param {Object} req.body Request body
- * @param {Object} req.body.item Item to be updated
- * @param {string} req.body.item.name Name of the item
- * @param {string} req.body.item.category Category of the item
- * @param {string} req.body.item.condition Condition of the item
- * @param {mongoose.SchemaTypes.ObjectId[]} req.body.item.thumbnails Thumbnail IDs of an item
- * @param {Object[]} req.body.item.properties Properties of an item
- * @param {string} req.body.item.properties[].name Name of the property
- * @param {string} req.body.item.properties[].value Value of the property
- * @param {mongoose.SchemaTypes.ObjectId[]} req.body.item.attachments Attachment IDs of an item
- * @param {mongoose.SchemaTypes.ObjectId} req.body.item.folder Folder ID that represents where the item is located
+ * @param {string} req.body.name Name of the item
+ * @param {string} req.body.category Category of the item
+ * @param {string} req.body.condition Condition of the item
+ * @param {mongoose.SchemaTypes.ObjectId[]} req.body.thumbnails Thumbnail IDs of an item
+ * @param {Object[]} req.body.properties Properties of an item
+ * @param {string} req.body.properties[].name Name of the property
+ * @param {string} req.body.properties[].value Value of the property
+ * @param {mongoose.SchemaTypes.ObjectId[]} req.body.attachments Attachment IDs of an item
+ * @param {mongoose.SchemaTypes.ObjectId} req.body.folder Folder ID that represents where the item is located
  * @param {Object} req.files Request files (handled by multer)
  * @param {File[]} req.files.newThumbnails Newly uploaded thumbnails for the item
  * @param {File[]} req.files.newAttachments Newly uploaded attachments for the item
@@ -210,7 +212,7 @@ async function updateItem(req, res) {
       {
         $set: {
           _id: itemId,
-          ...req.body.item
+          ...req.body
         }
       },
       { omitUndefined: true }
@@ -276,7 +278,7 @@ async function deleteItem(req, res) {
   const folderHierarchy = await getFolderHierarchy(deletedItem.folder);
 
   return res
-    .status(204)
+    .status(200)
     .json({ itemId: deletedItem.id, folderHierarchy: folderHierarchy });
 }
 

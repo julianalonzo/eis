@@ -31,15 +31,35 @@ async function getTemplates(req, res) {
       { score: { $meta: 'textScore' } }
     )
       .sort({ score: { $meta: 'textScore' } })
-      .populate('item')
-      .populate('item.thumbnails')
-      .populate('item.attachments')
+      .populate({
+        path: 'item',
+        populate: [
+          {
+            path: 'thumbnails',
+            model: 'File'
+          },
+          {
+            path: 'attachments',
+            model: 'File'
+          }
+        ]
+      })
       .exec();
   } else {
     templates = await Template.find({ ...req.query, shown: true })
-      .populate('item')
-      .populate('item.thumbnails')
-      .populate('item.attachments')
+      .populate({
+        path: 'item',
+        populate: [
+          {
+            path: 'thumbnails',
+            model: 'File'
+          },
+          {
+            path: 'attachments',
+            model: 'File'
+          }
+        ]
+      })
       .exec();
   }
 
@@ -64,10 +84,23 @@ async function getTemplate(req, res) {
   }
 
   const templateId = req.params.templateId;
-  const template = await Template.findOne({ _id: templateId, shown: true })
-    .populate('item')
-    .populate('item.thumbnails')
-    .populate('item.attachments')
+  const template = await Template.findOne({
+    _id: templateId,
+    shown: true
+  })
+    .populate({
+      path: 'item',
+      populate: [
+        {
+          path: 'thumbnails',
+          model: 'File'
+        },
+        {
+          path: 'attachments',
+          model: 'File'
+        }
+      ]
+    })
     .exec();
 
   if (Boolean(template)) {
@@ -84,16 +117,14 @@ async function getTemplate(req, res) {
  * Creates a new template
  * @param {Object} req Request object
  * @param {Object} req.body Request body
- * @param {Object} req.body.template Template to be added
- * @param {string} req.body.template.name Name of the template (required)
- * @param {string} req.body.template.description Describes the template
- * @param {Object} req.body.template.item Item to be added
- * @param {string} req.body.template.item.name Name of the item (required)
- * @param {string} req.body.template.item.category Category of the item
- * @param {string} req.body.template.item.condition Condition of the item
- * @param {Object[]} req.body.item.properties Properties of an item
- * @param {string} req.body.item.properties[].name Name of the property (required)
- * @param {string} req.body.item.properties[].value Value of the property
+ * @param {string} req.body.templateName Name of the template (required)
+ * @param {string} req.body.description Describes the template
+ * @param {string} req.body.name Name of the item (required)
+ * @param {string} req.body.category Category of the item
+ * @param {string} req.body.condition Condition of the item
+ * @param {Object[]} req.body.properties Properties of an item
+ * @param {string} req.body.properties[].name Name of the property (required)
+ * @param {string} req.body.properties[].value Value of the property
  * @param {Object} req.files Request files (handled by multer)
  * @param {File[]} req.files.newThumbnails Newly uploaded thumbnails for the template
  * @param {File[]} req.files.newAttachments Newly uploaded attachments for the template
@@ -106,10 +137,15 @@ async function createTemplate(req, res) {
   }
 
   const {
-    name: templateName,
+    templateName,
     description,
-    item: { name: itemName, category, condition, properties }
-  } = req.body.template;
+    name: itemName,
+    category,
+    condition,
+    thumbnails,
+    attachments,
+    properties
+  } = req.body;
 
   const { newThumbnails, newAttachments } = req.files;
 
@@ -120,9 +156,13 @@ async function createTemplate(req, res) {
     name: itemName,
     category: category,
     condition: condition,
-    thumbnails: newThumbnailsIds,
+    thumbnails: thumbnails
+      ? thumbnails.concat(newThumbnailsIds)
+      : newThumbnailsIds,
     properties: properties,
-    attachments: newAttachmentsIds,
+    attachments: attachments
+      ? attachments.concat(newAttachmentsIds)
+      : newAttachmentsIds,
     notes: [],
     folder: null,
     isTemplate: true
@@ -157,16 +197,14 @@ async function createTemplate(req, res) {
  * Updates a new template
  * @param {Object} req Request object
  * @param {Object} req.body Request body
- * @param {Object} req.body.template Template to be updated
- * @param {string} req.body.template.name Name of the template
- * @param {string} req.body.template.description Describes the template
- * @param {Object} req.body.template.item Item to be updated
- * @param {string} req.body.template.item.name Name of the item
- * @param {string} req.body.template.item.category Category of the item
- * @param {string} req.body.template.item.condition Condition of the item
- * @param {Object[]} req.body.item.properties Properties of an item
- * @param {string} req.body.item.properties[].name Name of the property
- * @param {string} req.body.item.properties[].value Value of the property
+ * @param {string} req.body.templateName Name of the template
+ * @param {string} req.body.description Describes the template
+ * @param {string} req.body.name Name of the item
+ * @param {string} req.body.category Category of the item
+ * @param {string} req.body.condition Condition of the item
+ * @param {Object[]} req.body.properties Properties of an item
+ * @param {string} req.body.properties[].name Name of the property
+ * @param {string} req.body.properties[].value Value of the property
  * @param {Object} req.files Request files (handled by multer)
  * @param {File[]} req.files.newThumbnails Newly uploaded thumbnails for the template
  * @param {File[]} req.files.newAttachments Newly uploaded attachments for the template
@@ -179,7 +217,16 @@ async function updateTemplate(req, res) {
   }
 
   const templateId = req.params.templateId;
-  const { name: templateName, description, item } = req.body.template;
+  const {
+    templateName,
+    description,
+    name: itemName,
+    category,
+    condition,
+    thumbnails,
+    attachments,
+    properties
+  } = req.body;
 
   const template = await Template.findById(templateId);
 
@@ -208,7 +255,12 @@ async function updateTemplate(req, res) {
       {
         $set: {
           _id: template.item,
-          ...item
+          name: itemName,
+          category: category,
+          condition: condition,
+          thumbnails: thumbnails,
+          attachments: attachments,
+          properties: properties
         }
       },
       { omitUndefined: true }

@@ -7,7 +7,7 @@ const {
   createFolderValidator,
   updateFolderValidator,
   deleteFolderValidator
-} = require('../validators/folder');
+} = require('../validator_sanitizer/folder');
 
 const foldersController = require('../controllers/folder');
 

@@ -9,12 +9,7 @@ const {
   createItemValidator,
   updateItemValidator,
   deleteItemValidator
-} = require('../validators/item');
-
-const {
-  createItemSanitizer,
-  updateItemSanitizer
-} = require('../sanitizers/item');
+} = require('../validator_sanitizer/item');
 
 const itemController = require('../controllers/item');
 
@@ -41,7 +36,6 @@ router.post(
     { name: 'newAttachments', maxCount: 10 }
   ]),
   createItemValidator,
-  createItemSanitizer,
   itemController.createItem
 );
 
@@ -56,7 +50,6 @@ router.put(
     { name: 'newAttachments', maxCount: 10 }
   ]),
   updateItemValidator,
-  updateItemSanitizer,
   itemController.updateItem
 );
 

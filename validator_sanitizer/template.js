@@ -1,7 +1,7 @@
 const { body, param, query } = require('express-validator');
 const mongoose = require('mongoose');
 
-const { validateItemCreate, validateItemUpdate } = require('./item');
+const { createItemValidator, updateItemValidator } = require('./item');
 
 /**
  * Validator for getting templates
@@ -36,37 +36,18 @@ const getTemplateValidator = [
 /**
  * Validator for creating a template
  */
-const createTemplateValidator = body('template').custom(async value => {
-  let template;
-
-  if (!Boolean(value)) {
-    throw new Error('Template is required');
-  }
-
-  try {
-    template = JSON.parse(value);
-  } catch (err) {
-    throw new Error('Template must be JSON');
-  }
-
-  const name = template.name || '';
-  if (name.trim() === '') {
-    throw new Error('Template name is required');
-  }
-
-  if (!Boolean(template.item)) {
-    throw new Error('Item is required on template');
-  }
-
-  await validateItemCreate(JSON.stringify(template.item));
-
-  const folder = template.item.folder || '';
-  if (('' + folder).trim() !== '') {
-    throw new Error('You may not set a folder for a template item');
-  }
-
-  return true;
-});
+const createTemplateValidator = [
+  body('templateName')
+    .not()
+    .isEmpty({ ignore_whitespace: false })
+    .withMessage('Template name is required')
+    .trim(),
+  ...createItemValidator.slice(0, createItemValidator.length - 1), // Do not include folder field validation
+  body('folder')
+    .not()
+    .exists()
+    .withMessage('You cannot set a folder for a template')
+];
 
 /**
  * Validator for updating a template
@@ -81,39 +62,17 @@ const updateTemplateValidator = [
 
     return true;
   }),
-  body('template').custom(async value => {
-    let template;
-
-    // Ignore if template is not in request body
-    if (!Boolean(value)) {
-      return true;
-    }
-
-    try {
-      template = JSON.parse(value);
-    } catch (err) {
-      throw new Error('Template must be JSON');
-    }
-
-    const name =
-      template.name !== undefined ? ('' + template.name).trim() : undefined;
-    if (name !== undefined) {
-      if (name.trim() === '') {
-        throw new Error('Template name is required');
-      }
-    }
-
-    if (Boolean(template.item)) {
-      const folder = template.item.folder || '';
-      if (('' + folder).trim() !== '') {
-        throw new Error('You may not set a folder for a template item');
-      }
-
-      await validateItemUpdate(JSON.stringify(template.item));
-    }
-
-    return true;
-  })
+  body('templateName')
+    .if(body('templateName').exists())
+    .not()
+    .isEmpty({ ignore_whitespace: false })
+    .withMessage('Template name is required')
+    .trim(),
+  ...updateItemValidator.slice(1, updateItemValidator.length - 1), // Do not include folder field validation
+  body('folder')
+    .not()
+    .exists()
+    .withMessage('You cannot set a folder for a template')
 ];
 
 /**

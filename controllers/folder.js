@@ -78,6 +78,13 @@ async function getFolder(req, res) {
   });
 }
 
+/**
+ * Gets folder items based on the folder id provided
+ * @param {Object} req Request object
+ * @param {Object} req.params Request parameters
+ * @param {mongoose.SchemaTypes.ObjectId} req.params.folderId ID of the folder to be fetched (required)
+ * @param {Object} res Response object
+ */
 async function getFolderItems(req, res) {
   const { folderId } = req.params;
 
@@ -95,56 +102,19 @@ async function getFolderItems(req, res) {
 
   const children = await findChildren(folderId);
   const folderHierarchy = await getFolderHierarchy(folderId);
-  const items = await Item.find({ folder: folderId });
+  const items = await Item.find({ folder: folderId })
+    .populate('thumbnails')
+    .populate('attachments')
+    .exec();
 
   return res.status(200).json({
     folder: {
       ...folder._doc,
       children: children,
-      hierarchy: folderHierarchy
-    },
-    items: items
-  });
-}
-
-/**
- * Finds children of a folder
- * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the parent folder
- */
-async function findChildren(folderId) {
-  const immediateChildren = await Folder.find({
-    parent: folderId,
-    shown: true
-  });
-
-  return immediateChildren;
-}
-
-/**
- * Generates the folder hierarchy (all parent folders) of a folder
- * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the last folder
- */
-async function getFolderHierarchy(folderId) {
-  const folderHierarchy = [];
-
-  let currentFolder = await Folder.findById(folderId);
-  let isFolderHierarchyComplete = currentFolder.parent === null;
-
-  // Push the first folder to the folder heirarchy
-  folderHierarchy.push(currentFolder);
-
-  while (!isFolderHierarchyComplete) {
-    const parentFolder = await Folder.findById(currentFolder.parent);
-    folderHierarchy.push(parentFolder);
-
-    if (parentFolder.parent !== null) {
-      currentFolder = parentFolder;
-    } else {
-      isFolderHierarchyComplete = true;
+      hierarchy: folderHierarchy,
+      items: items
     }
-  }
-
-  return folderHierarchy.reverse();
+  });
 }
 
 /**
@@ -228,8 +198,8 @@ async function deleteFolder(req, res) {
   const folder = await Folder.findById(folderId);
   if (folder === null) {
     return res.status(404).json({
-      removedFoldersIds: [],
-      removedItemsIds: [],
+      deletedFoldersIds: [],
+      deletedItemsIds: [],
       error: {
         status: 404,
         userMessage: 'Folder does not exist'
@@ -253,9 +223,49 @@ async function deleteFolder(req, res) {
   deletedItemsIds = deletedItemsIds.concat(clearedParentFolder.items);
 
   return res.status(200).json({
-    removedFoldersIds: deletedFoldersIds,
-    removedItemsIds: deletedItemsIds
+    deletedFoldersIds: deletedFoldersIds,
+    deletedItemsIds: deletedItemsIds
   });
+}
+
+/**
+ * Finds children of a folder
+ * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the parent folder
+ */
+async function findChildren(folderId) {
+  const immediateChildren = await Folder.find({
+    parent: folderId,
+    shown: true
+  });
+
+  return immediateChildren;
+}
+
+/**
+ * Generates the folder hierarchy (all parent folders) of a folder
+ * @param {mongoose.SchemaTypes.ObjectId} folderId ID of the last folder
+ */
+async function getFolderHierarchy(folderId) {
+  const folderHierarchy = [];
+
+  let currentFolder = await Folder.findById(folderId);
+  let isFolderHierarchyComplete = currentFolder.parent === null;
+
+  // Push the first folder to the folder heirarchy
+  folderHierarchy.push(currentFolder);
+
+  while (!isFolderHierarchyComplete) {
+    const parentFolder = await Folder.findById(currentFolder.parent);
+    folderHierarchy.push(parentFolder);
+
+    if (parentFolder.parent !== null) {
+      currentFolder = parentFolder;
+    } else {
+      isFolderHierarchyComplete = true;
+    }
+  }
+
+  return folderHierarchy.reverse();
 }
 
 /**
