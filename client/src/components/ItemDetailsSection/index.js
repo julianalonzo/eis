@@ -8,7 +8,7 @@ import SectionPaper from '../UI/SectionPaper';
 
 import { Edit as EditIcon } from '@material-ui/icons';
 
-function ItemDetailsSection({ item, onUpdateItem, updatingItem }) {
+function ItemDetailsSection({ item, onUpdate, updating }) {
   const [
     isEditItemDetailsDialogOpen,
     openEditItemDetailsDialogHandler,
@@ -27,13 +27,13 @@ function ItemDetailsSection({ item, onUpdateItem, updatingItem }) {
     }
 
     const modifiedFields = {
-      name: updatedItemData.itemName,
-      category: updatedItemData.itemCategory || '',
-      condition: updatedItemData.itemCondition || '',
+      name: updatedItemData.name,
+      category: updatedItemData.category,
+      condition: updatedItemData.condition,
       thumbnails: thumbnails
     };
 
-    await onUpdateItem(modifiedFields, fileThumbnails, []);
+    await onUpdate(modifiedFields, fileThumbnails, []);
 
     closeEditItemDetailsDialogHandler();
   };
@@ -52,7 +52,7 @@ function ItemDetailsSection({ item, onUpdateItem, updatingItem }) {
         onClose={closeEditItemDetailsDialogHandler}
         item={item}
         onSubmit={updateItemDetailsHandler}
-        submitting={updatingItem}
+        submitting={updating}
       />
     </SectionPaper>
   );

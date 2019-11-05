@@ -10,7 +10,7 @@ import SectionPaper from '../UI/SectionPaper';
 
 import { Add as AddIcon } from '@material-ui/icons';
 
-function AttachmentsSection({ attachments, onUpdateItem, updatingItem }) {
+function AttachmentsSection({ attachments, onUpdate, updating }) {
   const [activeAttachment, setActiveAttachment] = useState({});
 
   const [
@@ -31,7 +31,7 @@ function AttachmentsSection({ attachments, onUpdateItem, updatingItem }) {
   };
 
   const addAttachmentsHandler = async attachments => {
-    await onUpdateItem({}, [], attachments);
+    await onUpdate({}, [], attachments);
 
     closeNewAttachmentsDialogHandler();
   };
@@ -41,7 +41,7 @@ function AttachmentsSection({ attachments, onUpdateItem, updatingItem }) {
       attachment => attachment._id !== attachmentId
     );
 
-    onUpdateItem({ attachments: updatedAttachments }, [], []);
+    onUpdate({ attachments: updatedAttachments }, [], []);
   };
 
   return (
@@ -74,7 +74,7 @@ function AttachmentsSection({ attachments, onUpdateItem, updatingItem }) {
         isOpen={isNewAttachmentsDialogOpen}
         onClose={closeNewAttachmentsDialogHandler}
         onSubmit={addAttachmentsHandler}
-        submitting={updatingItem}
+        submitting={updating}
       />
     </>
   );

@@ -8,7 +8,7 @@ import SectionPaper from '../UI/SectionPaper';
 
 import { Add as AddIcon } from '@material-ui/icons';
 
-function NotesSection({ notes, onUpdateItem, updatingItem }) {
+function NotesSection({ notes, onUpdate, updating }) {
   const [
     isNewNoteDialogOpen,
     openNewNoteDialogHandler,
@@ -18,14 +18,14 @@ function NotesSection({ notes, onUpdateItem, updatingItem }) {
   const addNoteHandler = async content => {
     const updatedNotes = notes.concat({ content: content });
 
-    await onUpdateItem({ notes: updatedNotes }, [], []);
+    await onUpdate({ notes: updatedNotes }, [], []);
     closeNewNoteDialogHandler();
   };
 
   const removeNoteHandler = async noteId => {
     const updatedNotes = notes.filter(note => note._id !== noteId);
 
-    await onUpdateItem({ notes: updatedNotes }, [], []);
+    await onUpdate({ notes: updatedNotes }, [], []);
   };
 
   return (
@@ -40,7 +40,7 @@ function NotesSection({ notes, onUpdateItem, updatingItem }) {
         isOpen={isNewNoteDialogOpen}
         onClose={closeNewNoteDialogHandler}
         onSubmit={addNoteHandler}
-        submitting={updatingItem}
+        submitting={updating}
       />
     </>
   );

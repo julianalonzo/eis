@@ -65,7 +65,7 @@ export default function ItemDetailsForm({
     <Grid container>
       <Grid item xs={12}>
         <Box>
-          <Field name="itemName" validate={isRequired}>
+          <Field name="name" validate={isRequired}>
             {({ input, meta }) => {
               return (
                 <TextField
@@ -80,7 +80,7 @@ export default function ItemDetailsForm({
               );
             }}
           </Field>
-          <Field name="itemCategory">
+          <Field name="category">
             {({ input, meta }) => {
               return (
                 <TextField
@@ -93,7 +93,7 @@ export default function ItemDetailsForm({
               );
             }}
           </Field>
-          <Field name="itemCondition">
+          <Field name="condition">
             {({ input, meta }) => {
               return (
                 <TextField

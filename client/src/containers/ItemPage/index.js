@@ -8,11 +8,11 @@ import AttachmentsSection from '../../components/AttachmentsSection';
 import Breadcrumbs from '../../components/UI/Breadcrumbs';
 import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import NotesSection from '../../components/NotesSection';
 import PropertiesSection from '../../components/PropertiesSection';
 
 import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
-import NotesSection from '../../components/NotesSection';
 
 const useStyles = makeStyles(theme => ({
   sectionGridItem: {
@@ -26,8 +26,7 @@ function ItemPage({
   fetchingItem,
   onResetItem,
   onUpdateItem,
-  updatingItem,
-  folder
+  updatingItem
 }) {
   const classes = useStyles();
 
@@ -35,8 +34,8 @@ function ItemPage({
 
   const updateItemHandler = async (
     modifiedFields,
-    fileThumbnails,
-    fileAttachments
+    newThumbnails,
+    newAttachments
   ) => {
     const updatedItem = {
       ...item,
@@ -58,12 +57,12 @@ function ItemPage({
     formData.append('properties', JSON.stringify(updatedItem.properties));
     formData.append('notes', JSON.stringify(updatedItem.notes));
 
-    for (const fileThumbnail of fileThumbnails) {
-      formData.append('fileThumbnails', fileThumbnail);
+    for (const newThumbnail of newThumbnails) {
+      formData.append('newThumbnails', newThumbnail);
     }
 
-    for (const fileAttachment of fileAttachments) {
-      formData.append('fileAttachments', fileAttachment);
+    for (const newAttachment of newAttachments) {
+      formData.append('newAttachments', newAttachment);
     }
 
     await onUpdateItem(updatedItem._id, formData);
@@ -77,7 +76,7 @@ function ItemPage({
     };
   }, [itemId, onFetchItem, onResetItem]);
 
-  if (fetchingItem) {
+  if (fetchingItem || item === null) {
     return <LoadingIndicator />;
   }
 
@@ -85,7 +84,7 @@ function ItemPage({
     <Grid container spacing={4}>
       <Grid item xs={12}>
         <Breadcrumbs
-          breadcrumbs={folder.hierarchy
+          breadcrumbs={item.folderHierarchy
             .map(folder => {
               return {
                 link: `/folders/${folder._id}`,
@@ -102,22 +101,22 @@ function ItemPage({
           <Grid item xs={12} className={classes.sectionGridItem}>
             <ItemDetailsSection
               item={item}
-              onUpdateItem={updateItemHandler}
-              updatingItem={updatingItem}
+              onUpdate={updateItemHandler}
+              updating={updatingItem}
             />
           </Grid>
           <Grid item xs={12} className={classes.sectionGridItem}>
             <PropertiesSection
               properties={item.properties}
-              onUpdateItem={updateItemHandler}
-              updatingItem={updatingItem}
+              onUpdate={updateItemHandler}
+              updating={updatingItem}
             />
           </Grid>
           <Grid item xs={12} className={classes.sectionGridItem}>
             <AttachmentsSection
               attachments={item.attachments}
-              onUpdateItem={updateItemHandler}
-              updatingItem={updatingItem}
+              onUpdate={updateItemHandler}
+              updating={updatingItem}
             />
           </Grid>
         </Grid>
@@ -125,8 +124,8 @@ function ItemPage({
       <Grid item xs={12} md={8} lg={4}>
         <NotesSection
           notes={item.notes}
-          onUpdateItem={updateItemHandler}
-          updatingItem={updatingItem}
+          onUpdate={updateItemHandler}
+          updating={updatingItem}
         />
       </Grid>
     </Grid>

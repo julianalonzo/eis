@@ -30,9 +30,9 @@ function EditItemDetailsDialogForm({
   useEffect(() => {
     if (isOpen) {
       editItemDetailsForm.initialize({
-        itemName: item.name || '',
-        itemCondition: item.condition || '',
-        itemCategory: item.category || ''
+        name: item.name,
+        condition: item.condition,
+        category: item.category
       });
 
       setThumbnailsForm(item.thumbnails || []);

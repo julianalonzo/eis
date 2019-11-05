@@ -11,7 +11,7 @@ import SectionPaper from '../UI/SectionPaper';
 import { Add as AddIcon } from '@material-ui/icons';
 import NewPropertyDialogForm from './NewPropertyDialogForm';
 
-function PropertiesSection({ properties, onUpdateItem, updatingItem }) {
+function PropertiesSection({ properties, onUpdate, updating }) {
   const [
     propertyMoreActionsAnchorEl,
     onOpenPropertyMoreActions,
@@ -49,7 +49,7 @@ function PropertiesSection({ properties, onUpdateItem, updatingItem }) {
   const addNewPropertyHandler = async property => {
     const updatedProperties = properties.concat(property);
 
-    await onUpdateItem({ properties: updatedProperties }, [], []);
+    await onUpdate({ properties: updatedProperties }, [], []);
 
     closeNewPropertyDialogHandler();
   };
@@ -64,7 +64,7 @@ function PropertiesSection({ properties, onUpdateItem, updatingItem }) {
     const updatedProperties = [...properties];
     updatedProperties[indexOfUpdatedProperty] = updatedProperty;
 
-    await onUpdateItem({ properties: updatedProperties }, [], []);
+    await onUpdate({ properties: updatedProperties }, [], []);
 
     closeEditPropertyDialogHandler();
   };
@@ -74,7 +74,7 @@ function PropertiesSection({ properties, onUpdateItem, updatingItem }) {
       property => property._id !== propertyId
     );
 
-    onUpdateItem({ properties: updatedProperties }, [], []);
+    onUpdate({ properties: updatedProperties }, [], []);
   };
 
   return (
@@ -103,13 +103,13 @@ function PropertiesSection({ properties, onUpdateItem, updatingItem }) {
         isOpen={isNewPropertyDialogOpen}
         onClose={closeNewPropertyDialogHandler}
         onSubmit={addNewPropertyHandler}
-        submitting={updatingItem}
+        submitting={updating}
       />
       <EditPropertyDialogForm
         isOpen={isEditPropertyDialogOpen}
         onClose={closeEditPropertyDialogHandler}
         onSubmit={updatePropertyHandler}
-        submitting={updatingItem}
+        submitting={updating}
         initialValues={propertyOnEdit}
       />
     </>
