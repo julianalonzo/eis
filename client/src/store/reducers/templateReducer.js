@@ -2,25 +2,14 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
 
 const initialState = {
-  templates: [],
+  templates: null,
   creatingTemplate: false,
   updatingTemplate: false,
   removingTemplate: false,
   removingTemplateError: null,
   fetchingTemplates: false,
   fetchingTemplatesErrors: null,
-  template: {
-    name: '',
-    description: '',
-    item: {
-      name: '',
-      description: '',
-      category: '',
-      thumbnails: [],
-      properties: [],
-      attachments: []
-    }
-  },
+  template: null,
   fetchingTemplate: false,
   fetchingTemplateErrors: null
 };
@@ -46,7 +35,7 @@ const fetchTemplatesSuccess = (state, action) => {
 
 const resetTemplates = (state, action) => {
   return updateObject(state, {
-    templates: []
+    templates: null
   });
 };
 
@@ -71,18 +60,7 @@ const fetchTemplateSuccess = (state, action) => {
 
 const resetTemplate = (state, action) => {
   return updateObject(state, {
-    template: {
-      name: '',
-      description: '',
-      item: {
-        name: '',
-        description: '',
-        category: '',
-        thumbnails: [],
-        properties: [],
-        attachments: []
-      }
-    }
+    template: null
   });
 };
 
