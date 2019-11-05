@@ -33,10 +33,6 @@ async function getFolders(req, res) {
     folders = await Folder.find({ ...req.query, shown: true });
   }
 
-  if (folders.length === 0) {
-    return res.status(404).json({ folders: [] });
-  }
-
   return res.status(200).json({ folders: folders });
 }
 
