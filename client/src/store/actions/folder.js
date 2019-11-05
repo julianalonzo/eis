@@ -23,16 +23,23 @@ export const fetchFoldersFail = error => {
 };
 
 export const fetchFolders = () => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(fetchFoldersStart());
-    axios
-      .get('/api/folders')
-      .then(res => {
-        dispatch(fetchFoldersSuccess(res.data.folders));
-      })
-      .catch(error => {
-        dispatch(fetchFoldersFail(error));
-      });
+
+    let response = null;
+    try {
+      response = await axios.get('/api/folders');
+      dispatch(fetchFoldersSuccess(response.data.folders));
+    } catch (error) {
+      response = error;
+      dispatch(fetchFoldersFail(error.response));
+    }
+  };
+};
+
+export const resetFolders = () => {
+  return {
+    type: actionTypes.RESET_FOLDERS
   };
 };
 
@@ -56,30 +63,22 @@ export const fetchFolderFail = error => {
   };
 };
 
+export const resetFolder = () => {
+  return {
+    type: actionTypes.RESET_FOLDER
+  };
+};
+
 export const fetchFolder = folderId => {
   return async dispatch => {
     dispatch(fetchFolderStart());
 
     try {
-      const response = await axios.get(`/api/folders/${folderId}`);
-
+      const response = await axios.get(`/api/folders/${folderId}/items`);
       dispatch(fetchFolderSuccess(response.data.folder));
-    } catch (err) {
-      dispatch(fetchFolderFail(err));
+    } catch (error) {
+      dispatch(fetchFolderFail(error.response));
     }
-  };
-};
-
-export const setFolder = folder => {
-  return {
-    type: actionTypes.SET_FOLDER,
-    folder: folder
-  };
-};
-
-export const resetFolder = () => {
-  return {
-    type: actionTypes.RESET_FOLDER
   };
 };
 
@@ -98,54 +97,87 @@ export const createFolderSuccess = folder => {
 
 export const createFolderFail = error => {
   return {
-    type: actionTypes.CREATE_FOLDER_FAIL
+    type: actionTypes.CREATE_FOLDER_FAIL,
+    error: error
   };
 };
 
-export const createFolder = (name, parentId) => {
+export const createFolder = folder => {
   return async dispatch => {
     dispatch(createFolderStart());
 
     try {
-      const response = await axios.post(`api/folders/${parentId}`, {
-        name: name
-      });
+      const response = await axios.post(`/api/folders`, folder);
       dispatch(createFolderSuccess(response.data.folder));
-    } catch (err) {
-      dispatch(createFolderFail(err));
+    } catch (error) {
+      dispatch(createFolderSuccess(error.response));
     }
   };
 };
 
-export const removeFolderStart = () => {
+export const deleteFolderStart = () => {
   return {
-    type: actionTypes.REMOVE_FOLDER_START
+    type: actionTypes.DELETE_FOLDER_START
   };
 };
 
-export const removeFolderFail = error => {
+export const deleteFolderFail = error => {
   return {
-    type: actionTypes.REMOVE_FOLDER_FAIL
+    type: actionTypes.DELETE_FOLDER_FAIL,
+    error: error
   };
 };
 
-export const removeFolderSuccess = ({ removedFoldersIds, removedItemsIds }) => {
+export const deleteFolderSuccess = ({ deletedFoldersIds, deletedItemsIds }) => {
   return {
-    type: actionTypes.REMOVE_FOLDER_SUCCESS,
-    removedFoldersIds: removedFoldersIds,
-    removedItemsIds: removedItemsIds
+    type: actionTypes.DELETE_FOLDER_SUCCESS,
+    deletedFoldersIds: deletedFoldersIds,
+    deletedItemsIds: deletedItemsIds
   };
 };
 
-export const removeFolder = folderId => {
+export const deleteFolder = folderId => {
   return async dispatch => {
-    dispatch(removeFolderStart());
+    dispatch(deleteFolderStart());
 
     try {
       const response = await axios.delete(`api/folders/${folderId}`);
-      dispatch(removeFolderSuccess(response.data));
-    } catch (err) {
-      dispatch(removeFolderFail(err));
+      dispatch(deleteFolderSuccess(response.data));
+    } catch (error) {
+      dispatch(deleteFolderFail(error.response));
+    }
+  };
+};
+
+export const deleteItemStart = () => {
+  return {
+    type: actionTypes.DELETE_ITEM_START
+  };
+};
+
+export const deleteItemFail = error => {
+  return {
+    type: actionTypes.DELETE_ITEM_FAIL,
+    error: error
+  };
+};
+
+export const deleteItemSuccess = itemId => {
+  return {
+    type: actionTypes.DELETE_ITEM_SUCCESS,
+    itemId: itemId
+  };
+};
+
+export const deleteItem = itemId => {
+  return async dispatch => {
+    dispatch(deleteItemStart());
+
+    try {
+      const response = await axios.delete(`api/items/${itemId}`);
+      dispatch(deleteItemSuccess(response.data.itemId));
+    } catch (error) {
+      dispatch(deleteItemFail(error.response));
     }
   };
 };

@@ -2,42 +2,14 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
 
 const initialState = {
-  items: [],
-  item: {
-    name: '',
-    category: '',
-    condition: '',
-    thumbnails: [],
-    properties: [],
-    attachments: [],
-    notes: []
-  },
+  item: null,
   searchedItems: [],
-  fetchingItems: false,
   searchingItems: false,
   fetchingItem: false,
   creatingItem: false,
-  creatingItemsError: null,
+  createItemError: null,
   updatingItem: false,
-  updatingItemError: null,
-  removingItem: false,
-  removingItemError: null
-};
-
-const fetchItemsStart = (state, action) => {
-  return updateObject(state, { fetchingItems: true });
-};
-
-const fetchItemsSuccess = (state, action) => {
-  return updateObject(state, { items: action.items, fetchingItems: false });
-};
-
-const fetchItemsFail = (state, action) => {
-  return updateObject(state, { fetchingItems: false });
-};
-
-const resetItems = (state, action) => {
-  return updateObject(state, { items: [] });
+  updatingItemError: null
 };
 
 const searchItemsStart = (state, action) => {
@@ -70,41 +42,25 @@ const fetchItemSuccess = (state, action) => {
 const fetchItemFail = (state, action) => {
   return updateObject(state, {
     fetchingItem: false,
-    item: {
-      name: '',
-      category: '',
-      condition: '',
-      thumbnails: [],
-      properties: [],
-      attachments: [],
-      notes: []
-    }
+    item: null
   });
 };
 
 const resetItem = (state, action) => {
   return updateObject(state, {
-    item: {
-      name: '',
-      category: '',
-      condition: '',
-      thumbnails: [],
-      properties: [],
-      attachments: [],
-      notes: []
-    }
+    item: null
   });
 };
 
-const createItemsStart = (state, action) => {
+const createItemStart = (state, action) => {
   return updateObject(state, { creatingItem: true });
 };
 
-const createItemsFail = (state, action) => {
+const createItemFail = (state, action) => {
   return updateObject(state, { creatingItem: false });
 };
 
-const createItemsSuccess = (state, action) => {
+const createItemSuccess = (state, action) => {
   return updateObject(state, {
     creatingItem: false
   });
@@ -130,34 +86,8 @@ const updateItemFail = (state, action) => {
   });
 };
 
-const removeItemStart = (state, action) => {
-  return updateObject(state, { removingItem: true });
-};
-
-const removeItemFail = (state, action) => {
-  return updateObject(state, {
-    removingItem: false,
-    removingItemError: action.error
-  });
-};
-
-const removeItemSuccess = (state, action) => {
-  return updateObject(state, {
-    removingItem: false,
-    items: state.items.filter(item => item._id !== action.itemId)
-  });
-};
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.FETCH_ITEMS_START:
-      return fetchItemsStart(state, action);
-    case actionTypes.FETCH_ITEMS_SUCCESS:
-      return fetchItemsSuccess(state, action);
-    case actionTypes.FETCH_ITEMS_FAIL:
-      return fetchItemsFail(state, action);
-    case actionTypes.RESET_ITEMS:
-      return resetItems(state, action);
     case actionTypes.SEARCH_ITEMS_START:
       return searchItemsStart(state, action);
     case actionTypes.SEARCH_ITEMS_SUCCESS:
@@ -174,24 +104,18 @@ const reducer = (state = initialState, action) => {
       return fetchItemFail(state, action);
     case actionTypes.RESET_ITEM:
       return resetItem(state, action);
-    case actionTypes.CREATE_ITEMS_START:
-      return createItemsStart(state, action);
-    case actionTypes.CREATE_ITEMS_SUCCESS:
-      return createItemsSuccess(state, action);
-    case actionTypes.CREATE_ITEMS_FAIL:
-      return createItemsFail(state, action);
+    case actionTypes.CREATE_ITEM_START:
+      return createItemStart(state, action);
+    case actionTypes.CREATE_ITEM_SUCCESS:
+      return createItemSuccess(state, action);
+    case actionTypes.CREATE_ITEM_FAIL:
+      return createItemFail(state, action);
     case actionTypes.UPDATE_ITEM_START:
       return updateItemStart(state, action);
     case actionTypes.UPDATE_ITEM_SUCCESS:
       return updateItemSuccess(state, action);
     case actionTypes.UPDATE_ITEM_FAIL:
       return updateItemFail(state, action);
-    case actionTypes.REMOVE_ITEM_START:
-      return removeItemStart(state, action);
-    case actionTypes.REMOVE_ITEM_FAIL:
-      return removeItemFail(state, action);
-    case actionTypes.REMOVE_ITEM_SUCCESS:
-      return removeItemSuccess(state, action);
     default:
       return state;
   }

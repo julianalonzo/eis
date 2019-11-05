@@ -1,47 +1,6 @@
 import * as actionTypes from './actionTypes';
-import { setFolder } from './folder';
 
 import axios from 'axios';
-
-export const fetchItemsStart = () => {
-  return {
-    type: actionTypes.FETCH_ITEMS_START
-  };
-};
-
-export const fetchItemsSuccess = items => {
-  return {
-    type: actionTypes.FETCH_ITEMS_SUCCESS,
-    items: items
-  };
-};
-
-export const fetchItemsFail = error => {
-  return {
-    type: actionTypes.FETCH_ITEMS_FAIL,
-    error: error
-  };
-};
-
-export const fetchItems = folderId => {
-  return dispatch => {
-    dispatch(fetchItemsStart());
-    axios
-      .get(`/api/items?folderId=${folderId}`)
-      .then(res => {
-        dispatch(fetchItemsSuccess(res.data.items));
-      })
-      .catch(error => {
-        dispatch(fetchItemsFail(error));
-      });
-  };
-};
-
-export const resetItems = () => {
-  return {
-    type: actionTypes.RESET_ITEMS
-  };
-};
 
 export const searchItemsStart = () => {
   return {
@@ -64,16 +23,15 @@ export const searchItemsFail = error => {
 };
 
 export const searchItems = searchQuery => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(searchItemsStart());
-    axios
-      .get(`/api/items?search=${searchQuery}`)
-      .then(res => {
-        dispatch(searchItemsSuccess(res.data.items));
-      })
-      .catch(error => {
-        dispatch(searchItemsFail(error));
-      });
+
+    try {
+      const response = await axios.get(`/api/items?search=${searchQuery}`);
+      dispatch(searchItemsSuccess(response.data.items));
+    } catch (error) {
+      dispatch(searchItemsFail(error.response));
+    }
   };
 };
 
@@ -109,11 +67,7 @@ export const fetchItem = itemId => {
 
     try {
       const fetchItemResponse = await axios.get(`/api/items/${itemId}`);
-      const fetchFolderResponse = await axios.get(
-        `/api/folders/${fetchItemResponse.data.item.folder}`
-      );
 
-      dispatch(setFolder(fetchFolderResponse.data.folder));
       dispatch(fetchItemSuccess(fetchItemResponse.data.item));
     } catch (err) {
       dispatch(fetchItemFail(err));
@@ -127,34 +81,35 @@ export const resetItem = () => {
   };
 };
 
-export const createItemsStart = () => {
+export const createItemStart = () => {
   return {
-    type: actionTypes.CREATE_ITEMS_START
+    type: actionTypes.CREATE_ITEM_START
   };
 };
 
-export const createItemsSuccess = item => {
+export const createItemSuccess = item => {
   return {
-    type: actionTypes.CREATE_ITEMS_SUCCESS,
+    type: actionTypes.CREATE_ITEM_SUCCESS,
     item: item
   };
 };
 
-export const createItemsFail = error => {
+export const createItemFail = error => {
   return {
-    type: actionTypes.CREATE_ITEMS_FAIL
+    type: actionTypes.CREATE_ITEM_FAIL,
+    error: error
   };
 };
 
-export const createItems = item => {
+export const createItem = item => {
   return async dispatch => {
-    dispatch(createItemsStart());
+    dispatch(createItemStart());
 
     try {
       const response = await axios.post('api/items', item);
-      dispatch(createItemsSuccess(response.data.item));
-    } catch (err) {
-      dispatch(createItemsFail(err));
+      dispatch(createItemSuccess(response.data.item));
+    } catch (error) {
+      dispatch(createItemFail(error.response));
     }
   };
 };
@@ -188,38 +143,6 @@ export const updateItem = (itemId, formData) => {
       dispatch(updateItemSuccess(response.data.item));
     } catch (err) {
       dispatch(updateItemFail(err));
-    }
-  };
-};
-
-export const removeItemStart = () => {
-  return {
-    type: actionTypes.REMOVE_ITEM_START
-  };
-};
-
-export const removeItemFail = error => {
-  return {
-    type: actionTypes.REMOVE_ITEM_FAIL
-  };
-};
-
-export const removeItemSuccess = itemId => {
-  return {
-    type: actionTypes.REMOVE_ITEM_SUCCESS,
-    itemId: itemId
-  };
-};
-
-export const removeItem = itemId => {
-  return async dispatch => {
-    dispatch(removeItemStart());
-
-    try {
-      const response = await axios.delete(`api/items/${itemId}`);
-      dispatch(removeItemSuccess(response.data.itemId));
-    } catch (err) {
-      dispatch(removeItemFail(err));
     }
   };
 };

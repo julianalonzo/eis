@@ -1,21 +1,18 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
-import { createFolderFail } from '../actions/folder';
 
 const initialState = {
-  folders: [],
+  folders: null,
   fetchingFolders: false,
-  folder: {
-    _id: '',
-    name: '',
-    parent: '',
-    children: [],
-    hierarchy: []
-  },
+  folder: null,
   fetchingFolder: false,
+  fetchFolderError: null,
   creatingFolder: false,
-  removingFolder: false,
-  removingFolderError: null
+  createFolderError: null,
+  deletingFolder: false,
+  deleteFolderError: null,
+  deletingItem: false,
+  deleteItemError: null
 };
 
 const fetchFoldersStart = (state, action) => {
@@ -33,6 +30,10 @@ const fetchFoldersFail = (state, action) => {
   return updateObject(state, { fetchingFolders: false });
 };
 
+const resetFolders = (state, action) => {
+  return updateObject(state, { folders: null });
+};
+
 const fetchFolderStart = (state, action) => {
   return updateObject(state, { fetchingFolder: true });
 };
@@ -45,24 +46,15 @@ const fetchFolderSuccess = (state, action) => {
 };
 
 const fetchFolderFail = (state, action) => {
-  return updateObject(state, { fetchingFolder: false });
-};
-
-const setFolder = (state, action) => {
   return updateObject(state, {
-    folder: action.folder
+    fetchingFolder: false,
+    fetchFolderError: action.error
   });
 };
 
 const resetFolder = (state, action) => {
   return updateObject(state, {
-    folder: {
-      _id: '',
-      name: '',
-      parent: '',
-      children: [],
-      hierarchy: []
-    }
+    folder: null
   });
 };
 
@@ -71,41 +63,73 @@ const createFolderStart = (state, action) => {
 };
 
 const createFolderSuccess = (state, action) => {
+  const folders = state.folders || [];
+
   return updateObject(state, {
     creatingFolder: false,
-    folders: state.folders.concat(action.folder),
-    folder: {
-      ...state.folder,
-      children: state.folder.children.concat(action.folder)
-    }
+    folders: folders.concat(action.folder),
+    folder:
+      state.folder !== null
+        ? {
+            ...state.folder,
+            children: state.folder.children.concat(action.folder)
+          }
+        : null
   });
 };
 
-const removeFolderStart = (state, action) => {
-  return updateObject(state, { removingFolder: true });
-};
-
-const removeFolderFail = (state, action) => {
+const createFolderFail = (state, action) => {
   return updateObject(state, {
-    removingFolder: false,
-    removingFolderError: action.error
+    creatingFolder: false,
+    createFolderError: action.error
   });
 };
 
-const removeFolderSuccess = (state, action) => {
-  let updatedFolders = state.folders;
-  for (const removedFolderId of action.removedFoldersIds) {
-    updatedFolders = updatedFolders.filter(
-      folder => folder._id !== removedFolderId
-    );
-  }
+const deleteFolderStart = (state, action) => {
+  return updateObject(state, { deletingFolder: true });
+};
+
+const deleteFolderFail = (state, action) => {
+  return updateObject(state, {
+    deletingFolder: false,
+    deleteFolderError: action.error
+  });
+};
+
+const deleteFolderSuccess = (state, action) => {
+  let updatedFolders = [...state.folders].filter(
+    folder => !action.deletedFoldersIds.includes(folder._id)
+  );
 
   return updateObject(state, {
     removingFolder: false,
     folders: updatedFolders,
+    folder: Boolean(state.folder)
+      ? {
+          ...state.folder,
+          children: updatedFolders.filter(f => f.parent === state.folder._id)
+        }
+      : null
+  });
+};
+
+const deleteItemStart = (state, action) => {
+  return updateObject(state, { deletingItem: true });
+};
+
+const deleteItemFail = (state, action) => {
+  return updateObject(state, {
+    deletingItem: false,
+    deleteItemError: action.error
+  });
+};
+
+const deleteItemSuccess = (state, action) => {
+  return updateObject(state, {
+    deletingItem: false,
     folder: {
       ...state.folder,
-      children: updatedFolders.filter(f => f.parent === state.folder._id)
+      items: state.folder.items.filter(item => item._id !== action.itemId)
     }
   });
 };
@@ -118,14 +142,14 @@ const reducer = (state = initialState, action) => {
       return fetchFoldersSuccess(state, action);
     case actionTypes.FETCH_FOLDERS_FAIL:
       return fetchFoldersFail(state, action);
+    case actionTypes.RESET_FOLDERS:
+      return resetFolders(state, action);
     case actionTypes.FETCH_FOLDER_START:
       return fetchFolderStart(state, action);
     case actionTypes.FETCH_FOLDER_SUCCESS:
       return fetchFolderSuccess(state, action);
     case actionTypes.FETCH_FOLDER_FAIL:
       return fetchFolderFail(state, action);
-    case actionTypes.SET_FOLDER:
-      return setFolder(state, action);
     case actionTypes.RESET_FOLDER:
       return resetFolder(state, action);
     case actionTypes.CREATE_FOLDER_START:
@@ -134,12 +158,18 @@ const reducer = (state = initialState, action) => {
       return createFolderSuccess(state, action);
     case actionTypes.CREATE_FOLDER_FAIL:
       return createFolderFail(state, action);
-    case actionTypes.REMOVE_FOLDER_START:
-      return removeFolderStart(state, action);
-    case actionTypes.REMOVE_FOLDER_FAIL:
-      return removeFolderFail(state, action);
-    case actionTypes.REMOVE_FOLDER_SUCCESS:
-      return removeFolderSuccess(state, action);
+    case actionTypes.DELETE_FOLDER_START:
+      return deleteFolderStart(state, action);
+    case actionTypes.DELETE_FOLDER_FAIL:
+      return deleteFolderFail(state, action);
+    case actionTypes.DELETE_FOLDER_SUCCESS:
+      return deleteFolderSuccess(state, action);
+    case actionTypes.DELETE_ITEM_START:
+      return deleteItemStart(state, action);
+    case actionTypes.DELETE_ITEM_FAIL:
+      return deleteItemFail(state, action);
+    case actionTypes.DELETE_ITEM_SUCCESS:
+      return deleteItemSuccess(state, action);
     default:
       return state;
   }

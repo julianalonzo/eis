@@ -1,13 +1,10 @@
 export {
-  fetchItems,
   fetchItem,
   searchItems,
   resetSearchedItems,
-  createItems,
+  createItem,
   updateItem,
-  resetItems,
-  resetItem,
-  removeItem
+  resetItem
 } from './item';
 
 export {
@@ -22,8 +19,10 @@ export {
 
 export {
   fetchFolders,
+  resetFolders,
   fetchFolder,
   resetFolder,
   createFolder,
-  removeFolder
+  deleteFolder,
+  deleteItem
 } from './folder';

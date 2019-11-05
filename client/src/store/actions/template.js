@@ -23,16 +23,15 @@ export const fetchTemplatesFail = error => {
 };
 
 export const fetchTemplates = () => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(fetchTemplatesStart());
-    axios
-      .get('/api/templates')
-      .then(res => {
-        dispatch(fetchTemplatesSuccess(res.data.templates));
-      })
-      .catch(error => {
-        dispatch(fetchTemplatesFail(error));
-      });
+
+    try {
+      const response = await axios.get('/api/templates');
+      dispatch(fetchTemplatesSuccess(response.data.templates));
+    } catch (error) {
+      dispatch(fetchTemplatesFail(error.response));
+    }
   };
 };
 
@@ -63,16 +62,15 @@ export const fetchTemplateFail = error => {
 };
 
 export const fetchTemplate = templateId => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(fetchTemplateStart());
-    axios
-      .get(`/api/templates/${templateId}`)
-      .then(res => {
-        dispatch(fetchTemplateSuccess(res.data.template));
-      })
-      .catch(error => {
-        dispatch(fetchTemplateFail(error));
-      });
+
+    try {
+      const response = await axios.get(`/api/templates/${templateId}`);
+      dispatch(fetchTemplateSuccess(response.data.template));
+    } catch (error) {
+      dispatch(fetchTemplateFail(error.response));
+    }
   };
 };
 
@@ -97,7 +95,8 @@ export const createTemplateSuccess = template => {
 
 export const createTemplateFail = error => {
   return {
-    type: actionTypes.CREATE_TEMPLATE_FAIL
+    type: actionTypes.CREATE_TEMPLATE_FAIL,
+    error: error
   };
 };
 
