@@ -14,9 +14,8 @@ function NewItemPage({
   onFetchTemplate,
   template,
   fetchingTemplate,
-  fetchingTemplateError,
   onResetTemplate,
-  onCreateItems,
+  onCreateItem,
   creatingItem,
   history,
   match: { params }
@@ -43,61 +42,59 @@ function NewItemPage({
     };
   }, [templateId, onFetchTemplate, onResetTemplate]);
 
-  const createItemsHandler = async itemData => {
+  const createItemHandler = async item => {
     const formData = new FormData();
 
-    formData.append('name', itemData.itemName || '');
-    formData.append('category', itemData.itemCategory || '');
-    formData.append('condition', itemData.itemCondition || '');
+    const {
+      name,
+      category,
+      condition,
+      thumbnails,
+      properties,
+      attachments
+    } = item;
+
+    formData.append('name', name);
+    formData.append('category', category);
+    formData.append('condition', condition);
 
     let templateThumbnails = [];
-    for (const thumbnail of itemData.thumbnails) {
+    for (const thumbnail of thumbnails) {
       if (thumbnail instanceof File) {
-        formData.append('fileThumbnails', thumbnail);
+        formData.append('newThumbnails', thumbnail);
       } else {
         templateThumbnails = templateThumbnails.concat(thumbnail._id);
       }
     }
-    formData.append('templateThumbnails', JSON.stringify(templateThumbnails));
+    formData.append('thumbnails', JSON.stringify(templateThumbnails));
 
-    let properties = [];
-    for (const property of itemData.properties) {
-      properties = properties.concat(property);
-    }
     formData.append('properties', JSON.stringify(properties));
 
     let templateAttachments = [];
-    for (const attachment of itemData.attachments) {
+    for (const attachment of attachments) {
       if (attachment instanceof File) {
-        formData.append('fileAttachments', attachment);
+        formData.append('newAttachments', attachment);
       } else {
         templateAttachments = templateAttachments.concat(attachment._id);
       }
     }
-    formData.append('templateAttachments', JSON.stringify(templateAttachments));
+    formData.append('attachments', JSON.stringify(templateAttachments));
 
     formData.append('folder', folderId);
 
-    await onCreateItems(formData);
+    await onCreateItem(formData);
 
     history.push(`/folders/${folderId}`);
   };
 
-  if (fetchingTemplate) {
+  if (Boolean(templateId) && (fetchingTemplate || template === null)) {
     return <LoadingIndicator />;
   }
 
   return (
     <NewItemForm
-      initialValues={{
-        itemName: template.item.name || '',
-        itemCategory: template.item.category || '',
-        itemCondition: template.item.condition || '',
-        thumbnails: template.item.thumbnails || [],
-        properties: template.item.properties || [],
-        attachments: template.item.attachments || []
-      }}
-      onSubmit={createItemsHandler}
+      initialValues={template ? { ...template.item } : {}}
+      onSubmit={createItemHandler}
       submitting={creatingItem}
     />
   );
@@ -115,7 +112,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchTemplate: templateId => dispatch(actions.fetchTemplate(templateId)),
-    onCreateItems: item => dispatch(actions.createItems(item)),
+    onCreateItem: item => dispatch(actions.createItem(item)),
     onResetTemplate: () => dispatch(actions.resetTemplate())
   };
 };

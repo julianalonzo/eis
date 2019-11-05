@@ -56,8 +56,8 @@ export default function TemplateForm({
     const templateData = {
       ...values,
       properties: values.properties || [],
-      thumbnails: thumbnailsForm || [],
-      attachments: attachmentsForm || []
+      thumbnails: thumbnailsForm,
+      attachments: attachmentsForm
     };
 
     onSubmit(templateData);

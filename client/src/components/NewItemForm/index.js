@@ -32,18 +32,18 @@ export default function NewItemForm({ initialValues, onSubmit, submitting }) {
   const classes = useStyles();
 
   const {
-    itemName,
-    itemCategory,
-    itemCondition,
+    name,
+    category,
+    condition,
     thumbnails,
     properties,
     attachments
   } = initialValues;
 
   const [itemForm] = useItemForm({
-    itemName,
-    itemCategory,
-    itemCondition,
+    name,
+    category,
+    condition,
     properties
   });
 

@@ -66,7 +66,7 @@ function SelectTemplatePage({
     };
   }, [onFetchTemplates, onResetTemplates]);
 
-  if (fetchingTemplates) {
+  if (fetchingTemplates || templates === null) {
     return <LoadingIndicator />;
   }
 
