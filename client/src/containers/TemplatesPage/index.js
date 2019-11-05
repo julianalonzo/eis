@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import usePopperState from '../../hooks/usePopperState';
 
@@ -73,12 +73,12 @@ function TemplatesPage({
     };
   }, [onFetchTemplates, onResetTemplates]);
 
-  if (fetchingTemplates) {
+  if (fetchingTemplates || templates === null) {
     return <LoadingIndicator />;
   }
 
   return (
-    <React.Fragment>
+    <>
       {templates.length > 0 && (
         <Box className={classes.pageHeading}>
           <Box>
@@ -111,7 +111,7 @@ function TemplatesPage({
         onOpenTemplatePage={openTemplatePageHandler}
         onRemoveTemplate={onRemoveTemplate}
       />
-    </React.Fragment>
+    </>
   );
 }
 
@@ -133,4 +133,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(TemplatesPage));
+)(TemplatesPage);
