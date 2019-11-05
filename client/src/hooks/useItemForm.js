@@ -1,11 +1,13 @@
 import { useState } from 'react';
 
 function useItemForm(initialValues) {
+  const { name, category, condition, properties } = initialValues;
+
   const [itemForm, setItemForm] = useState({
-    itemName: initialValues.itemName || '',
-    itemCategory: initialValues.itemCategory || '',
-    itemCondition: initialValues.itemCondition || '',
-    properties: initialValues.properties || []
+    name: name || '',
+    category: category || '',
+    condition: condition || '',
+    properties: properties || []
   });
 
   return [itemForm, setItemForm];
