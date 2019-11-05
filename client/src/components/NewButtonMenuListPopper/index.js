@@ -23,7 +23,7 @@ export default function NewButtonMenuListPopper({
   isOpen,
   anchorEl,
   onClose,
-  currentFolder,
+  isInFolder,
   onOpenSelectTemplatePage,
   onOpenNewFolderDialog
 }) {
@@ -32,10 +32,10 @@ export default function NewButtonMenuListPopper({
   return (
     <MenuListPopper isOpen={isOpen} anchorEl={anchorEl} onClose={onClose}>
       <MenuList className={classes.menuList}>
-        {currentFolder ? (
+        {isInFolder ? (
           <MenuItem
             onClick={() => {
-              onOpenSelectTemplatePage(currentFolder);
+              onOpenSelectTemplatePage();
             }}
           >
             <ItemIcon className={classes.menuItemIcon} />
@@ -44,8 +44,8 @@ export default function NewButtonMenuListPopper({
         ) : null}
         <MenuItem
           onClick={() => {
-            onClose();
             onOpenNewFolderDialog();
+            onClose();
           }}
         >
           <FolderIcon className={classes.menuItemIcon} />

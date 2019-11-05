@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Breadcrumbs from '../UI/Breadcrumbs';
-import Button from '../UI/Button';
+import Breadcrumbs from '../../UI/Breadcrumbs';
+import Button from '../../UI/Button';
 
 import { makeStyles } from '@material-ui/styles';
 import AddIcon from '@material-ui/icons/Add';

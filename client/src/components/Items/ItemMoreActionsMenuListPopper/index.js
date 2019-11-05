@@ -10,8 +10,7 @@ export default function ItemMoreActionsMenuListPopper({
   isOpen,
   anchorEl,
   onClose,
-  currentItem,
-  onRemoveItem
+  onDeleteItem
 }) {
   return (
     <MenuListPopper isOpen={isOpen} anchorEl={anchorEl} onClose={onClose}>
@@ -19,11 +18,11 @@ export default function ItemMoreActionsMenuListPopper({
         <MenuItem
           dense={true}
           onClick={() => {
-            onRemoveItem(currentItem);
+            onDeleteItem();
             onClose();
           }}
         >
-          <Typography variant="body2">Delete Item</Typography>
+          <Typography variant="body2">Delete</Typography>
         </MenuItem>
       </MenuList>
     </MenuListPopper>

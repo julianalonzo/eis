@@ -15,7 +15,6 @@ import TextField from '@material-ui/core/TextField';
 export default function NewFolderDialog({
   isOpen,
   onClose,
-  currentFolder,
   onSubmit,
   submitting
 }) {
@@ -27,16 +26,15 @@ export default function NewFolderDialog({
     }
   }, [isOpen, newFolderForm]);
 
-  const submitHandler = async (name, parentId) => {
-    await onSubmit(name, parentId);
-
+  const submitHandler = async name => {
+    await onSubmit(name);
     onClose();
   };
 
   return (
     <Form
       onSubmit={values => {
-        submitHandler(values.folderName, currentFolder || '');
+        submitHandler(values.name);
       }}
       render={({ handleSubmit, form }) => {
         newFolderForm = form;
@@ -51,7 +49,7 @@ export default function NewFolderDialog({
             >
               <DialogTitle onClose={onClose}>New Folder</DialogTitle>
               <DialogContent>
-                <Field name="folderName" validate={isRequired}>
+                <Field name="name" validate={isRequired}>
                   {({ input, meta }) => {
                     return (
                       <TextField

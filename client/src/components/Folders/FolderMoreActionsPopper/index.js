@@ -10,8 +10,7 @@ export default function FolderMoreActionsPopper({
   isOpen,
   anchorEl,
   onClose,
-  folderId,
-  onRemoveFolder
+  onDeleteFolder
 }) {
   return (
     <MenuListPopper isOpen={isOpen} anchorEl={anchorEl} onClose={onClose}>
@@ -19,7 +18,7 @@ export default function FolderMoreActionsPopper({
         <MenuItem
           dense={true}
           onClick={() => {
-            onRemoveFolder(folderId);
+            onDeleteFolder();
             onClose();
           }}
         >

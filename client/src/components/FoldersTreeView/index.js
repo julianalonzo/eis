@@ -7,7 +7,6 @@ import TreeView from '@material-ui/lab/TreeView';
 export default function FoldersTreeView({
   folders = [],
   onOpenFolder,
-  openedFolders,
   currentFolder
 }) {
   const rootFolders = folders.filter(folder => folder.parent === null);
@@ -17,7 +16,6 @@ export default function FoldersTreeView({
       onNodeToggle={nodeId => {
         onOpenFolder(nodeId);
       }}
-      defaultExpanded={openedFolders}
     >
       {rootFolders.map(rootFolder => {
         return (

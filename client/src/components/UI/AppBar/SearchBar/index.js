@@ -67,7 +67,7 @@ function SearchBar({
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.searchBarPaper}>
+      <Paper className={classes.searchBarPaper} elevation={0}>
         <SearchIcon className={classes.searchIcon} />
         <InputBase
           placeholder="Search item..."
