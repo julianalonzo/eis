@@ -52,10 +52,6 @@ async function getItems(req, res) {
     };
   }
 
-  if (items.length === 0) {
-    return res.status(404).json({ items: [] });
-  }
-
   return res.status(200).json({ items: items });
 }
 
