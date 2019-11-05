@@ -2,36 +2,41 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import TemplateForm from '../../components/TemplateForm';
 
-function NewTemplatePage({ onCreateTemplate, creatingTemplate, history }) {
-  const createTemplateHandler = async templateData => {
+function NewTemplatePage({ onCreateTemplate, creatingTemplate }) {
+  const history = useHistory();
+
+  const createTemplateHandler = async template => {
     const formData = new FormData();
 
-    formData.append('name', templateData.templateName || '');
-    formData.append('description', templateData.templateDescription || '');
+    const {
+      templateName,
+      templateDescription,
+      name,
+      category,
+      condition,
+      thumbnails,
+      properties,
+      attachments
+    } = template;
 
-    formData.append('itemName', templateData.itemName || '');
-    formData.append('itemCategory', templateData.itemCategory || '');
-    formData.append('itemCondition', templateData.itemCondition || '');
+    formData.append('templateName', templateName);
+    formData.append('templateDescription', templateDescription);
 
-    for (const thumbnail of templateData.thumbnails) {
-      formData.append('fileThumbnails', thumbnail);
-    }
+    formData.append('name', name);
+    formData.append('category', category);
+    formData.append('condition', condition);
 
-    let properties = [];
-    for (const property of templateData.properties) {
-      properties = properties.concat({
-        name: property.name,
-        value: property.value ? property.value : ''
-      });
+    for (const thumbnail of thumbnails) {
+      formData.append('newThumbnails', thumbnail);
     }
     formData.append('properties', JSON.stringify(properties));
 
-    for (const attachment of templateData.attachments) {
-      formData.append('fileAttachments', attachment);
+    for (const attachment of attachments) {
+      formData.append('newAttachments', attachment);
     }
 
     await onCreateTemplate(formData);
@@ -64,4 +69,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(NewTemplatePage));
+)(NewTemplatePage);
