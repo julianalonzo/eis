@@ -63,11 +63,7 @@ async function getTemplates(req, res) {
       .exec();
   }
 
-  if (templates.length > 0) {
-    return res.status(200).json({ templates: templates });
-  } else {
-    return res.status(404).json({ templates: [] });
-  }
+  return res.status(200).json({ templates: templates });
 }
 
 /**
@@ -118,7 +114,7 @@ async function getTemplate(req, res) {
  * @param {Object} req Request object
  * @param {Object} req.body Request body
  * @param {string} req.body.templateName Name of the template (required)
- * @param {string} req.body.description Describes the template
+ * @param {string} req.body.templateDescription Describes the template
  * @param {string} req.body.name Name of the item (required)
  * @param {string} req.body.category Category of the item
  * @param {string} req.body.condition Condition of the item
@@ -138,7 +134,7 @@ async function createTemplate(req, res) {
 
   const {
     templateName,
-    description,
+    templateDescription,
     name: itemName,
     category,
     condition,
@@ -170,7 +166,7 @@ async function createTemplate(req, res) {
 
   const savedTemplate = await new Template({
     name: templateName,
-    description: description,
+    description: templateDescription,
     item: savedItem.id
   }).save();
 
@@ -198,7 +194,7 @@ async function createTemplate(req, res) {
  * @param {Object} req Request object
  * @param {Object} req.body Request body
  * @param {string} req.body.templateName Name of the template
- * @param {string} req.body.description Describes the template
+ * @param {string} req.body.templateDescription Describes the template
  * @param {string} req.body.name Name of the item
  * @param {string} req.body.category Category of the item
  * @param {string} req.body.condition Condition of the item
@@ -219,7 +215,7 @@ async function updateTemplate(req, res) {
   const templateId = req.params.templateId;
   const {
     templateName,
-    description,
+    templateDescription,
     name: itemName,
     category,
     condition,
@@ -246,7 +242,7 @@ async function updateTemplate(req, res) {
 
     await Template.updateOne(
       { _id: templateId },
-      { name: templateName, description: description },
+      { name: templateName, description: templateDescription },
       { omitUndefined: true }
     );
 
