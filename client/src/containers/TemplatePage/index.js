@@ -2,86 +2,143 @@ import React, { useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
+import AttachmentsSection from '../../components/AttachmentsSection';
+import ItemDetailsSection from '../../components/ItemDetailsSection';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
-import TemplateForm from '../../components/TemplateForm';
+import PropertiesSection from '../../components/PropertiesSection';
+
+import { Grid, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+
+const useStyles = makeStyles(theme => ({
+  sectionGridItem: {
+    marginBottom: theme.spacing(6)
+  },
+  smallLink: {
+    textDecoration: 'underline',
+    color: theme.palette.text.hint,
+    '&:hover': {
+      color: theme.palette.grey[800],
+      cursor: 'pointer'
+    }
+  }
+}));
 
 function TemplatePage({
   template,
   onFetchTemplate,
   fetchingTemplate,
   onUpdateTemplate,
-  updatingTemplate
+  updatingTemplate,
+  onResetTemplate
 }) {
+  const classes = useStyles();
   const { templateId } = useParams();
-  const history = useHistory();
 
   useEffect(() => {
     onFetchTemplate(templateId);
-  }, [templateId, onFetchTemplate]);
 
-  const updateTemplateHandler = async template => {
-    const formData = new FormData();
+    return () => {
+      onResetTemplate();
+    };
+  }, [templateId, onFetchTemplate, onResetTemplate]);
 
-    formData.append('templateId', templateId);
-    formData.append('templateName', template.templateName || '');
-    formData.append('templateDescription', template.templateDescription || '');
-
-    let thumbnails = [];
-    for (const thumbnail of template.thumbnails) {
-      if (thumbnail instanceof File) {
-        formData.append('fileThumbnails', thumbnail);
-      } else {
-        thumbnails = thumbnails.concat(thumbnail._id);
+  const updateTemplateHandler = async (
+    modifiedFields,
+    newThumbnails,
+    newAttachments
+  ) => {
+    const updatedTemplate = {
+      templateName: modifiedFields.templateName
+        ? modifiedFields.templateName
+        : template.name,
+      templateDescription: modifiedFields.templateDescription
+        ? modifiedFields.templateDescription
+        : template.description,
+      item: {
+        ...template.item,
+        ...modifiedFields
       }
-    }
-
-    let attachments = [];
-    for (const attachment of template.attachments) {
-      if (attachment instanceof File) {
-        formData.append('fileAttachments', attachment);
-      } else {
-        attachments = attachments.concat(attachment._id);
-      }
-    }
-
-    const item = {
-      name: template.itemName || '',
-      category: template.itemCategory || '',
-      condition: template.itemCondition || '',
-      properties: template.properties || [],
-      thumbnails: thumbnails || [],
-      attachments: attachments || []
     };
 
-    formData.append('item', JSON.stringify(item));
+    const formData = new FormData();
+
+    const thumbnailIds = updatedTemplate.item.thumbnails.map(
+      thumbnail => thumbnail._id
+    );
+    const attachmentIds = updatedTemplate.item.attachments.map(
+      attachment => attachment._id
+    );
+
+    formData.append('templateName', updatedTemplate.templateName);
+    formData.append(
+      'templateDescription',
+      updatedTemplate.templateDescription || ''
+    );
+    formData.append('name', updatedTemplate.item.name);
+    formData.append('category', updatedTemplate.item.category || '');
+    formData.append('condition', updatedTemplate.item.condition || '');
+    formData.append('thumbnails', JSON.stringify(thumbnailIds));
+    formData.append('attachments', JSON.stringify(attachmentIds));
+    formData.append(
+      'properties',
+      JSON.stringify(updatedTemplate.item.properties)
+    );
+
+    for (const newThumbnail of newThumbnails) {
+      formData.append('newThumbnails', newThumbnail);
+    }
+
+    for (const newAttachment of newAttachments) {
+      formData.append('newAttachments', newAttachment);
+    }
 
     await onUpdateTemplate(templateId, formData);
-
-    history.push('/templates');
   };
 
-  if (fetchingTemplate) {
+  if (fetchingTemplate || template === null) {
     return <LoadingIndicator />;
   }
 
   return (
-    <TemplateForm
-      title={template.name}
-      initialValues={{
-        templateName: template.name || '',
-        templateDescription: template.description || '',
-        itemName: template.item.name || '',
-        itemCategory: template.item.category || '',
-        itemCondition: template.item.condition || '',
-        thumbnails: template.item.thumbnails || [],
-        properties: template.item.properties || [],
-        attachments: template.item.attachments || []
-      }}
-      onSubmit={updateTemplateHandler}
-      submitting={updatingTemplate}
-    />
+    <Grid container spacing={4}>
+      <Grid item xs={12} md={8} lg={7}>
+        <Grid container>
+          <Grid item xs={12} className={classes.sectionGridItem}>
+            <Typography variant="h6">{template.name}</Typography>
+            <Typography variant="body1" color="textSecondary">
+              {template.description}
+            </Typography>
+            <Typography variant="caption" className={classes.smallLink}>
+              Edit template details
+            </Typography>
+          </Grid>
+          <Grid item xs={12} className={classes.sectionGridItem}>
+            <ItemDetailsSection
+              item={template.item}
+              onUpdate={updateTemplateHandler}
+              updating={updatingTemplate}
+            />
+          </Grid>
+          <Grid item xs={12} className={classes.sectionGridItem}>
+            <PropertiesSection
+              properties={template.item.properties}
+              onUpdate={updateTemplateHandler}
+              updating={updatingTemplate}
+            />
+          </Grid>
+          <Grid item xs={12} className={classes.sectionGridItem}>
+            <AttachmentsSection
+              attachments={template.item.attachments}
+              onUpdate={updateTemplateHandler}
+              updating={updatingTemplate}
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 }
 
@@ -97,7 +154,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onFetchTemplate: templateId => dispatch(actions.fetchTemplate(templateId)),
     onUpdateTemplate: (templateId, template) =>
-      dispatch(actions.updateTemplate(templateId, template))
+      dispatch(actions.updateTemplate(templateId, template)),
+    onResetTemplate: () => dispatch(actions.resetTemplate())
   };
 };
 
