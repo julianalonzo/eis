@@ -35,12 +35,4 @@ templateSchema.index(
 
 const Template = mongoose.model("Template", templateSchema);
 
-Template.on("index", err => {
-  if (err) {
-    console.log(err);
-  }
-
-  console.log("Template indexes created");
-});
-
 module.exports = Template;

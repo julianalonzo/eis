@@ -25,12 +25,4 @@ folderSchema.index(
 
 const Folder = mongoose.model("Folder", folderSchema);
 
-Folder.on("index", err => {
-  if (err) {
-    console.log(err);
-  }
-
-  console.log("Folder indexes created");
-});
-
 module.exports = Folder;

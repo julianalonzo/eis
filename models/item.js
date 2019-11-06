@@ -87,12 +87,4 @@ itemSchema.index(
 
 const Item = mongoose.model("Item", itemSchema);
 
-Item.on("index", err => {
-  if (err) {
-    console.log(err);
-  }
-
-  console.log("Item indexes created");
-});
-
 module.exports = Item;
