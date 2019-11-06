@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const itemSchema = new Schema({
@@ -9,18 +9,18 @@ const itemSchema = new Schema({
   },
   category: {
     type: String,
-    default: '',
+    default: "",
     trim: true
   },
   condition: {
     type: String,
-    default: '',
+    default: "",
     trim: true
   },
   thumbnails: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'File'
+      ref: "File"
     }
   ],
   properties: [
@@ -32,7 +32,7 @@ const itemSchema = new Schema({
       },
       value: {
         type: String,
-        default: '',
+        default: "",
         trim: true
       }
     }
@@ -40,7 +40,7 @@ const itemSchema = new Schema({
   attachments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'File'
+      ref: "File"
     }
   ],
   notes: [
@@ -63,7 +63,7 @@ const itemSchema = new Schema({
   },
   folder: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Folder'
+    ref: "Folder"
   },
   isTemplate: {
     type: Boolean,
@@ -74,19 +74,15 @@ const itemSchema = new Schema({
 
 itemSchema.index(
   {
-    _id: 'text',
-    name: 'text',
-    category: 'text',
-    condition: 'text',
-    properties: {
-      name: 'text',
-      value: 'text'
-    },
-    notes: {
-      content: 'text'
-    }
+    _id: "text",
+    name: "text",
+    category: "text",
+    condition: "text",
+    "properties.name": "text",
+    "properties.value": "text",
+    "notes.content": "text"
   },
   { background: false }
 );
 
-module.exports = mongoose.model('Item', itemSchema);
+module.exports = mongoose.model("Item", itemSchema);
