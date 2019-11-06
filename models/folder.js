@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const folderSchema = new Schema({
   name: { type: String, isRequired: true, trim: true },
   parent: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Folder',
+    ref: "Folder",
     default: null
   },
   shown: {
@@ -16,9 +16,18 @@ const folderSchema = new Schema({
 });
 
 folderSchema.index({
-  _id: 'text',
-  name: 'text',
-  parent: 'text'
+  _id: "text",
+  name: "text"
 });
 
-module.exports = mongoose.model('Folder', folderSchema);
+const Folder = mongoose.model("Folder", folderSchema);
+
+Folder.on("index", err => {
+  if (err) {
+    console.log(err);
+  }
+
+  console.log("Folder indexes created");
+});
+
+module.exports = Folder;
