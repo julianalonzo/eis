@@ -78,9 +78,13 @@ itemSchema.index(
     name: 'text',
     category: 'text',
     condition: 'text',
-    'properties.name': 'text',
-    'properties.value': 'text',
-    'notes.content': 'text'
+    properties: {
+      name: 'text',
+      value: 'text'
+    },
+    notes: {
+      content: 'text'
+    }
   },
   { background: false }
 );
