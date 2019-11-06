@@ -72,15 +72,18 @@ const itemSchema = new Schema({
   }
 });
 
-itemSchema.index({
-  _id: "text",
-  name: "text",
-  category: "text",
-  condition: "text",
-  "properties.name": "text",
-  "properties.value": "text",
-  "notes.content": "text"
-});
+itemSchema.index(
+  {
+    _id: "text",
+    name: "text",
+    category: "text",
+    condition: "text",
+    "properties.name": "text",
+    "properties.value": "text",
+    "notes.content": "text"
+  },
+  { name: "item_text_index" }
+);
 
 const Item = mongoose.model("Item", itemSchema);
 

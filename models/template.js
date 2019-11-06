@@ -24,11 +24,14 @@ const templateSchema = new Schema({
   }
 });
 
-templateSchema.index({
-  _id: "text",
-  name: "text",
-  description: "text"
-});
+templateSchema.index(
+  {
+    _id: "text",
+    name: "text",
+    description: "text"
+  },
+  { name: "template_text_index" }
+);
 
 const Template = mongoose.model("Template", templateSchema);
 

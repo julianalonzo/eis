@@ -15,10 +15,13 @@ const folderSchema = new Schema({
   }
 });
 
-folderSchema.index({
-  _id: "text",
-  name: "text"
-});
+folderSchema.index(
+  {
+    _id: "text",
+    name: "text"
+  },
+  { name: "folder_text_index" }
+);
 
 const Folder = mongoose.model("Folder", folderSchema);
 
