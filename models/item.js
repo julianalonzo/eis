@@ -82,7 +82,15 @@ itemSchema.index(
     "properties.value": "text",
     "notes.content": "text"
   },
-  { background: false }
+  { background: false, sparse: true }
 );
+
+itemSchema.on("index", error => {
+  if (error) {
+    console.log(error);
+  }
+
+  console.log("Created item index");
+});
 
 module.exports = mongoose.model("Item", itemSchema);

@@ -30,7 +30,7 @@ templateSchema.index(
     name: "text",
     description: "text"
   },
-  { background: false }
+  { background: false, sparse: true }
 );
 
 module.exports = mongoose.model("Template", templateSchema);
