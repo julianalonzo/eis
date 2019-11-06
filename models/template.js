@@ -24,13 +24,13 @@ const templateSchema = new Schema({
   }
 });
 
-templateSchema.index(
+templateSchema.indexes(
   {
     _id: "text",
     name: "text",
     description: "text"
   },
-  { background: false, sparse: true }
+  { background: true }
 );
 
 module.exports = mongoose.model("Template", templateSchema);

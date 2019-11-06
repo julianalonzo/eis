@@ -72,7 +72,7 @@ const itemSchema = new Schema({
   }
 });
 
-itemSchema.index(
+itemSchema.indexes(
   {
     _id: "text",
     name: "text",
@@ -82,15 +82,7 @@ itemSchema.index(
     "properties.value": "text",
     "notes.content": "text"
   },
-  { background: false, sparse: true }
+  { background: false }
 );
-
-itemSchema.on("index", error => {
-  if (error) {
-    console.log(error);
-  }
-
-  console.log("Created item index");
-});
 
 module.exports = mongoose.model("Item", itemSchema);
