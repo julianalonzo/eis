@@ -18,7 +18,7 @@ export default function MoveDialog({
   currentFolder,
   isRequired = false
 }) {
-  const [currentValue, setCurrentValue] = useState(currentFolder);
+  const [currentValue, setCurrentValue] = useState(null);
   const [isErrorShown, setIsErrorShown] = useState(false);
 
   const options = folders.map(folder => {
@@ -31,9 +31,8 @@ export default function MoveDialog({
 
   useEffect(() => {
     if (isOpen) {
-      setCurrentValue(currentFolder);
+      setCurrentValue(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   return (
@@ -51,6 +50,7 @@ export default function MoveDialog({
               {...params}
               variant="outlined"
               fullWidth
+              placeholder="Folder Destination"
               error={isErrorShown}
               helperText={isErrorShown ? "Folder must not be empty" : ""}
             />
