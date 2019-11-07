@@ -1,6 +1,6 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from "./actionTypes";
 
-import axios from 'axios';
+import axios from "axios";
 
 export const fetchFoldersStart = () => {
   return {
@@ -28,7 +28,7 @@ export const fetchFolders = () => {
 
     let response = null;
     try {
-      response = await axios.get('/api/folders');
+      response = await axios.get("/api/folders");
       dispatch(fetchFoldersSuccess(response.data.folders));
     } catch (error) {
       response = error;
@@ -178,6 +178,42 @@ export const deleteItem = itemId => {
       dispatch(deleteItemSuccess(response.data.itemId));
     } catch (error) {
       dispatch(deleteItemFail(error.response));
+    }
+  };
+};
+
+export const moveItemStart = () => {
+  return {
+    type: actionTypes.MOVE_ITEM_START
+  };
+};
+
+export const moveItemFail = error => {
+  return {
+    type: actionTypes.MOVE_ITEM_FAIL,
+    error: error
+  };
+};
+
+export const moveItemSuccess = item => {
+  return {
+    type: actionTypes.MOVE_ITEM_SUCCESS,
+    item: item
+  };
+};
+
+export const moveItem = (itemId, folderDestination) => {
+  return async dispatch => {
+    dispatch(moveItemStart());
+
+    try {
+      const response = await axios.put(
+        `api/items/${itemId}`,
+        folderDestination
+      );
+      dispatch(moveItemSuccess(response.data.item));
+    } catch (error) {
+      dispatch(moveItemFail(error.response));
     }
   };
 };

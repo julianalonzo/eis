@@ -1,5 +1,5 @@
-import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../utility';
+import * as actionTypes from "../actions/actionTypes";
+import { updateObject } from "../utility";
 
 const initialState = {
   folders: null,
@@ -12,7 +12,9 @@ const initialState = {
   deletingFolder: false,
   deleteFolderError: null,
   deletingItem: false,
-  deleteItemError: null
+  deleteItemError: null,
+  movingItem: false,
+  moveItemError: null
 };
 
 const fetchFoldersStart = (state, action) => {
@@ -134,6 +136,27 @@ const deleteItemSuccess = (state, action) => {
   });
 };
 
+const moveItemStart = (state, action) => {
+  return updateObject(state, { movingItem: true });
+};
+
+const moveItemFail = (state, action) => {
+  return updateObject(state, {
+    movingItem: false,
+    moveItemError: action.error
+  });
+};
+
+const moveItemSuccess = (state, action) => {
+  return updateObject(state, {
+    movingItem: false,
+    folder: {
+      ...state.folder,
+      items: state.folder.items.filter(item => item._id !== action.item._id)
+    }
+  });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_FOLDERS_START:
@@ -170,6 +193,12 @@ const reducer = (state = initialState, action) => {
       return deleteItemFail(state, action);
     case actionTypes.DELETE_ITEM_SUCCESS:
       return deleteItemSuccess(state, action);
+    case actionTypes.MOVE_ITEM_START:
+      return moveItemStart(state, action);
+    case actionTypes.MOVE_ITEM_FAIL:
+      return moveItemFail(state, action);
+    case actionTypes.MOVE_ITEM_SUCCESS:
+      return moveItemSuccess(state, action);
     default:
       return state;
   }

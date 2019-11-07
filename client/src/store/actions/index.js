@@ -5,7 +5,7 @@ export {
   createItem,
   updateItem,
   resetItem
-} from './item';
+} from "./item";
 
 export {
   fetchTemplates,
@@ -15,7 +15,7 @@ export {
   createTemplate,
   updateTemplate,
   removeTemplate
-} from './template';
+} from "./template";
 
 export {
   fetchFolders,
@@ -24,5 +24,6 @@ export {
   resetFolder,
   createFolder,
   deleteFolder,
-  deleteItem
-} from './folder';
+  deleteItem,
+  moveItem
+} from "./folder";
