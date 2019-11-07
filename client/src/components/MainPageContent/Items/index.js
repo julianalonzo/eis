@@ -1,23 +1,23 @@
-import React from 'react';
+import React from "react";
 
-import Card from '../UI/Card';
-import LoadingIndicator from '../UI/LoadingIndicator';
+import Card from "../../UI/Card";
+import LoadingIndicator from "../../UI/LoadingIndicator";
 
-import { makeStyles } from '@material-ui/styles';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from "@material-ui/styles";
+import Box from "@material-ui/core/Box";
+import Chip from "@material-ui/core/Chip";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles(theme => ({
   root: {
     marginBottom: theme.spacing(8)
   },
   textHeader: {
-    textTransform: 'uppercase',
-    letterSpacing: '1.5px',
+    textTransform: "uppercase",
+    letterSpacing: "1.5px",
     marginBottom: theme.spacing(2)
   }
 }));
@@ -71,14 +71,14 @@ export default function Items({
                   onOpenItemDetails(item._id);
                 }}
               >
-                {item.category !== '' && (
+                {item.category !== "" && (
                   <Chip
                     size="small"
-                    style={{ marginRight: '8px' }}
+                    style={{ marginRight: "8px" }}
                     label={item.category}
                   />
                 )}
-                {item.condition !== '' && (
+                {item.condition !== "" && (
                   <Chip size="small" label={item.condition} />
                 )}
               </Card>

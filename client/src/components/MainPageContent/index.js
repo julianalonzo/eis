@@ -1,25 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import { connect } from 'react-redux';
-import * as actions from '../../store/actions';
-import { useHistory, useParams } from 'react-router-dom';
+import { connect } from "react-redux";
+import * as actions from "../../store/actions";
+import { useHistory, useParams } from "react-router-dom";
 
-import useDialogState from '../../hooks/useDialogState';
-import usePopperState from '../../hooks/usePopperState';
+import useDialogState from "../../hooks/useDialogState";
+import usePopperState from "../../hooks/usePopperState";
 
-import EmptyIllustration from '../../assets/illustrations/empty.svg';
-import Folders from '../Folders';
-import FolderMoreActionsPopper from '../Folders/FolderMoreActionsPopper';
-import IllustrationPlaceholder from '../UI/IllustrationPlaceholder';
-import Items from '../Items';
-import ItemMoreActionsMenuListPopper from '../Items/ItemMoreActionsMenuListPopper';
-import NewButtonMenuListPopper from '../NewButtonMenuListPopper';
-import NewFolderDialog from '../NewFolderDialog';
-import MainPageToolBar from './MainPageToolBar';
-import LoadingIndicator from '../UI/LoadingIndicator';
+import EmptyIllustration from "../../assets/illustrations/empty.svg";
+import Folders from "./Folders";
+import FolderMoreActionsPopper from "./Folders/FolderMoreActionsPopper";
+import IllustrationPlaceholder from "../UI/IllustrationPlaceholder";
+import Items from "./Items";
+import ItemMoreActionsMenuListPopper from "./Items/ItemMoreActionsMenuListPopper";
+import LoadingIndicator from "../UI/LoadingIndicator";
+import MainPageToolBar from "./MainPageToolBar";
+import MoveDialog from "../MoveDialog";
+import NewButtonMenuListPopper from "../NewButtonMenuListPopper";
+import NewFolderDialog from "../NewFolderDialog";
 
 function MainPageContent({
-  rootFolders,
+  folders,
   folder,
   onFetchFolder,
   fetchingFolder,
@@ -27,7 +28,9 @@ function MainPageContent({
   onCreateFolder,
   creatingFolder,
   onDeleteFolder,
-  onDeleteItem
+  onDeleteItem,
+  onMoveItem,
+  movingItem
 }) {
   const { folderId } = useParams();
   const history = useHistory();
@@ -62,6 +65,12 @@ function MainPageContent({
     closeItemMoreActionsHandler
   ] = usePopperState(null);
 
+  const [
+    isMoveDialogOpen,
+    openMoveDialogHandler,
+    closeMoveDialogHandler
+  ] = useDialogState(false);
+
   const onOpenFolderMoreActions = (event, id) => {
     openFolderMoreActionsHandler(event.currentTarget);
     setFolderIdMoreActions(id);
@@ -83,7 +92,7 @@ function MainPageContent({
   const createFolderHandler = async name => {
     await onCreateFolder({
       name: name,
-      parent: folderId || ''
+      parent: folderId || ""
     });
   };
 
@@ -107,6 +116,10 @@ function MainPageContent({
     history.push(`/items/${itemId}`);
   };
 
+  const moveItemHandler = async folderDestination => {
+    await onMoveItem(itemIdMoreActions, { folder: folderDestination._id });
+  };
+
   useEffect(() => {
     if (Boolean(folderId)) {
       onFetchFolder(folderId);
@@ -120,11 +133,11 @@ function MainPageContent({
   }, [folderId, onFetchFolder, onResetFolder]);
 
   let breadcrumbs;
-  let folders;
+  let folderChildren;
   let items;
 
   if (!Boolean(folderId)) {
-    folders = rootFolders;
+    folderChildren = folders.filter(folder => folder.parent === null);
     items = [];
     breadcrumbs = [];
   }
@@ -134,7 +147,7 @@ function MainPageContent({
   }
 
   if (Boolean(folder)) {
-    folders = folder.children;
+    folderChildren = folder.children;
     items = folder.items;
     breadcrumbs = folder.hierarchy.map(f => {
       return {
@@ -158,7 +171,7 @@ function MainPageContent({
         onOpenSelectTemplatePage={openSelectTemplatePageHandler}
         onOpenNewFolderDialog={openNewFolderDialogHandler}
       />
-      {folders.length === 0 && items.length === 0 ? (
+      {folderChildren.length === 0 && items.length === 0 ? (
         <IllustrationPlaceholder
           title="This folder seems to be empty"
           subtitle="Add a new item or folder now"
@@ -167,7 +180,7 @@ function MainPageContent({
       ) : (
         <div>
           <Folders
-            folders={folders}
+            folders={folderChildren}
             onOpenFolder={openFolderHandler}
             onOpenFolderMoreActions={onOpenFolderMoreActions}
           />
@@ -186,6 +199,7 @@ function MainPageContent({
             isOpen={Boolean(itemMoreActionsAnchorEl)}
             anchorEl={itemMoreActionsAnchorEl}
             onClose={onCloseItemMoreActions}
+            onOpenMoveItemDialog={openMoveDialogHandler}
             onDeleteItem={deleteItemHandler}
           />
         </div>
@@ -196,6 +210,15 @@ function MainPageContent({
         submitting={creatingFolder}
         onSubmit={createFolderHandler}
       />
+      <MoveDialog
+        isOpen={isMoveDialogOpen}
+        onClose={closeMoveDialogHandler}
+        onSubmit={moveItemHandler}
+        submitting={movingItem}
+        folders={folders}
+        currentFolder={folder}
+        isRequired
+      />
     </div>
   );
 }
@@ -204,7 +227,8 @@ const mapStateToProps = state => {
   return {
     folder: state.folder.folder,
     fetchingFolder: state.folder.fetchingFolder,
-    creatingFolder: state.folder.creatingFolder
+    creatingFolder: state.folder.creatingFolder,
+    movingItem: state.folder.movingItem
   };
 };
 
@@ -214,7 +238,9 @@ const mapDispatchToProps = dispatch => {
     onResetFolder: () => dispatch(actions.resetFolder()),
     onCreateFolder: folder => dispatch(actions.createFolder(folder)),
     onDeleteFolder: folderId => dispatch(actions.deleteFolder(folderId)),
-    onDeleteItem: itemId => dispatch(actions.deleteItem(itemId))
+    onDeleteItem: itemId => dispatch(actions.deleteItem(itemId)),
+    onMoveItem: (itemId, folderDestination) =>
+      dispatch(actions.moveItem(itemId, folderDestination))
   };
 };
 
