@@ -11,6 +11,8 @@ const initialState = {
   createFolderError: null,
   deletingFolder: false,
   deleteFolderError: null,
+  movingFolder: false,
+  moveFolderError: null,
   deletingItem: false,
   deleteItemError: null,
   movingItem: false,
@@ -99,7 +101,7 @@ const deleteFolderFail = (state, action) => {
 };
 
 const deleteFolderSuccess = (state, action) => {
-  let updatedFolders = [...state.folders].filter(
+  const updatedFolders = [...state.folders].filter(
     folder => !action.deletedFoldersIds.includes(folder._id)
   );
 
@@ -112,6 +114,40 @@ const deleteFolderSuccess = (state, action) => {
           children: updatedFolders.filter(f => f.parent === state.folder._id)
         }
       : null
+  });
+};
+
+const moveFolderStart = (state, action) => {
+  return updateObject(state, { movingFolder: true });
+};
+
+const moveFolderFail = (state, action) => {
+  return updateObject(state, {
+    movingFolder: false,
+    moveFolderError: action.error
+  });
+};
+
+const moveFolderSuccess = (state, action) => {
+  const movedFolderIndex = state.folders.findIndex(
+    folder => folder._id === action.folder._id
+  );
+
+  const updatedFolders = [...state.folders];
+  updatedFolders[movedFolderIndex] = action.folder;
+
+  return updateObject(state, {
+    movingFolder: false,
+    folders: updatedFolders,
+    folder:
+      state.folder !== null
+        ? {
+            ...state.folder,
+            children: state.folder.children.filter(
+              folder => folder._id !== action.folder._id
+            )
+          }
+        : null
   });
 };
 
@@ -187,6 +223,12 @@ const reducer = (state = initialState, action) => {
       return deleteFolderFail(state, action);
     case actionTypes.DELETE_FOLDER_SUCCESS:
       return deleteFolderSuccess(state, action);
+    case actionTypes.MOVE_FOLDER_START:
+      return moveFolderStart(state, action);
+    case actionTypes.MOVE_FOLDER_FAIL:
+      return moveFolderFail(state, action);
+    case actionTypes.MOVE_FOLDER_SUCCESS:
+      return moveFolderSuccess(state, action);
     case actionTypes.DELETE_ITEM_START:
       return deleteItemStart(state, action);
     case actionTypes.DELETE_ITEM_FAIL:

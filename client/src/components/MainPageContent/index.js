@@ -28,6 +28,8 @@ function MainPageContent({
   onCreateFolder,
   creatingFolder,
   onDeleteFolder,
+  onMoveFolder,
+  movingFolder,
   onDeleteItem,
   onMoveItem,
   movingItem
@@ -66,9 +68,15 @@ function MainPageContent({
   ] = usePopperState(null);
 
   const [
-    isMoveDialogOpen,
-    openMoveDialogHandler,
-    closeMoveDialogHandler
+    isMoveFolderDialogOpen,
+    openMoveFolderDialogHandler,
+    closeMoveFolderDialogHandler
+  ] = useDialogState(false);
+
+  const [
+    isMoveItemDialogOpen,
+    openMoveItemDialogHandler,
+    closeMoveItemDialogHandler
   ] = useDialogState(false);
 
   const onOpenFolderMoreActions = (event, id) => {
@@ -116,8 +124,15 @@ function MainPageContent({
     history.push(`/items/${itemId}`);
   };
 
+  const moveFolderHandler = async folderDestination => {
+    await onMoveFolder(
+      folderIdMoreActions,
+      folderDestination ? folderDestination._id : null
+    );
+  };
+
   const moveItemHandler = async folderDestination => {
-    await onMoveItem(itemIdMoreActions, { folder: folderDestination._id });
+    await onMoveItem(itemIdMoreActions, folderDestination._id);
   };
 
   useEffect(() => {
@@ -189,6 +204,7 @@ function MainPageContent({
             anchorEl={folderMoreActionsAnchorEl}
             onClose={onCloseFolderMoreActions}
             onDeleteFolder={deleteFolderHandler}
+            onOpenMoveFolderDialog={openMoveFolderDialogHandler}
           />
           <Items
             items={items}
@@ -199,7 +215,7 @@ function MainPageContent({
             isOpen={Boolean(itemMoreActionsAnchorEl)}
             anchorEl={itemMoreActionsAnchorEl}
             onClose={onCloseItemMoreActions}
-            onOpenMoveItemDialog={openMoveDialogHandler}
+            onOpenMoveItemDialog={openMoveItemDialogHandler}
             onDeleteItem={deleteItemHandler}
           />
         </div>
@@ -210,14 +226,33 @@ function MainPageContent({
         submitting={creatingFolder}
         onSubmit={createFolderHandler}
       />
+      {/* Move item dialog */}
       <MoveDialog
-        isOpen={isMoveDialogOpen}
-        onClose={closeMoveDialogHandler}
+        title="Move Item"
+        isOpen={isMoveItemDialogOpen}
+        onClose={closeMoveItemDialogHandler}
         onSubmit={moveItemHandler}
         submitting={movingItem}
-        folders={folders}
+        options={folders.filter(folder => folder._id !== folderId)}
         currentFolder={folder}
         isRequired
+      />
+      {/* Move folder dialog */}
+      <MoveDialog
+        title="Move Folder"
+        isOpen={isMoveFolderDialogOpen}
+        onClose={closeMoveFolderDialogHandler}
+        onSubmit={moveFolderHandler}
+        submitting={movingFolder}
+        options={
+          folderId
+            ? folders.filter(
+                folder =>
+                  folder._id !== folderIdMoreActions && folder._id !== folderId
+              )
+            : folders.filter(folder => folder._id !== folderIdMoreActions)
+        }
+        currentFolder={folder}
       />
     </div>
   );
@@ -225,9 +260,11 @@ function MainPageContent({
 
 const mapStateToProps = state => {
   return {
+    folders: state.folder.folders,
     folder: state.folder.folder,
     fetchingFolder: state.folder.fetchingFolder,
     creatingFolder: state.folder.creatingFolder,
+    movingFolder: state.folder.movingFolder,
     movingItem: state.folder.movingItem
   };
 };
@@ -238,6 +275,8 @@ const mapDispatchToProps = dispatch => {
     onResetFolder: () => dispatch(actions.resetFolder()),
     onCreateFolder: folder => dispatch(actions.createFolder(folder)),
     onDeleteFolder: folderId => dispatch(actions.deleteFolder(folderId)),
+    onMoveFolder: (folderId, folderDestination) =>
+      dispatch(actions.moveFolder(folderId, folderDestination)),
     onDeleteItem: itemId => dispatch(actions.deleteItem(itemId)),
     onMoveItem: (itemId, folderDestination) =>
       dispatch(actions.moveItem(itemId, folderDestination))

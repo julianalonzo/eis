@@ -1,7 +1,7 @@
-const { validationResult } = require('express-validator');
+const { validationResult } = require("express-validator");
 
-const Item = require('../models/item');
-const Folder = require('../models/folder');
+const Item = require("../models/item");
+const Folder = require("../models/folder");
 
 /**
  * Gets all shown or searched/filtered folders in the collection
@@ -18,7 +18,7 @@ async function getFolders(req, res) {
 
   let folders = [];
 
-  const searchQuery = req.query.search || '';
+  const searchQuery = req.query.search || "";
   if (Boolean(searchQuery)) {
     folders = await Folder.find(
       {
@@ -26,14 +26,23 @@ async function getFolders(req, res) {
         shown: true
       },
       {
-        score: { $meta: 'textScore' }
+        score: { $meta: "textScore" }
       }
-    ).sort({ score: { $meta: 'textScore' } });
+    ).sort({ score: { $meta: "textScore" } });
   } else {
     folders = await Folder.find({ ...req.query, shown: true });
   }
 
-  return res.status(200).json({ folders: folders });
+  let foldersWithHierarchy = [];
+  for (const folder of folders) {
+    const hierarchy = await getFolderHierarchy(folder.id);
+    foldersWithHierarchy = foldersWithHierarchy.concat({
+      ...folder._doc,
+      hierarchy: hierarchy
+    });
+  }
+
+  return res.status(200).json({ folders: foldersWithHierarchy });
 }
 
 /**
@@ -57,7 +66,7 @@ async function getFolder(req, res) {
       folder: null,
       error: {
         status: 404,
-        userMessage: 'Folder does not exist'
+        userMessage: "Folder does not exist"
       }
     });
   }
@@ -91,7 +100,7 @@ async function getFolderItems(req, res) {
       items: [],
       error: {
         status: 404,
-        userMessage: 'Folder does not exist'
+        userMessage: "Folder does not exist"
       }
     });
   }
@@ -99,8 +108,8 @@ async function getFolderItems(req, res) {
   const children = await findChildren(folderId);
   const folderHierarchy = await getFolderHierarchy(folderId);
   const items = await Item.find({ folder: folderId })
-    .populate('thumbnails')
-    .populate('attachments')
+    .populate("thumbnails")
+    .populate("attachments")
     .exec();
 
   return res.status(200).json({
@@ -168,7 +177,7 @@ async function updateFolder(req, res) {
       folder: null,
       error: {
         status: 404,
-        userMessage: 'Folder does not exist'
+        userMessage: "Folder does not exist"
       }
     });
   }
@@ -198,7 +207,7 @@ async function deleteFolder(req, res) {
       deletedItemsIds: [],
       error: {
         status: 404,
-        userMessage: 'Folder does not exist'
+        userMessage: "Folder does not exist"
       }
     });
   }

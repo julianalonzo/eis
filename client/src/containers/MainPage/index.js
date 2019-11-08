@@ -123,7 +123,7 @@ function MainPage({
         </Drawer>
       </Hidden>
       <main className={classes.content}>
-        <MainPageContent folders={folders} />
+        <MainPageContent />
       </main>
     </div>
   );

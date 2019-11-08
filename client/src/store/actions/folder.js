@@ -149,6 +149,41 @@ export const deleteFolder = folderId => {
   };
 };
 
+export const moveFolderStart = () => {
+  return {
+    type: actionTypes.MOVE_FOLDER_START
+  };
+};
+
+export const moveFolderFail = error => {
+  return {
+    type: actionTypes.MOVE_FOLDER_FAIL,
+    error: error
+  };
+};
+
+export const moveFolderSuccess = folder => {
+  return {
+    type: actionTypes.MOVE_FOLDER_SUCCESS,
+    folder: folder
+  };
+};
+
+export const moveFolder = (folderId, folderDestination) => {
+  return async dispatch => {
+    dispatch(moveFolderStart());
+
+    try {
+      const response = await axios.put(`api/folders/${folderId}`, {
+        parent: folderDestination
+      });
+      dispatch(moveFolderSuccess(response.data.folder));
+    } catch (error) {
+      dispatch(moveFolderFail(error.response));
+    }
+  };
+};
+
 export const deleteItemStart = () => {
   return {
     type: actionTypes.DELETE_ITEM_START
@@ -207,10 +242,9 @@ export const moveItem = (itemId, folderDestination) => {
     dispatch(moveItemStart());
 
     try {
-      const response = await axios.put(
-        `api/items/${itemId}`,
-        folderDestination
-      );
+      const response = await axios.put(`api/items/${itemId}`, {
+        folder: folderDestination
+      });
       dispatch(moveItemSuccess(response.data.item));
     } catch (error) {
       dispatch(moveItemFail(error.response));

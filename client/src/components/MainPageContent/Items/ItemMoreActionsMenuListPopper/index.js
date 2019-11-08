@@ -23,7 +23,7 @@ export default function ItemMoreActionsMenuListPopper({
             onClose();
           }}
         >
-          <Typography variant="body2">Move</Typography>
+          <Typography variant="body2">Move to</Typography>
         </MenuItem>
         <MenuItem
           dense={true}

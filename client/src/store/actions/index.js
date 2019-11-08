@@ -24,6 +24,7 @@ export {
   resetFolder,
   createFolder,
   deleteFolder,
+  moveFolder,
   deleteItem,
   moveItem
 } from "./folder";
