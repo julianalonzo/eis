@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const itemSchema = new Schema({
   name: {
     type: String,
-    isRequired: true,
+    required: true,
     trim: true
   },
   category: {
@@ -27,7 +27,7 @@ const itemSchema = new Schema({
     {
       name: {
         type: String,
-        isRequired: true,
+        required: true,
         trim: true
       },
       value: {
@@ -47,7 +47,7 @@ const itemSchema = new Schema({
     {
       content: {
         type: String,
-        isRequired: true,
+        required: true,
         trim: true
       },
       datePosted: {

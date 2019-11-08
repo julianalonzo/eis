@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const fileSchema = new Schema({
-  originalname: { type: String, isRequired: true },
-  mimetype: { type: String, isRequired: true },
-  filename: { type: String, isRequired: true },
-  path: { type: String, isRequired: true },
-  type: { type: String, isRequired: true, enum: ['thumbnail', 'attachment'] },
-  size: { type: Number, isRequired: true },
-  dateUploaded: { type: Date, isRequired: true, default: Date.now }
+  originalname: { type: String, required: true },
+  mimetype: { type: String, required: true },
+  filename: { type: String, required: true },
+  path: { type: String, required: true },
+  type: { type: String, required: true, enum: ["thumbnail", "attachment"] },
+  size: { type: Number, required: true },
+  dateUploaded: { type: Date, required: true, default: Date.now }
 });
 
-module.exports = mongoose.model('File', fileSchema);
+module.exports = mongoose.model("File", fileSchema);

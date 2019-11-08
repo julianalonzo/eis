@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const templateSchema = new Schema({
   name: {
     type: String,
-    isRequired: true,
+    required: true,
     trim: true
   },
   description: {
@@ -15,7 +15,7 @@ const templateSchema = new Schema({
   item: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Item",
-    isRequired: true
+    required: true
   },
   shown: {
     type: Boolean,
