@@ -1,48 +1,51 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
-import { connect } from 'react-redux';
-import * as actions from '../../store/actions';
-import Truncate from 'react-truncate';
-import { withRouter } from 'react-router-dom';
+import { connect } from "react-redux";
+import * as actions from "../../store/actions";
+import Truncate from "react-truncate";
+import { withRouter } from "react-router-dom";
 
-import Card from '../../components/UI/Card';
-import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import Card from "../../components/UI/Card";
+import LoadingIndicator from "../../components/UI/LoadingIndicator";
 
-import { makeStyles } from '@material-ui/styles';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from "@material-ui/styles";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
   pageHeading: { marginBottom: theme.spacing(2) },
   noTemplateCard: {
     padding: theme.spacing(3),
-    height: '110px',
+    height: "110px",
     border: `2px dashed ${theme.palette.primary[400]}`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    cursor: 'pointer',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    cursor: "pointer",
     color: theme.palette.primary[400],
-    borderRadius: '5px',
-    '&:hover': {
+    borderRadius: "5px",
+    "&:hover": {
       color: theme.palette.primary[500],
       borderColor: theme.palette.primary[500]
     }
   },
   addIcon: {
     marginBottom: theme.spacing(1),
-    color: 'inherit'
+    color: "inherit"
   },
   noTemplateText: {
-    color: 'inherit'
+    color: "inherit"
   },
   subtitle: {
     fontSize: theme.typography.fontSize,
     fontFamily: theme.typography.fontFamily,
     color: theme.palette.text.secondary
+  },
+  italicize: {
+    fontStyle: "italic"
   }
 }));
 
@@ -117,13 +120,21 @@ function SelectTemplatePage({
                     );
                   }}
                 >
-                  <Truncate
-                    lines={2}
-                    ellipsis="..."
-                    className={classes.subtitle}
-                  >
-                    {template.description}
-                  </Truncate>
+                  {template.description ? (
+                    <Truncate
+                      lines={2}
+                      ellipsis="..."
+                      className={classes.subtitle}
+                    >
+                      {template.description}
+                    </Truncate>
+                  ) : (
+                    <Typography
+                      className={`${classes.subtitle} ${classes.italicize}`}
+                    >
+                      (No description provided)
+                    </Typography>
+                  )}
                 </Card>
               </Grid>
             );
