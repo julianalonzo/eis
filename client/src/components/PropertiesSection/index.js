@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import useDialogState from '../../hooks/useDialogState';
-import usePopperState from '../../hooks/usePopperState';
+import useDialogState from "../../hooks/useDialogState";
+import usePopperState from "../../hooks/usePopperState";
 
-import EditPropertyDialogForm from './EditPropertyDialogForm';
-import Properties from './Properties';
-import PropertyMoreActionsMenuListPopper from './PropertyMoreActionsMenuListPopper';
-import SectionPaper from '../UI/SectionPaper';
+import EditPropertyDialogForm from "./EditPropertyDialogForm";
+import Properties from "./Properties";
+import PropertyMoreActionsMenuListPopper from "./PropertyMoreActionsMenuListPopper";
+import SectionPaper from "../UI/SectionPaper";
+import TextPlaceholder from "../UI/TextPlaceholder";
 
-import { Add as AddIcon } from '@material-ui/icons';
-import NewPropertyDialogForm from './NewPropertyDialogForm';
+import { Add as AddIcon } from "@material-ui/icons";
+import NewPropertyDialogForm from "./NewPropertyDialogForm";
 
 function PropertiesSection({ properties, onUpdate, updating }) {
   const [
@@ -86,10 +87,14 @@ function PropertiesSection({ properties, onUpdate, updating }) {
           action: openNewPropertyDialogHandler
         }}
       >
-        <Properties
-          properties={properties}
-          onOpenPropertyMoreActions={openPropertyMoreActionsHandler}
-        />
+        {properties.length > 0 ? (
+          <Properties
+            properties={properties}
+            onOpenPropertyMoreActions={openPropertyMoreActionsHandler}
+          />
+        ) : (
+          <TextPlaceholder text="(No properties yet)" />
+        )}
       </SectionPaper>
       <PropertyMoreActionsMenuListPopper
         isOpen={Boolean(propertyMoreActionsAnchorEl)}

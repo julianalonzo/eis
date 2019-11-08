@@ -1,12 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import useDialogState from '../../hooks/useDialogState';
+import useDialogState from "../../hooks/useDialogState";
 
-import NewNoteDialogForm from './NewNoteDialogForm';
-import Notes from './Notes';
-import SectionPaper from '../UI/SectionPaper';
+import NewNoteDialogForm from "./NewNoteDialogForm";
+import Notes from "./Notes";
+import SectionPaper from "../UI/SectionPaper";
+import TextPlaceholder from "../UI/TextPlaceholder";
 
-import { Add as AddIcon } from '@material-ui/icons';
+import { Add as AddIcon } from "@material-ui/icons";
 
 function NotesSection({ notes, onUpdate, updating }) {
   const [
@@ -34,7 +35,11 @@ function NotesSection({ notes, onUpdate, updating }) {
         title="Notes"
         actionButton={{ icon: <AddIcon />, action: openNewNoteDialogHandler }}
       >
-        <Notes notes={notes} onRemoveNote={removeNoteHandler} />
+        {notes.length > 0 ? (
+          <Notes notes={notes} onRemoveNote={removeNoteHandler} />
+        ) : (
+          <TextPlaceholder text="(No notes yet)" />
+        )}
       </SectionPaper>
       <NewNoteDialogForm
         isOpen={isNewNoteDialogOpen}
