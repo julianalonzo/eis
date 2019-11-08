@@ -82,7 +82,7 @@ const updateFolderValidator = [
   body("name")
     .if(body("name").exists())
     .not()
-    .isEmpty({ ignore_whitespace: false })
+    .isEmpty({ ignore_whitespace: true })
     .withMessage("Item name is required")
     .trim(),
   body("parent")

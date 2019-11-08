@@ -1,13 +1,13 @@
-const { body, param, query } = require('express-validator');
-const mongoose = require('mongoose');
+const { body, param, query } = require("express-validator");
+const mongoose = require("mongoose");
 
-const { createItemValidator, updateItemValidator } = require('./item');
+const { createItemValidator, updateItemValidator } = require("./item");
 
 /**
  * Validator for getting templates
  */
 const getTemplatesValidator = [
-  query('_id').custom(value => {
+  query("_id").custom(value => {
     if (value === undefined) {
       return true;
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
@@ -22,9 +22,9 @@ const getTemplatesValidator = [
  * Validator for getting a template
  */
 const getTemplateValidator = [
-  param('templateId').custom(value => {
+  param("templateId").custom(value => {
     if (!Boolean(value)) {
-      throw new Error('Template ID is required');
+      throw new Error("Template ID is required");
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`Template ID ${value} is not a valid ObjectId`);
     }
@@ -37,51 +37,51 @@ const getTemplateValidator = [
  * Validator for creating a template
  */
 const createTemplateValidator = [
-  body('templateName')
+  body("templateName")
     .not()
-    .isEmpty({ ignore_whitespace: false })
-    .withMessage('Template name is required')
+    .isEmpty({ ignore_whitespace: true })
+    .withMessage("Template name is required")
     .trim(),
   ...createItemValidator.slice(0, createItemValidator.length - 1), // Do not include folder field validation
-  body('folder')
+  body("folder")
     .not()
     .exists()
-    .withMessage('You cannot set a folder for a template')
+    .withMessage("You cannot set a folder for a template")
 ];
 
 /**
  * Validator for updating a template
  */
 const updateTemplateValidator = [
-  param('templateId').custom(value => {
+  param("templateId").custom(value => {
     if (!Boolean(value)) {
-      throw new Error('Template ID is required');
+      throw new Error("Template ID is required");
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`Template ID ${value} is not a valid ObjectId`);
     }
 
     return true;
   }),
-  body('templateName')
-    .if(body('templateName').exists())
+  body("templateName")
+    .if(body("templateName").exists())
     .not()
-    .isEmpty({ ignore_whitespace: false })
-    .withMessage('Template name is required')
+    .isEmpty({ ignore_whitespace: true })
+    .withMessage("Template name is required")
     .trim(),
   ...updateItemValidator.slice(1, updateItemValidator.length - 1), // Do not include folder field validation
-  body('folder')
+  body("folder")
     .not()
     .exists()
-    .withMessage('You cannot set a folder for a template')
+    .withMessage("You cannot set a folder for a template")
 ];
 
 /**
  * Validator for deleting a template
  */
 const deleteTemplateValidator = [
-  param('templateId').custom(value => {
+  param("templateId").custom(value => {
     if (!Boolean(value)) {
-      throw new Error('Template ID is required');
+      throw new Error("Template ID is required");
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`Template ID ${value} is not a valid ObjectId`);
     }
