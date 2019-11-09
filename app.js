@@ -5,6 +5,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const passport = require("passport");
 
 const userRoutes = require("./routes/user");
 const itemRoutes = require("./routes/item");
@@ -21,6 +22,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api/folders", folderRoutes);
 app.use("/api/templates", templateRoutes);
+
+app.use(passport.initialize());
+require("./config/passport")(passport);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client", "build")));

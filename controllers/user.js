@@ -1,4 +1,7 @@
+require("dotenv").config("../.env");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 const { validationResult } = require("express-validator");
 
 const User = require("../models/user");
@@ -7,6 +10,9 @@ const User = require("../models/user");
  * Creates a new user
  * @param {Object} req Request object
  * @param {Object} res Response object
+ * @param {Object} req.body Request body
+ * @param {string} req.body.email Email of the user (required)
+ * @param {string} req.body.password Password of the user (required)
  */
 async function registerUser(req, res) {
   const errors = validationResult(req);
@@ -37,6 +43,57 @@ async function registerUser(req, res) {
   }
 }
 
+/**
+ * Logs a user in
+ * @param {Object} req Request object
+ * @param {Object} res Response object
+ * @param {Object} req.body Request body
+ * @param {string} req.body.email Email of the user (required)
+ * @param {string} req.body.password Password of the user (required)
+ */
+async function loginUser(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+  if (user) {
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (isPasswordMatch) {
+      const payload = {
+        id: user.id
+      };
+
+      try {
+        // Token is valid for 1 day
+        const token = await jwt.sign(payload, process.env.SECRET_OR_KEY, {
+          expiresIn: 86400
+        });
+
+        return res.status(200).json({ token: `Bearer ${token}` });
+      } catch (tokenErr) {
+        return res.status(500).json({
+          status: 500,
+          userMessage:
+            "There was a problem in generating a token. Please try again."
+        });
+      }
+    } else {
+      return res
+        .status(400)
+        .json({ status: 400, userMessage: "Incorrect password" });
+    }
+  } else {
+    return res
+      .status(404)
+      .json({ status: 404, userMessage: "User does not exist" });
+  }
+}
+
 module.exports = {
-  registerUser
+  registerUser,
+  loginUser
 };

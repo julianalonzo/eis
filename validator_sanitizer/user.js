@@ -34,6 +34,27 @@ const registerUserValidator = [
     .bail()
 ];
 
+/**
+ * Validates whether email is valid or password is valid
+ */
+const loginUserValidator = [
+  body("email")
+    .not()
+    .isEmpty({ ignore_whitespace: true })
+    .withMessage("Email is required")
+    .bail()
+    .isEmail()
+    .withMessage("Email is not valid")
+    .bail()
+    .trim(),
+  body("password")
+    .not()
+    .isEmpty({ ignore_whitespace: true })
+    .withMessage("Password is required")
+    .bail()
+];
+
 module.exports = {
-  registerUserValidator
+  registerUserValidator,
+  loginUserValidator
 };
