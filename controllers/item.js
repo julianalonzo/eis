@@ -1,9 +1,10 @@
-const { validationResult } = require('express-validator');
+const { validationResult } = require("express-validator");
 
-const { saveFiles } = require('./file');
-const { getFolderHierarchy } = require('./folder');
+const { saveFiles } = require("./file");
+const { getFolderHierarchy } = require("./folder");
 
-const Item = require('../models/item');
+const Item = require("../models/item");
+const Folder = require("../models/folder");
 
 /**
  * Gets all shown or searched/filtered items in the collection
@@ -18,29 +19,39 @@ async function getItems(req, res) {
     return res.status(422).json({ errors: errors.array() });
   }
 
+  const { userId } = req.body;
   let items = [];
 
-  const searchQuery = req.query.search || '';
-  if (Boolean(searchQuery)) {
-    items = await Item.find(
-      {
-        $text: { $search: searchQuery },
+  const userFolders = await Folder.find({ user: userId, shown: true });
+  if (userFolders.length > 0) {
+    const searchQuery = req.query.search || "";
+    if (Boolean(searchQuery)) {
+      items = await Item.find(
+        {
+          $text: { $search: searchQuery },
+          isTemplate: false,
+          shown: true,
+          folder: { $in: userFolders }
+        },
+        {
+          score: { $meta: "textScore" }
+        }
+      )
+        .sort({ score: { $meta: "textScore" } })
+        .populate("thumbnails")
+        .populate("attachments")
+        .exec();
+    } else {
+      items = await Item.find({
+        ...req.query,
         isTemplate: false,
-        shown: true
-      },
-      {
-        score: { $meta: 'textScore' }
-      }
-    )
-      .sort({ score: { $meta: 'textScore' } })
-      .populate('thumbnails')
-      .populate('attachments')
-      .exec();
-  } else {
-    items = await Item.find({ ...req.query, isTemplate: false, shown: true })
-      .populate('thumbnails')
-      .populate('attachments')
-      .exec();
+        shown: true,
+        folder: { $in: userFolders.map(userFolder => userFolder.id) }
+      })
+        .populate("thumbnails")
+        .populate("attachments")
+        .exec();
+    }
   }
 
   for (let i = 0; i < items.length; i++) {
@@ -68,30 +79,35 @@ async function getItem(req, res) {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  const itemId = req.params.itemId;
-  const item = await Item.findOne({
-    _id: itemId,
-    isTemplate: false,
-    shown: true
-  })
-    .populate('thumbnails')
-    .populate('attachments')
-    .exec();
+  const { userId } = req.body;
 
-  if (Boolean(item)) {
-    const folderHierarchy = await getFolderHierarchy(item.folder);
+  const userFolders = await Folder.find({ user: userId, shown: true });
+  if (userFolders.length > 0) {
+    const itemId = req.params.itemId;
+    const item = await Item.findOne({
+      _id: itemId,
+      isTemplate: false,
+      shown: true,
+      folder: { $in: userFolders }
+    })
+      .populate("thumbnails")
+      .populate("attachments")
+      .exec();
 
-    return res.status(200).json({
-      item: {
-        ...item._doc,
-        folderHierarchy: folderHierarchy
-      }
-    });
+    if (Boolean(item)) {
+      const folderHierarchy = await getFolderHierarchy(item.folder);
+
+      return res.status(200).json({
+        item: {
+          ...item._doc,
+          folderHierarchy: folderHierarchy
+        }
+      });
+    } else {
+      return res.status(404).json({ item: null });
+    }
   } else {
-    return res.status(404).json({
-      item: null,
-      error: { status: 404, userMessage: 'Item does not exist' }
-    });
+    return res.status(404).json({ item: null });
   }
 }
 
@@ -126,13 +142,22 @@ async function createItem(req, res) {
     properties,
     thumbnails,
     attachments,
-    folder
+    folder,
+    userId
   } = req.body;
 
   const { newThumbnails, newAttachments } = req.files;
 
-  const newThumbnailsIds = await saveFiles('thumbnail', newThumbnails || []);
-  const newAttachmentsIds = await saveFiles('attachment', newAttachments || []);
+  const newThumbnailsIds = await saveFiles(
+    userId,
+    "thumbnail",
+    newThumbnails || []
+  );
+  const newAttachmentsIds = await saveFiles(
+    userId,
+    "attachment",
+    newAttachments || []
+  );
 
   const savedItem = await new Item({
     name: name,
@@ -150,8 +175,8 @@ async function createItem(req, res) {
   }).save();
 
   const item = await savedItem
-    .populate('thumbnails')
-    .populate('attachments')
+    .populate("thumbnails")
+    .populate("attachments")
     .execPopulate();
 
   const folderHierarchy = await getFolderHierarchy(item.folder);
@@ -185,6 +210,7 @@ async function updateItem(req, res) {
     return res.status(422).json({ errors: errors.array() });
   }
 
+  const { userId } = req.body;
   const itemId = req.params.itemId;
 
   const item = await Item.findById(itemId);
@@ -196,10 +222,10 @@ async function updateItem(req, res) {
       const { newThumbnails, newAttachments } = req.files;
 
       newThumbnailsIds = newThumbnails
-        ? await saveFiles('thumbnail', newThumbnails)
+        ? await saveFiles(userId, "thumbnail", newThumbnails)
         : undefined;
       newAttachmentsIds = newAttachments
-        ? await saveFiles('attachment', newAttachments)
+        ? await saveFiles(userId, "attachment", newAttachments)
         : undefined;
     }
 
@@ -208,7 +234,8 @@ async function updateItem(req, res) {
       {
         $set: {
           _id: itemId,
-          ...req.body
+          ...req.body,
+          userId: undefined
         }
       },
       { omitUndefined: true }
@@ -226,8 +253,8 @@ async function updateItem(req, res) {
     );
 
     const updatedItem = await Item.findById(itemId)
-      .populate('thumbnails')
-      .populate('attachments')
+      .populate("thumbnails")
+      .populate("attachments")
       .exec();
 
     const folderHierarchy = await getFolderHierarchy(item.folder);
@@ -241,7 +268,7 @@ async function updateItem(req, res) {
   } else {
     return res.status(404).json({
       item: null,
-      error: { status: 404, userMessage: 'Item does not exist' }
+      error: { status: 404, userMessage: "Item does not exist" }
     });
   }
 }
@@ -256,9 +283,14 @@ async function updateItem(req, res) {
 async function deleteItem(req, res) {
   const itemId = req.params.itemId;
 
+  const { userId } = req.body;
+
+  const userFolders = await Folder.find({ shown: true, user: userId });
+
   const deletedItem = await Item.findOneAndDelete({
     _id: itemId,
-    isTemplate: false
+    isTemplate: false,
+    folder: { $in: userFolders }
   });
 
   if (deletedItem === null) {
@@ -266,7 +298,7 @@ async function deleteItem(req, res) {
       itemId: null,
       error: {
         status: 404,
-        userMessage: 'Item does not exist'
+        userMessage: "Item does not exist"
       }
     });
   }

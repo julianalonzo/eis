@@ -8,7 +8,8 @@ const fileSchema = new Schema({
   path: { type: String, required: true },
   type: { type: String, required: true, enum: ["thumbnail", "attachment"] },
   size: { type: Number, required: true },
-  dateUploaded: { type: Date, required: true, default: Date.now }
+  dateUploaded: { type: Date, required: true, default: Date.now },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
 });
 
 module.exports = mongoose.model("File", fileSchema);

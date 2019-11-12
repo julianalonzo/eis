@@ -16,6 +16,7 @@ async function getFolders(req, res) {
     return res.status(422).json({ errors: errors.array() });
   }
 
+  const { userId } = req.body;
   let folders = [];
 
   const searchQuery = req.query.search || "";
@@ -23,14 +24,15 @@ async function getFolders(req, res) {
     folders = await Folder.find(
       {
         $text: { $search: searchQuery },
-        shown: true
+        shown: true,
+        user: userId
       },
       {
         score: { $meta: "textScore" }
       }
     ).sort({ score: { $meta: "textScore" } });
   } else {
-    folders = await Folder.find({ ...req.query, shown: true });
+    folders = await Folder.find({ ...req.query, shown: true, user: userId });
   }
 
   let foldersWithHierarchy = [];
@@ -59,8 +61,13 @@ async function getFolder(req, res) {
   }
 
   const { folderId } = req.params;
+  const { userId } = req.body;
 
-  const folder = await Folder.findOne({ _id: folderId, shown: true });
+  const folder = await Folder.findOne({
+    _id: folderId,
+    shown: true,
+    user: userId
+  });
   if (folder === null) {
     return res.status(404).json({
       folder: null,
@@ -92,8 +99,13 @@ async function getFolder(req, res) {
  */
 async function getFolderItems(req, res) {
   const { folderId } = req.params;
+  const { userId } = req.body;
 
-  const folder = await Folder.findOne({ _id: folderId, shown: true });
+  const folder = await Folder.findOne({
+    _id: folderId,
+    shown: true,
+    user: userId
+  });
   if (folder === null) {
     return res.status(404).json({
       folder: null,
@@ -136,12 +148,13 @@ async function createFolder(req, res) {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  const { name, parent } = req.body;
+  const { name, parent, userId } = req.body;
 
   const folder = await new Folder({
     name: name,
     parent: Boolean(parent) ? parent : null,
-    shown: true
+    shown: true,
+    user: userId
   }).save();
 
   return res.status(201).json({ folder: folder });
@@ -164,10 +177,10 @@ async function updateFolder(req, res) {
   }
 
   const { folderId } = req.params;
-  const { name, parent } = req.body;
+  const { name, parent, userId } = req.body;
 
   const updatedFolder = await Folder.findOneAndUpdate(
-    { _id: folderId },
+    { _id: folderId, user: userId },
     { $set: { name: name, parent: Boolean(parent) ? parent : null } },
     { new: true, omitUndefined: true, useFindAndModify: false }
   );
@@ -199,8 +212,9 @@ async function deleteFolder(req, res) {
   }
 
   const folderId = req.params.folderId;
+  const { userId } = req.body;
 
-  const folder = await Folder.findById(folderId);
+  const folder = await Folder.findOne({ _id: folderId, user: userId });
   if (folder === null) {
     return res.status(404).json({
       deletedFoldersIds: [],

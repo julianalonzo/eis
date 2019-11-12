@@ -16,12 +16,12 @@ const getFoldersValidator = [
 
     return true;
   }),
-  query("parent").custom(async value => {
+  query("parent").custom(async (value, { req }) => {
     if (value === undefined) {
       return true;
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`Parent folder ID "${value}" is not a valid ObjectId`);
-    } else if (!(await isFolderFound(value))) {
+    } else if (!(await isFolderFound(value, req.body.userId))) {
       throw new Error(`Parent folder ID ${value} does not exist`);
     }
 
@@ -53,12 +53,12 @@ const createFolderValidator = [
     .isEmpty({ ignore_whitespace: true })
     .trim()
     .withMessage("Folder name is required"),
-  body("parent").custom(async value => {
+  body("parent").custom(async (value, { req }) => {
     if (!Boolean(value)) {
       return true;
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`Parent folder ID ${value} is not a valid ObjectId`);
-    } else if (!(await isFolderFound(value))) {
+    } else if (!(await isFolderFound(value, req.body.userId))) {
       throw new Error(`Parent folder ID ${value} does not exist`);
     }
 
@@ -70,7 +70,7 @@ const createFolderValidator = [
  * Validator for updating a folder
  */
 const updateFolderValidator = [
-  param("folderId").custom(async value => {
+  param("folderId").custom(async (value, { req }) => {
     if (!Boolean(value)) {
       throw new Error("Folder ID is required");
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
@@ -92,7 +92,7 @@ const updateFolderValidator = [
         return true;
       } else if (!mongoose.Types.ObjectId.isValid(value)) {
         throw new Error(`Parent folder ID ${value} is not a valid ObjectId`);
-      } else if (!(await isFolderFound(value))) {
+      } else if (!(await isFolderFound(value, req.body.userId))) {
         throw new Error(`Parent folder ID ${value} does not exist`);
       } else if (value === req.params.folderId) {
         throw new Error("A folder cannot be its own parent");
@@ -115,12 +115,14 @@ const deleteFolderValidator = param("folderId").custom(value => {
 /**
  * Checks whether the folder id is found in the Folder collection
  * @param {mongoose.Types.ObjectId} folderId
+ * @param {mongoose.Types.ObjectId} userId
  * @returns true when the folder is found, otherwise false
  */
-async function isFolderFound(folderId) {
+async function isFolderFound(folderId, userId) {
   const folder = await Folder.findOne({
     _id: folderId,
-    shown: true
+    shown: true,
+    user: userId
   });
 
   if (folder === null) {

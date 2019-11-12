@@ -12,6 +12,11 @@ const folderSchema = new Schema({
     type: Boolean,
     default: true,
     select: false
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
   }
 });
 

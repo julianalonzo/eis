@@ -55,7 +55,7 @@ const createItemValidator = [
     .trim(),
   body("thumbnails")
     .if(body("thumbnails").exists())
-    .custom(async value => {
+    .custom(async (value, { req }) => {
       let thumbnails;
       try {
         thumbnails = JSON.parse(value);
@@ -63,7 +63,7 @@ const createItemValidator = [
         throw new Error("Thumbnails must be in JSON");
       }
 
-      await validateThumbnails(thumbnails);
+      await validateThumbnails(req.body.userId, thumbnails);
 
       return true;
     })
@@ -92,7 +92,7 @@ const createItemValidator = [
     }),
   body("attachments")
     .if(body("attachments").exists())
-    .custom(async value => {
+    .custom(async (value, { req }) => {
       let attachments;
       try {
         attachments = JSON.parse(value);
@@ -100,7 +100,7 @@ const createItemValidator = [
         throw new Error("Attachments must be in JSON");
       }
 
-      await validateAttachments(attachments);
+      await validateAttachments(req.body.userId, attachments);
 
       return true;
     })
@@ -108,13 +108,13 @@ const createItemValidator = [
     .customSanitizer(value => {
       return JSON.parse(value);
     }),
-  body("folder").custom(async value => {
+  body("folder").custom(async (value, { req }) => {
     const folder = value || "";
     if (folder.trim() === "") {
       throw new Error("Folder is required");
     } else if (!mongoose.Types.ObjectId.isValid(folder)) {
       throw new Error(`Folder ${folder} is not a valid Object ID`);
-    } else if (!(await isFolderFound(folder))) {
+    } else if (!(await isFolderFound(folder, req.body.userId))) {
       throw new Error(`Folder ${folder} was not found`);
     }
 
@@ -149,7 +149,7 @@ const updateItemValidator = [
     .trim(),
   body("thumbnails")
     .if(body("thumbnails").exists())
-    .custom(async value => {
+    .custom(async (value, { req }) => {
       let thumbnails;
       try {
         thumbnails = JSON.parse(value);
@@ -157,7 +157,7 @@ const updateItemValidator = [
         throw new Error("Thumbnails must be in JSON");
       }
 
-      await validateThumbnails(thumbnails);
+      await validateThumbnails(req.body.userId, thumbnails);
 
       return true;
     })
@@ -186,7 +186,7 @@ const updateItemValidator = [
     }),
   body("attachments")
     .if(body("attachments").exists())
-    .custom(async value => {
+    .custom(async (value, { req }) => {
       let attachments;
       try {
         attachments = JSON.parse(value);
@@ -194,7 +194,7 @@ const updateItemValidator = [
         throw new Error("Attachments must be in JSON");
       }
 
-      await validateAttachments(attachments);
+      await validateAttachments(req.body.userId, attachments);
 
       return true;
     })
@@ -262,32 +262,31 @@ const deleteItemValidator = [
 
 /**
  * Checks whether the file id with the corresponding file type is in the File collection
+ * @param {mongoose.Types.ObjectId} userId User who uploaded the file
  * @param {string} type Either 'thumbnail' or 'attachment'
  * @param {mongoose.Types.ObjectId} fileId
  * @returns true when file is found, otherwise false
  */
-async function isFileFound(type, file) {
+async function isFileFound(userId, type, file) {
   const savedFile = await File.findOne({
     _id: file,
-    type: type
+    type: type,
+    user: userId
   });
 
-  if (savedFile === null) {
-    return false;
-  }
-
-  return true;
+  return Boolean(savedFile);
 }
 
 /**
  * Validates thumbnails if they are a valid ObjectId and if they exist in the collection
+ * @param {mongoose.Types.ObjectId} userId User who uploaded the file
  * @param {mongoose.Types.ObjectId[]} thumbnails Thumbnail IDs
  */
-async function validateThumbnails(thumbnails) {
+async function validateThumbnails(userId, thumbnails) {
   for (const thumbnail of thumbnails) {
     if (!mongoose.Types.ObjectId.isValid(thumbnail)) {
       throw new Error(`Thumbnail ${thumbnail} is not a valid Object ID`);
-    } else if (!(await isFileFound("thumbnail", thumbnail))) {
+    } else if (!(await isFileFound(userId, "thumbnail", thumbnail))) {
       throw new Error(`Thumbnail ${thumbnail} does not exist`);
     }
   }
@@ -310,13 +309,14 @@ async function validateProperties(properties) {
 
 /**
  * Validates attachments if they are a valid ObjectId and if they exist in the collection
+ * @param {mongoose.Types.ObjectId} userId User who uploaded the file
  * @param {mongoose.Types.ObjectId[]} attachments Attachments to be validated
  */
-async function validateAttachments(attachments) {
+async function validateAttachments(userId, attachments) {
   for (const attachment of attachments) {
     if (!mongoose.Types.ObjectId.isValid(attachment)) {
       throw new Error(`Attachment ${attachment} is not a valid Object ID`);
-    } else if (!(await isFileFound("attachment", attachment))) {
+    } else if (!(await isFileFound(userId, "attachment", attachment))) {
       throw new Error(`Attachment ${attachment} does not exist`);
     }
   }

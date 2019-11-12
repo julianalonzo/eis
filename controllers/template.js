@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const { validationResult } = require('express-validator');
+const mongoose = require("mongoose");
+const { validationResult } = require("express-validator");
 
-const Item = require('../models/item');
-const Template = require('../models/template');
+const Item = require("../models/item");
+const Template = require("../models/template");
 
-const { saveFiles } = require('./file');
+const { saveFiles } = require("./file");
 
 /**
  * Gets all shown or searched/filtered templates
@@ -19,44 +19,46 @@ async function getTemplates(req, res) {
     return res.status(422).json({ errors: errors.array() });
   }
 
+  const { userId } = req.body;
   let templates = [];
 
-  const searchQuery = req.query.search || '';
+  const searchQuery = req.query.search || "";
   if (Boolean(searchQuery)) {
     templates = await Template.find(
       {
         $text: { $search: searchQuery },
-        shown: true
+        shown: true,
+        user: userId
       },
-      { score: { $meta: 'textScore' } }
+      { score: { $meta: "textScore" } }
     )
-      .sort({ score: { $meta: 'textScore' } })
+      .sort({ score: { $meta: "textScore" } })
       .populate({
-        path: 'item',
+        path: "item",
         populate: [
           {
-            path: 'thumbnails',
-            model: 'File'
+            path: "thumbnails",
+            model: "File"
           },
           {
-            path: 'attachments',
-            model: 'File'
+            path: "attachments",
+            model: "File"
           }
         ]
       })
       .exec();
   } else {
-    templates = await Template.find({ ...req.query, shown: true })
+    templates = await Template.find({ ...req.query, shown: true, user: userId })
       .populate({
-        path: 'item',
+        path: "item",
         populate: [
           {
-            path: 'thumbnails',
-            model: 'File'
+            path: "thumbnails",
+            model: "File"
           },
           {
-            path: 'attachments',
-            model: 'File'
+            path: "attachments",
+            model: "File"
           }
         ]
       })
@@ -79,21 +81,23 @@ async function getTemplate(req, res) {
     return res.status(422).json({ errors: errors.array() });
   }
 
+  const { userId } = req.body;
   const templateId = req.params.templateId;
   const template = await Template.findOne({
     _id: templateId,
-    shown: true
+    shown: true,
+    user: userId
   })
     .populate({
-      path: 'item',
+      path: "item",
       populate: [
         {
-          path: 'thumbnails',
-          model: 'File'
+          path: "thumbnails",
+          model: "File"
         },
         {
-          path: 'attachments',
-          model: 'File'
+          path: "attachments",
+          model: "File"
         }
       ]
     })
@@ -104,7 +108,7 @@ async function getTemplate(req, res) {
   } else {
     return res.status(404).json({
       template: null,
-      error: { status: 404, userMessage: 'Template does not exist' }
+      error: { status: 404, userMessage: "Template does not exist" }
     });
   }
 }
@@ -140,13 +144,22 @@ async function createTemplate(req, res) {
     condition,
     thumbnails,
     attachments,
-    properties
+    properties,
+    userId
   } = req.body;
 
   const { newThumbnails, newAttachments } = req.files;
 
-  const newThumbnailsIds = await saveFiles('thumbnail', newThumbnails || []);
-  const newAttachmentsIds = await saveFiles('attachment', newAttachments || []);
+  const newThumbnailsIds = await saveFiles(
+    userId,
+    "thumbnail",
+    newThumbnails || []
+  );
+  const newAttachmentsIds = await saveFiles(
+    userId,
+    "attachment",
+    newAttachments || []
+  );
 
   const savedItem = await new Item({
     name: itemName,
@@ -167,20 +180,21 @@ async function createTemplate(req, res) {
   const savedTemplate = await new Template({
     name: templateName,
     description: templateDescription,
-    item: savedItem.id
+    item: savedItem.id,
+    user: userId
   }).save();
 
   const template = await savedTemplate
     .populate({
-      path: 'item',
+      path: "item",
       populate: [
         {
-          path: 'thumbnails',
-          model: 'File'
+          path: "thumbnails",
+          model: "File"
         },
         {
-          path: 'attachments',
-          model: 'File'
+          path: "attachments",
+          model: "File"
         }
       ]
     })
@@ -221,10 +235,11 @@ async function updateTemplate(req, res) {
     condition,
     thumbnails,
     attachments,
-    properties
+    properties,
+    userId
   } = req.body;
 
-  const template = await Template.findById(templateId);
+  const template = await Template.findOne({ _id: templateId, user: userId });
 
   if (template !== null) {
     let newThumbnailsIds;
@@ -233,15 +248,15 @@ async function updateTemplate(req, res) {
       const { newThumbnails, newAttachments } = req.files;
 
       newThumbnailsIds = newThumbnails
-        ? await saveFiles('thumbnail', newThumbnails)
+        ? await saveFiles(userId, "thumbnail", newThumbnails)
         : undefined;
       newAttachmentsIds = newAttachments
-        ? await saveFiles('attachment', newAttachments)
+        ? await saveFiles(userId, "attachment", newAttachments)
         : undefined;
     }
 
     await Template.updateOne(
-      { _id: templateId },
+      { _id: templateId, user: userId },
       { name: templateName, description: templateDescription },
       { omitUndefined: true }
     );
@@ -273,17 +288,20 @@ async function updateTemplate(req, res) {
       { omitUndefined: true }
     );
 
-    const updatedTemplate = await Template.findById(templateId)
+    const updatedTemplate = await Template.findOne({
+      _id: templateId,
+      user: userId
+    })
       .populate({
-        path: 'item',
+        path: "item",
         populate: [
           {
-            path: 'thumbnails',
-            model: 'File'
+            path: "thumbnails",
+            model: "File"
           },
           {
-            path: 'attachments',
-            model: 'File'
+            path: "attachments",
+            model: "File"
           }
         ]
       })
@@ -295,7 +313,7 @@ async function updateTemplate(req, res) {
   } else {
     return res.status(404).json({
       template: null,
-      error: { status: 404, userMessage: 'Template does not exist' }
+      error: { status: 404, userMessage: "Template does not exist" }
     });
   }
 }
@@ -313,16 +331,17 @@ async function deleteTemplate(req, res) {
     return res.status(422).json({ errors: errors.array() });
   }
 
+  const { userId } = req.body;
   const templateId = req.params.templateId;
 
-  const template = await Template.findById(templateId);
+  const template = await Template.findOne({ _id: templateId, user: userId });
 
   if (template === null) {
     return res.status(404).json({
       templateId: null,
       error: {
         status: 404,
-        userMessage: 'Template does not exist'
+        userMessage: "Template does not exist"
       }
     });
   }
