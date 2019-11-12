@@ -17,7 +17,7 @@ const registerUserValidator = [
     .custom(async value => {
       const user = await User.findOne({ email: value.trim() });
       if (user !== null) {
-        throw new Error(`${value.trim()} already exists`);
+        throw new Error("Email is already registered");
       }
 
       return true;

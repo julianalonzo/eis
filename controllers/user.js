@@ -70,10 +70,12 @@ async function loginUser(req, res) {
       try {
         // Token is valid for 1 day
         const token = await jwt.sign(payload, process.env.SECRET_OR_KEY, {
-          expiresIn: 86400
+          expiresIn: "7d"
         });
 
-        return res.status(200).json({ token: `Bearer ${token}` });
+        return res.status(200).json({
+          token: `Bearer ${token}`
+        });
       } catch (tokenErr) {
         return res.status(500).json({
           status: 500,
@@ -82,14 +84,14 @@ async function loginUser(req, res) {
         });
       }
     } else {
-      return res
-        .status(400)
-        .json({ status: 400, userMessage: "Incorrect password" });
+      return res.status(401).json({
+        errors: [{ param: "password", msg: "Incorrect password" }]
+      });
     }
   } else {
-    return res
-      .status(404)
-      .json({ status: 404, userMessage: "User does not exist" });
+    return res.status(404).json({
+      errors: [{ param: "email", msg: "User does not exist" }]
+    });
   }
 }
 

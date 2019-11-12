@@ -28,3 +28,7 @@ export {
   deleteItem,
   moveItem
 } from "./folder";
+
+export { registerUser } from "./user";
+
+export { authenticateUser, setUser, signoutUser } from "./auth";
