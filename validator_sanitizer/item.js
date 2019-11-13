@@ -233,13 +233,13 @@ const updateItemValidator = [
     }),
   body("folder")
     .if(body("folder").exists())
-    .custom(async value => {
+    .custom(async (value, { req }) => {
       const folder = value;
       if (folder.trim() === "") {
         throw new Error("Folder is required");
       } else if (!mongoose.Types.ObjectId.isValid(folder)) {
         throw new Error(`Folder ${folder} is not a valid Object ID`);
-      } else if (!(await isFolderFound(folder))) {
+      } else if (!(await isFolderFound(folder, req.body.userId))) {
         throw new Error(`Folder ${folder} was not found`);
       }
 

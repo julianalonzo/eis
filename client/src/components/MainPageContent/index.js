@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { connect } from "react-redux";
-import * as actions from "../../store/actions";
-import { useHistory, useParams } from "react-router-dom";
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions';
+import { useHistory, useParams } from 'react-router-dom';
 
-import useDialogState from "../../hooks/useDialogState";
-import usePopperState from "../../hooks/usePopperState";
+import useDialogState from '../../hooks/useDialogState';
+import usePopperState from '../../hooks/usePopperState';
 
-import EmptyIllustration from "../../assets/illustrations/empty.svg";
-import Folders from "./Folders";
-import FolderMoreActionsPopper from "./Folders/FolderMoreActionsPopper";
-import IllustrationPlaceholder from "../UI/IllustrationPlaceholder";
-import Items from "./Items";
-import ItemMoreActionsMenuListPopper from "./Items/ItemMoreActionsMenuListPopper";
-import LoadingIndicator from "../UI/LoadingIndicator";
-import MainPageToolBar from "./MainPageToolBar";
-import MoveDialog from "../MoveDialog";
-import NewButtonMenuListPopper from "../NewButtonMenuListPopper";
-import NewFolderDialog from "../NewFolderDialog";
+import EmptyIllustration from '../../assets/illustrations/empty.svg';
+import Folders from './Folders';
+import FolderMoreActionsPopper from './Folders/FolderMoreActionsPopper';
+import IllustrationPlaceholder from '../UI/IllustrationPlaceholder';
+import Items from './Items';
+import ItemMoreActionsMenuListPopper from './Items/ItemMoreActionsMenuListPopper';
+import LoadingIndicator from '../UI/LoadingIndicator';
+import MainPageToolBar from './MainPageToolBar';
+import MoveDialog from '../MoveDialog';
+import NewButtonMenuListPopper from '../NewButtonMenuListPopper';
+import NewFolderDialog from '../NewFolderDialog';
 
 function MainPageContent({
   folders,
@@ -100,7 +100,7 @@ function MainPageContent({
   const createFolderHandler = async name => {
     await onCreateFolder({
       name: name,
-      parent: folderId || ""
+      parent: folderId || ''
     });
   };
 
@@ -234,7 +234,6 @@ function MainPageContent({
         onSubmit={moveItemHandler}
         submitting={movingItem}
         options={folders.filter(folder => folder._id !== folderId)}
-        currentFolder={folder}
         isRequired
       />
       {/* Move folder dialog */}
@@ -244,15 +243,11 @@ function MainPageContent({
         onClose={closeMoveFolderDialogHandler}
         onSubmit={moveFolderHandler}
         submitting={movingFolder}
-        options={
-          folderId
-            ? folders.filter(
-                folder =>
-                  folder._id !== folderIdMoreActions && folder._id !== folderId
-              )
-            : folders.filter(folder => folder._id !== folderIdMoreActions)
-        }
-        currentFolder={folder}
+        options={folders.filter(
+          f =>
+            f.hierarchy.findIndex(fh => fh._id === folderIdMoreActions) < 0 &&
+            f._id !== folderId
+        )}
       />
     </div>
   );
@@ -283,7 +278,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MainPageContent);
+export default connect(mapStateToProps, mapDispatchToProps)(MainPageContent);

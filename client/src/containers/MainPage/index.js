@@ -1,27 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-import { connect } from "react-redux";
-import * as actions from "../../store/actions";
-import { useHistory, useParams } from "react-router-dom";
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions';
+import { useHistory, useParams } from 'react-router-dom';
 
-import useDialogState from "../../hooks/useDialogState";
+import useDialogState from '../../hooks/useDialogState';
 
-import IllustrationPlaceholder from "../../components/UI/IllustrationPlaceholder";
+import IllustrationPlaceholder from '../../components/UI/IllustrationPlaceholder';
 
-import FoldersTreeView from "../../components/FoldersTreeView";
-import LoadingIndicator from "../../components/UI/LoadingIndicator";
-import MainPageContent from "../../components/MainPageContent";
-import NewFolderDialog from "../../components/NewFolderDialog";
-import NoFoldersllustration from "../../assets/illustrations/select_folder.svg";
+import FoldersTreeView from '../../components/FoldersTreeView';
+import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import MainPageContent from '../../components/MainPageContent';
+import NewFolderDialog from '../../components/NewFolderDialog';
+import NoFoldersllustration from '../../assets/illustrations/select_folder.svg';
 
-import { makeStyles } from "@material-ui/styles";
-import { CssBaseline, Drawer, Hidden } from "@material-ui/core/";
+import { makeStyles } from '@material-ui/styles';
+import { CssBaseline, Drawer, Hidden } from '@material-ui/core/';
 
 const drawerWidth = 300;
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: "flex"
+    display: 'flex'
   },
   drawer: {
     width: drawerWidth,
@@ -29,8 +29,8 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: "transparent",
-    borderRight: "none"
+    backgroundColor: 'transparent',
+    borderRight: 'none'
   },
   content: {
     flexGrow: 1
@@ -91,7 +91,7 @@ function MainPage({
           subtitle="Create your first folder to start using EIS"
           sourceImage={NoFoldersllustration}
           action={{
-            label: "New Folder",
+            label: 'New Folder',
             action: openNewFolderDialogHandler
           }}
         />
@@ -145,7 +145,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MainPage);
+export default connect(mapStateToProps, mapDispatchToProps)(MainPage);
