@@ -1,23 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-import { parseFormSubmissionError } from "../../util/helperFunctions";
+import { parseFormSubmissionError } from '../../util/helperFunctions';
 
-import { connect } from "react-redux";
-import * as actions from "../../store/actions";
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions';
 
-import { Form, Field } from "react-final-form";
-import { Link, useHistory } from "react-router-dom";
-import validator from "validator";
+import { Form, Field } from 'react-final-form';
+import { Link, useHistory } from 'react-router-dom';
+import validator from 'validator';
 
-import Button from "../../components/UI/Button";
+import Button from '../../components/UI/Button';
 
-import { TextField, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+import { TextField, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(6, 2),
-    width: "500px"
+    width: '500px'
   },
   greetingWrapper: {
     marginBottom: theme.spacing(4)
@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary
   },
   actionWrapper: {
-    textAlign: "right"
+    textAlign: 'right'
   }
 }));
 
@@ -69,30 +69,31 @@ function SigninPage({
 
   useEffect(() => {
     if (isAuthenticated) {
-      history.push("/");
+      history.push('/');
     }
   }, [isAuthenticated, history]);
 
   return (
     <Form
-      validate={values => {
-        const errors = {};
-
-        const email = values.email || "";
-        if (validator.isEmpty(email, { ignore_whitespace: true })) {
-          errors.email = "Email is required";
-        } else if (!validator.isEmail(email)) {
-          errors.email = "Email is not valid";
-        }
-
-        const password = values.password || "";
-        if (validator.isEmpty(password, { ignore_whitespace: true })) {
-          errors.password = "Password is required";
-        }
-
-        return errors;
-      }}
       onSubmit={async values => {
+        let clientSideErrors = {};
+
+        const email = values.email || '';
+        if (validator.isEmpty(email, { ignore_whitespace: true })) {
+          clientSideErrors.email = 'Email is required';
+        } else if (!validator.isEmail(email)) {
+          clientSideErrors.email = 'Email is not valid';
+        }
+
+        const password = values.password || '';
+        if (validator.isEmpty(password)) {
+          clientSideErrors.password = 'Password is required';
+        }
+
+        if (Object.keys(clientSideErrors).length > 0) {
+          return clientSideErrors;
+        }
+
         return await authenticateUserHandler(values);
       }}
       render={({ handleSubmit }) => {
@@ -112,7 +113,7 @@ function SigninPage({
             </div>
             <div className={classes.noAccountWrapper}>
               <Typography variant="body2" color="textSecondary">
-                No account yet?{" "}
+                No account yet?{' '}
                 <Link to="/signup" className={classes.link}>
                   Create an account now
                 </Link>
@@ -128,14 +129,10 @@ function SigninPage({
                       variant="outlined"
                       className={classes.textField}
                       fullWidth
-                      error={
-                        (meta.error && meta.touched) ||
-                        (meta.submitError && !meta.dirtySinceLastSubmit)
-                      }
+                      error={meta.submitError && !meta.dirtySinceLastSubmit}
                       helperText={
-                        (meta.error && meta.touched) ||
-                        (meta.submitError && !meta.dirtySinceLastSubmit)
-                          ? meta.error || meta.submitError
+                        meta.submitError && !meta.dirtySinceLastSubmit
+                          ? meta.submitError
                           : null
                       }
                     />
@@ -152,14 +149,10 @@ function SigninPage({
                       variant="outlined"
                       className={classes.textField}
                       fullWidth
-                      error={
-                        (meta.error && meta.touched) ||
-                        (meta.submitError && !meta.dirtySinceLastSubmit)
-                      }
+                      error={meta.submitError && !meta.dirtySinceLastSubmit}
                       helperText={
-                        (meta.error && meta.touched) ||
-                        (meta.submitError && !meta.dirtySinceLastSubmit)
-                          ? meta.error || meta.submitError
+                        meta.submitError && !meta.dirtySinceLastSubmit
+                          ? meta.submitError
                           : null
                       }
                     />
@@ -183,7 +176,7 @@ function SigninPage({
                   variant="contained"
                   disabled={authenticatingUser}
                 >
-                  {authenticatingUser ? "Signing in..." : "Signin"}
+                  {authenticatingUser ? 'Signing in...' : 'Signin'}
                 </Button>
               </div>
             </form>
@@ -208,7 +201,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SigninPage);
+export default connect(mapStateToProps, mapDispatchToProps)(SigninPage);
