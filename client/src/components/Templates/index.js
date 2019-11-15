@@ -7,9 +7,9 @@ import EmptyTemplatesIllustration from '../../assets/illustrations/empty_templat
 import IllustrationPlaceholder from '../UI/IllustrationPlaceholder';
 import LoadingIndicator from '../UI/LoadingIndicator';
 
+import { Image as NoThumbnailIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { Grid, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   subtitle: {
@@ -49,18 +49,19 @@ export default function Templates({
   return (
     <Grid container spacing={4}>
       {templates.map(template => {
-        let thumbnailUrl = null;
-
-        if (template.item.thumbnails.length > 0) {
-          thumbnailUrl = template.item.thumbnails[0].path;
-        }
-
         return (
           <Grid key={template._id} item xs={12} lg={3} md={4}>
             <Card
               title={template.name}
-              thumbnailVariant="image"
-              image={thumbnailUrl}
+              thumbnailVariant={
+                template.item.thumbnails.length > 0 ? 'image' : 'icon'
+              }
+              image={
+                template.item.thumbnails.length > 0
+                  ? template.item.thumbnails[0].path
+                  : undefined
+              }
+              icon={<NoThumbnailIcon />}
               chip={template.item.category || null}
               onClick={() => {
                 onOpenTemplatePage(template._id);

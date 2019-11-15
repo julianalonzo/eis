@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { isRequired } from '../../util/validators';
 
@@ -49,17 +49,17 @@ export default function ItemDetailsForm({
 }) {
   const classes = useStyles();
 
-  const preprocessedThumbnails = thumbnails.map(thumbnail => {
-    let image;
+  const generateThumbnailsPreview = useMemo(() => {
+    return thumbnails.map(thumbnail => {
+      if (thumbnail instanceof File) {
+        return {
+          objectUrl: URL.createObjectURL(thumbnail)
+        };
+      }
 
-    if (thumbnail instanceof File) {
-      image = URL.createObjectURL(thumbnail);
-    } else {
-      image = thumbnail.path;
-    }
-
-    return image;
-  });
+      return thumbnail;
+    });
+  }, [thumbnails]);
 
   return (
     <Grid container>
@@ -133,18 +133,21 @@ export default function ItemDetailsForm({
           onAddFiles={onAddThumbnails}
           label="thumbnails"
         >
-          {preprocessedThumbnails.length > 0 ? (
+          {thumbnails.length > 0 ? (
             <div className={classes.thumbnailsPreviewContainer}>
-              {preprocessedThumbnails.map((thumbnail, index) => {
+              {generateThumbnailsPreview.map((thumbnail, index) => {
+                const thumbnailUrl = thumbnail.path
+                  ? thumbnail.path
+                  : thumbnail.objectUrl;
                 return (
                   <Thumbnail
-                    key={thumbnail}
+                    key={thumbnailUrl}
                     variant="image"
-                    image={thumbnail}
+                    image={thumbnailUrl}
                     onRemoveThumbnail={() => {
                       onRemoveThumbnail(index);
                     }}
-                    marginRight={3}
+                    marginRight={4}
                   />
                 );
               })}

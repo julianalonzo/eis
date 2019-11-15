@@ -1,13 +1,15 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import { Close as CloseIcon } from '@material-ui/icons';
+import { IconButton, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: props => ({
-    marginRight: theme.spacing(props.marginRight),
+    position: 'relative',
+    marginRight: theme.spacing(props.marginRight)
+  }),
+  thumbnailWrapper: props => ({
     border: `1px solid ${theme.palette.grey[300]}`,
     borderRadius: '8px',
     width: props.thumbnailSize,
@@ -40,9 +42,12 @@ const useStyles = makeStyles(theme => ({
     fontWeight: theme.typography.fontWeightMedium
   },
   removeIcon: {
-    position: 'relative',
-    right: theme.spacing(-4.5),
+    position: 'absolute',
+    right: theme.spacing(-3.5),
     top: theme.spacing(3.5)
+  },
+  onClick: {
+    cursor: 'pointer'
   }
 }));
 
@@ -59,7 +64,12 @@ export default function Thumbnail({
 }) {
   let thumbnailSize = size === 'default' ? 40 : 155;
 
-  const classes = useStyles({ marginRight, image, onClick, thumbnailSize });
+  const classes = useStyles({
+    marginRight,
+    image,
+    onClick,
+    thumbnailSize
+  });
 
   let variantClass;
   let content;
@@ -86,16 +96,19 @@ export default function Thumbnail({
   }
 
   return (
-    <div
-      className={`${classes.root} ${variantClass} ${
-        noBorder ? classes.noBorder : ''
-      }`}
-    >
-      {content}
+    <div className={classes.root}>
+      <div
+        className={`${classes.thumbnailWrapper} ${variantClass} ${
+          noBorder ? classes.noBorder : ''
+        } ${onClick ? classes.onClick : null}`}
+        onClick={onClick}
+      >
+        {content}
+      </div>
       {onRemoveThumbnail && (
         <div className={classes.removeIcon}>
           <IconButton size="small" onClick={onRemoveThumbnail}>
-            <CloseIcon fontSize="small" />
+            <CloseIcon />
           </IconButton>
         </div>
       )}

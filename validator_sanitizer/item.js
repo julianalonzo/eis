@@ -1,15 +1,15 @@
-const { body, param, query } = require("express-validator");
-const mongoose = require("mongoose");
+const { body, param, query } = require('express-validator');
+const mongoose = require('mongoose');
 
-const { isFolderFound } = require("./folder");
+const { isFolderFound } = require('./folder');
 
-const File = require("../models/file");
+const File = require('../models/file');
 
 /**
  * Validates whether the folder and _id query params are valid object IDs
  */
 const getItemsValidator = [
-  query("_id").custom(value => {
+  query('_id').custom(value => {
     if (value === undefined) {
       return true;
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
@@ -18,7 +18,7 @@ const getItemsValidator = [
 
     return true;
   }),
-  query("folder").custom(value => {
+  query('folder').custom(value => {
     if (value === undefined) {
       return true;
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
@@ -33,9 +33,9 @@ const getItemsValidator = [
  * Validates whether the itemId param is existing and is a valid ObjectId
  */
 const getItemValidator = [
-  param("itemId").custom(value => {
+  param('itemId').custom(value => {
     if (!Boolean(value)) {
-      throw new Error("Item ID is required");
+      throw new Error('Item ID is required');
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`Item ID ${value} is not a valid ObjectId`);
     }
@@ -48,19 +48,19 @@ const getItemValidator = [
  * Validates the item that will be created
  */
 const createItemValidator = [
-  body("name")
+  body('name')
     .not()
     .isEmpty({ ignore_whitespace: true })
-    .withMessage("Item name is required")
+    .withMessage('Item name is required')
     .trim(),
-  body("thumbnails")
-    .if(body("thumbnails").exists())
+  body('thumbnails')
+    .if(body('thumbnails').exists())
     .custom(async (value, { req }) => {
       let thumbnails;
       try {
         thumbnails = JSON.parse(value);
       } catch (err) {
-        throw new Error("Thumbnails must be in JSON");
+        throw new Error('Thumbnails must be in JSON');
       }
 
       await validateThumbnails(req.body.userId, thumbnails);
@@ -71,14 +71,14 @@ const createItemValidator = [
     .customSanitizer(value => {
       return JSON.parse(value);
     }),
-  body("properties")
-    .if(body("properties").exists())
+  body('properties')
+    .if(body('properties').exists())
     .custom(async value => {
       let properties;
       try {
         properties = JSON.parse(value);
       } catch (err) {
-        throw new Error("Properties must be in JSON");
+        throw new Error('Properties must be in JSON');
       }
 
       await validateProperties(properties);
@@ -90,14 +90,14 @@ const createItemValidator = [
       const properties = JSON.parse(value);
       return sanitizeProperties(properties);
     }),
-  body("attachments")
-    .if(body("attachments").exists())
+  body('attachments')
+    .if(body('attachments').exists())
     .custom(async (value, { req }) => {
       let attachments;
       try {
         attachments = JSON.parse(value);
       } catch (err) {
-        throw new Error("Attachments must be in JSON");
+        throw new Error('Attachments must be in JSON');
       }
 
       await validateAttachments(req.body.userId, attachments);
@@ -108,10 +108,10 @@ const createItemValidator = [
     .customSanitizer(value => {
       return JSON.parse(value);
     }),
-  body("folder").custom(async (value, { req }) => {
-    const folder = value || "";
-    if (folder.trim() === "") {
-      throw new Error("Folder is required");
+  body('folder').custom(async (value, { req }) => {
+    const folder = value || '';
+    if (folder.trim() === '') {
+      throw new Error('Folder is required');
     } else if (!mongoose.Types.ObjectId.isValid(folder)) {
       throw new Error(`Folder ${folder} is not a valid Object ID`);
     } else if (!(await isFolderFound(folder, req.body.userId))) {
@@ -126,35 +126,35 @@ const createItemValidator = [
  * Validates the item that will be updated
  */
 const updateItemValidator = [
-  param("itemId").custom(value => {
+  param('itemId').custom(value => {
     if (!Boolean(value)) {
-      throw new Error("Item ID is required");
+      throw new Error('Item ID is required');
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`Item ID ${value} is not a valid ObjectId`);
     }
 
     return true;
   }),
-  body("name")
-    .if(body("name").exists())
+  body('name')
+    .if(body('name').exists())
     .not()
     .isEmpty({ ignore_whitespace: true })
-    .withMessage("Item name is required")
+    .withMessage('Item name is required')
     .trim(),
-  body("category")
-    .if(body("category").exists())
+  body('category')
+    .if(body('category').exists())
     .trim(),
-  body("condition")
-    .if(body("condition").exists())
+  body('condition')
+    .if(body('condition').exists())
     .trim(),
-  body("thumbnails")
-    .if(body("thumbnails").exists())
+  body('thumbnails')
+    .if(body('thumbnails').exists())
     .custom(async (value, { req }) => {
       let thumbnails;
       try {
         thumbnails = JSON.parse(value);
       } catch (err) {
-        throw new Error("Thumbnails must be in JSON");
+        throw new Error('Thumbnails must be in JSON');
       }
 
       await validateThumbnails(req.body.userId, thumbnails);
@@ -165,14 +165,14 @@ const updateItemValidator = [
     .customSanitizer(value => {
       return JSON.parse(value) || [];
     }),
-  body("properties")
-    .if(body("properties").exists())
+  body('properties')
+    .if(body('properties').exists())
     .custom(async value => {
       let properties;
       try {
         properties = JSON.parse(value) || [];
       } catch (err) {
-        throw new Error("Properties must be in JSON");
+        throw new Error('Properties must be in JSON');
       }
 
       await validateProperties(properties);
@@ -184,14 +184,14 @@ const updateItemValidator = [
       const properties = JSON.parse(value);
       return sanitizeProperties(properties);
     }),
-  body("attachments")
-    .if(body("attachments").exists())
+  body('attachments')
+    .if(body('attachments').exists())
     .custom(async (value, { req }) => {
       let attachments;
       try {
         attachments = JSON.parse(value);
       } catch (err) {
-        throw new Error("Attachments must be in JSON");
+        throw new Error('Attachments must be in JSON');
       }
 
       await validateAttachments(req.body.userId, attachments);
@@ -202,19 +202,19 @@ const updateItemValidator = [
     .customSanitizer(value => {
       return JSON.parse(value);
     }),
-  body("notes")
-    .if(body("notes").exists())
+  body('notes')
+    .if(body('notes').exists())
     .custom(value => {
       let notes;
       try {
         notes = JSON.parse(value);
       } catch (err) {
-        throw new Error("Notes must be in JSON");
+        throw new Error('Notes must be in JSON');
       }
 
       for (const note of notes) {
-        if (note.content.trim() === "") {
-          throw new Error("A note must not be empty");
+        if (note.content.trim() === '') {
+          throw new Error('A note must not be empty');
         }
       }
 
@@ -231,12 +231,12 @@ const updateItemValidator = [
         };
       });
     }),
-  body("folder")
-    .if(body("folder").exists())
+  body('folder')
+    .if(body('folder').exists())
     .custom(async (value, { req }) => {
       const folder = value;
-      if (folder.trim() === "") {
-        throw new Error("Folder is required");
+      if (folder.trim() === '') {
+        throw new Error('Folder is required');
       } else if (!mongoose.Types.ObjectId.isValid(folder)) {
         throw new Error(`Folder ${folder} is not a valid Object ID`);
       } else if (!(await isFolderFound(folder, req.body.userId))) {
@@ -251,9 +251,9 @@ const updateItemValidator = [
  * Validates the item that will be deleted
  */
 const deleteItemValidator = [
-  param("itemId").custom(value => {
+  param('itemId').custom(value => {
     if (!Boolean(value)) {
-      throw new Error("Item ID is required");
+      throw new Error('Item ID is required');
     } else if (!mongoose.Types.ObjectId.isValid(value)) {
       throw new Error(`Item ID ${value} is not a valid ObjectId`);
     }
@@ -286,7 +286,7 @@ async function validateThumbnails(userId, thumbnails) {
   for (const thumbnail of thumbnails) {
     if (!mongoose.Types.ObjectId.isValid(thumbnail)) {
       throw new Error(`Thumbnail ${thumbnail} is not a valid Object ID`);
-    } else if (!(await isFileFound(userId, "thumbnail", thumbnail))) {
+    } else if (!(await isFileFound(userId, 'thumbnail', thumbnail))) {
       throw new Error(`Thumbnail ${thumbnail} does not exist`);
     }
   }
@@ -300,9 +300,9 @@ async function validateThumbnails(userId, thumbnails) {
  */
 async function validateProperties(properties) {
   for (const property of properties) {
-    const propertyName = property.name || "";
-    if (propertyName.trim() === "") {
-      throw new Error("Property name is required");
+    const propertyName = property.name || '';
+    if (propertyName.trim() === '') {
+      throw new Error('Property name is required');
     }
   }
 }
@@ -316,7 +316,7 @@ async function validateAttachments(userId, attachments) {
   for (const attachment of attachments) {
     if (!mongoose.Types.ObjectId.isValid(attachment)) {
       throw new Error(`Attachment ${attachment} is not a valid Object ID`);
-    } else if (!(await isFileFound(userId, "attachment", attachment))) {
+    } else if (!(await isFileFound(userId, 'attachment', attachment))) {
       throw new Error(`Attachment ${attachment} does not exist`);
     }
   }
@@ -333,7 +333,7 @@ function sanitizeProperties(properties) {
     return {
       ...property,
       name: property.name.trim(),
-      value: Boolean(property.value) ? property.value.trim() : ""
+      value: Boolean(property.value) ? property.value.trim() : ''
     };
   });
 }

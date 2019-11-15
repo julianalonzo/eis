@@ -3,6 +3,7 @@ import React from 'react';
 import Breadcrumbs from '../../../Breadcrumbs';
 import Thumbnail from '../../../Thumbnail';
 
+import { Image as NoThumbnailIcon } from '@material-ui/icons';
 import { List, ListItem, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
@@ -45,12 +46,6 @@ export default function SearchResults({ searchedItems, onOpenItem }) {
       ) : (
         <List className={classes.list}>
           {searchedItems.map(item => {
-            let thumbnailUrl;
-
-            if (item.thumbnails.length > 0) {
-              thumbnailUrl = item.thumbnails[0].path;
-            }
-
             return (
               <ListItem
                 key={item._id}
@@ -62,8 +57,13 @@ export default function SearchResults({ searchedItems, onOpenItem }) {
                 <div className={classes.result}>
                   <div>
                     <Thumbnail
-                      variant="image"
-                      image={thumbnailUrl}
+                      variant={item.thumbnails.length > 0 ? 'image' : 'icon'}
+                      image={
+                        item.thumbnails.length > 0
+                          ? item.thumbnails[0].path
+                          : undefined
+                      }
+                      icon={<NoThumbnailIcon />}
                       marginRight={2}
                     />
                   </div>
