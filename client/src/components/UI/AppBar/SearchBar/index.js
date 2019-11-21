@@ -12,7 +12,8 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: 400
+    width: '100%',
+    position: 'relative'
   },
   searchBarPaper: {
     padding: theme.spacing(0, 2),
@@ -20,10 +21,10 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center'
   },
   searchResult: {
-    width: 400,
     position: 'absolute',
     marginTop: theme.spacing(0.25),
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
+    width: '100%'
   },
   searchIcon: {
     marginRight: theme.spacing(2),
@@ -103,7 +104,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchBar);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

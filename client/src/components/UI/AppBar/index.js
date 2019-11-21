@@ -1,30 +1,30 @@
-import React from "react";
+import React from 'react';
 
-import { connect } from "react-redux";
-import * as actions from "../../../store/actions";
+import { connect } from 'react-redux';
+import * as actions from '../../../store/actions';
 
-import usePopperState from "../../../hooks/usePopperState";
+import usePopperState from '../../../hooks/usePopperState';
 
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-import MenuListPopper from "../../UI/MenuListPopper";
-import SearchBar from "./SearchBar";
+import MenuListPopper from '../../UI/MenuListPopper';
+import SearchBar from './SearchBar';
 
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from '@material-ui/styles';
 import {
   AccountCircle as AccountIcon,
-  Dashboard as DashboardIcon,
+  Menu as HamburgerIcon,
   TurnedIn as TemplatesIcon
-} from "@material-ui/icons/";
+} from '@material-ui/icons/';
 import {
-  Box,
-  IconButton,
   AppBar as MuiAppBar,
+  Hidden,
+  IconButton,
   MenuItem,
   MenuList,
   Toolbar,
   Typography
-} from "@material-ui/core/";
+} from '@material-ui/core/';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -33,20 +33,34 @@ const useStyles = makeStyles(theme => ({
   root: {
     zIndex: theme.zIndex.drawer + 1
   },
+  toolbar: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'space-between'
+    }
+  },
   link: {
-    color: "white",
-    textDecoration: "none",
-    "&:hover": {
-      textDecoration: "underline"
+    color: 'white',
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'underline'
     }
   },
   searchBarContainer: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    width: 400,
+    [theme.breakpoints.down('sm')]: {
+      marginRight: 0,
+      width: 350
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: 250
+    }
   },
-  desktopNav: {
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center"
+  navActions: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
   navButtons: {
     marginRight: theme.spacing(4)
@@ -67,27 +81,31 @@ function AppBar({ onSignoutUser }) {
   ));
 
   return (
-    <Box className={classes.grow}>
-      <MuiAppBar className={classes.root}>
-        <Toolbar variant="dense">
+    <MuiAppBar className={classes.root}>
+      <Toolbar variant="dense" className={classes.toolbar}>
+        <div className={classes.appTitle}>
           <Typography variant="h6" color="inherit">
             <Link to="/" className={classes.link}>
               EIS
             </Link>
           </Typography>
-          <Box className={classes.grow}></Box>
-          <Box className={classes.desktopNav}>
-            <Box className={classes.searchBarContainer}>
-              <SearchBar />
-            </Box>
-            <Box className={classes.navButtons}>
-              <IconButton color="inherit">
-                <DashboardIcon />
-              </IconButton>
-              <IconButton color="inherit" component={TemplatesLink}>
-                <TemplatesIcon />
-              </IconButton>
-            </Box>
+        </div>
+        <Hidden smDown>
+          <div className={classes.grow} />
+        </Hidden>
+        <div className={classes.searchBarContainer}>
+          <SearchBar />
+        </div>
+        <div className={classes.navActions}>
+          <Hidden mdUp>
+            <IconButton color="inherit">
+              <HamburgerIcon />
+            </IconButton>
+          </Hidden>
+          <Hidden smDown>
+            <IconButton color="inherit" component={TemplatesLink}>
+              <TemplatesIcon />
+            </IconButton>
             <IconButton
               color="inherit"
               onClick={event => {
@@ -96,21 +114,21 @@ function AppBar({ onSignoutUser }) {
             >
               <AccountIcon />
             </IconButton>
-            <MenuListPopper
-              isOpen={Boolean(accountPopperAnchorEl)}
-              anchorEl={accountPopperAnchorEl}
-              onClose={closeAccountPopperHandler}
-            >
-              <MenuList className={classes.menuList}>
-                <MenuItem onClick={onSignoutUser}>
-                  <Typography>Signout</Typography>
-                </MenuItem>
-              </MenuList>
-            </MenuListPopper>
-          </Box>
-        </Toolbar>
-      </MuiAppBar>
-    </Box>
+          </Hidden>
+          <MenuListPopper
+            isOpen={Boolean(accountPopperAnchorEl)}
+            anchorEl={accountPopperAnchorEl}
+            onClose={closeAccountPopperHandler}
+          >
+            <MenuList className={classes.menuList}>
+              <MenuItem onClick={onSignoutUser}>
+                <Typography>Signout</Typography>
+              </MenuItem>
+            </MenuList>
+          </MenuListPopper>
+        </div>
+      </Toolbar>
+    </MuiAppBar>
   );
 }
 
@@ -124,7 +142,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppBar);
+export default connect(mapStateToProps, mapDispatchToProps)(AppBar);
