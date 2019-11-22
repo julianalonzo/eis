@@ -13,7 +13,7 @@ import SearchBar from './SearchBar';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import {
   AccountCircle as AccountIcon,
-  ArrowBack as ArrowBackIcon,
+  Close as CloseIcon,
   Search as SearchIcon,
   TurnedIn as TemplatesIcon
 } from '@material-ui/icons/';
@@ -169,7 +169,7 @@ function AppBar({ onSignoutUser }) {
                 setIsInMobileSearch(false);
               }}
             >
-              <ArrowBackIcon />
+              <CloseIcon />
             </IconButton>
             <SearchBar />
           </div>
