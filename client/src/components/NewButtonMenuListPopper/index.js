@@ -33,11 +33,7 @@ export default function NewButtonMenuListPopper({
     <MenuListPopper isOpen={isOpen} anchorEl={anchorEl} onClose={onClose}>
       <MenuList className={classes.menuList}>
         {isInFolder ? (
-          <MenuItem
-            onClick={() => {
-              onOpenSelectTemplatePage();
-            }}
-          >
+          <MenuItem onClick={onOpenSelectTemplatePage}>
             <ItemIcon className={classes.menuItemIcon} />
             <Typography>Item</Typography>
           </MenuItem>

@@ -61,9 +61,6 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center'
-  },
-  navButtons: {
-    marginRight: theme.spacing(4)
   }
 }));
 

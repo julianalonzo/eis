@@ -19,6 +19,9 @@ import MoveDialog from '../MoveDialog';
 import NewButtonMenuListPopper from '../NewButtonMenuListPopper';
 import NewFolderDialog from '../NewFolderDialog';
 
+import Hidden from '@material-ui/core/Hidden';
+import NewButtonSpeedDial from './NewButtonSpeedDial';
+
 function MainPageContent({
   folders,
   folder,
@@ -78,6 +81,19 @@ function MainPageContent({
     openMoveItemDialogHandler,
     closeMoveItemDialogHandler
   ] = useDialogState(false);
+
+  const [
+    isNewButtonSpeedDialOpen,
+    setIsNewButtonSpeedDialOpen
+  ] = React.useState(false);
+
+  const openNewButtonSpeedDialHandler = () => {
+    setIsNewButtonSpeedDialOpen(true);
+  };
+
+  const closeNewButtonSpeedDialHandler = () => {
+    setIsNewButtonSpeedDialOpen(false);
+  };
 
   const onOpenFolderMoreActions = (event, id) => {
     openFolderMoreActionsHandler(event.currentTarget);
@@ -178,6 +194,16 @@ function MainPageContent({
         onOpenNewButtonMenu={openNewButtonHandler}
         breadcrumbs={breadcrumbs}
       />
+      <Hidden mdUp>
+        <NewButtonSpeedDial
+          isOpen={isNewButtonSpeedDialOpen}
+          onOpen={openNewButtonSpeedDialHandler}
+          onClose={closeNewButtonSpeedDialHandler}
+          isInFolder={Boolean(folderId)}
+          onOpenSelectTemplatePage={openSelectTemplatePageHandler}
+          onOpenNewFolderDialog={openNewFolderDialogHandler}
+        />
+      </Hidden>
       <NewButtonMenuListPopper
         isOpen={Boolean(newButtonAnchorEl)}
         anchorEl={newButtonAnchorEl}
