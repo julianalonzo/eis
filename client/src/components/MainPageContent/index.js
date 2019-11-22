@@ -194,16 +194,6 @@ function MainPageContent({
         onOpenNewButtonMenu={openNewButtonHandler}
         breadcrumbs={breadcrumbs}
       />
-      <Hidden mdUp>
-        <NewButtonSpeedDial
-          isOpen={isNewButtonSpeedDialOpen}
-          onOpen={openNewButtonSpeedDialHandler}
-          onClose={closeNewButtonSpeedDialHandler}
-          isInFolder={Boolean(folderId)}
-          onOpenSelectTemplatePage={openSelectTemplatePageHandler}
-          onOpenNewFolderDialog={openNewFolderDialogHandler}
-        />
-      </Hidden>
       <NewButtonMenuListPopper
         isOpen={Boolean(newButtonAnchorEl)}
         anchorEl={newButtonAnchorEl}
@@ -275,6 +265,16 @@ function MainPageContent({
             f._id !== folderId
         )}
       />
+      <Hidden mdUp>
+        <NewButtonSpeedDial
+          isOpen={isNewButtonSpeedDialOpen}
+          onOpen={openNewButtonSpeedDialHandler}
+          onClose={closeNewButtonSpeedDialHandler}
+          isInFolder={Boolean(folderId)}
+          onOpenSelectTemplatePage={openSelectTemplatePageHandler}
+          onOpenNewFolderDialog={openNewFolderDialogHandler}
+        />
+      </Hidden>
     </div>
   );
 }

@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@material-ui/lab';
 import ItemIcon from '@material-ui/icons/Style';
 import FolderIcon from '@material-ui/icons/Folder';
 
@@ -57,6 +55,7 @@ export default function NewButtonSpeedDial({
             onClose();
             onOpenNewFolderDialog();
           }}
+          className={classes.speedDialAction}
         />
       )}
     </SpeedDial>
