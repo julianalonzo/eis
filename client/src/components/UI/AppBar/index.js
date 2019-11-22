@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
@@ -10,10 +10,11 @@ import { Link } from 'react-router-dom';
 import MenuListPopper from '../../UI/MenuListPopper';
 import SearchBar from './SearchBar';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import {
   AccountCircle as AccountIcon,
-  Menu as HamburgerIcon,
+  ArrowBack as ArrowBackIcon,
+  Search as SearchIcon,
   TurnedIn as TemplatesIcon
 } from '@material-ui/icons/';
 import {
@@ -23,7 +24,8 @@ import {
   MenuItem,
   MenuList,
   Toolbar,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@material-ui/core/';
 
 const useStyles = makeStyles(theme => ({
@@ -61,11 +63,25 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center'
+  },
+  appTitleNavContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  mobileSearchContainer: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center'
+  },
+  cancelSearchButton: {
+    marginRight: theme.spacing(1)
   }
 }));
 
 function AppBar({ onSignoutUser }) {
+  const theme = useTheme();
   const classes = useStyles();
+  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [
     accountPopperAnchorEl,
@@ -73,57 +89,91 @@ function AppBar({ onSignoutUser }) {
     closeAccountPopperHandler
   ] = usePopperState(null);
 
+  const [isInMobileSearch, setIsInMobileSearch] = useState(false);
+
   const TemplatesLink = React.forwardRef((props, ref) => (
     <Link innerRef={ref} to="/templates" {...props} />
   ));
 
+  useEffect(() => {
+    if (!matchesSm && isInMobileSearch) {
+      setIsInMobileSearch(false);
+    }
+  }, [matchesSm, isInMobileSearch]);
+
   return (
     <MuiAppBar className={classes.root}>
-      <Toolbar variant="dense" className={classes.toolbar}>
-        <div className={classes.appTitle}>
-          <Typography variant="h6" color="inherit">
-            <Link to="/" className={classes.link}>
-              EIS
-            </Link>
-          </Typography>
-        </div>
-        <Hidden smDown>
-          <div className={classes.grow} />
-        </Hidden>
-        <div className={classes.searchBarContainer}>
-          <SearchBar />
-        </div>
-        <div className={classes.navActions}>
-          <Hidden mdUp>
-            <IconButton color="inherit">
-              <HamburgerIcon />
-            </IconButton>
-          </Hidden>
-          <Hidden smDown>
-            <IconButton color="inherit" component={TemplatesLink}>
-              <TemplatesIcon />
-            </IconButton>
+      <Toolbar
+        variant={!matchesSm ? 'dense' : undefined}
+        className={classes.toolbar}
+      >
+        {!isInMobileSearch ? (
+          <>
+            <div className={classes.appTitleNavContainer}>
+              <div className={classes.appTitle}>
+                <Typography variant="h6" color="inherit">
+                  <Link to="/" className={classes.link}>
+                    EIS
+                  </Link>
+                </Typography>
+              </div>
+            </div>
+            <Hidden smDown>
+              <div className={classes.grow} />
+            </Hidden>
+            <div className={classes.navActions}>
+              {matchesSm ? (
+                <IconButton
+                  color="inherit"
+                  onClick={() => {
+                    setIsInMobileSearch(true);
+                  }}
+                >
+                  <SearchIcon />
+                </IconButton>
+              ) : (
+                <div className={classes.searchBarContainer}>
+                  <SearchBar />
+                </div>
+              )}
+              <IconButton color="inherit" component={TemplatesLink}>
+                <TemplatesIcon />
+              </IconButton>
+              <IconButton
+                color="inherit"
+                onClick={event => {
+                  openAccountPopperHandler(event.currentTarget);
+                }}
+              >
+                <AccountIcon />
+              </IconButton>
+            </div>
+            <MenuListPopper
+              isOpen={Boolean(accountPopperAnchorEl)}
+              anchorEl={accountPopperAnchorEl}
+              onClose={closeAccountPopperHandler}
+            >
+              <MenuList className={classes.menuList}>
+                <MenuItem onClick={onSignoutUser}>
+                  <Typography>Signout</Typography>
+                </MenuItem>
+              </MenuList>
+            </MenuListPopper>
+          </>
+        ) : (
+          <div className={classes.mobileSearchContainer}>
             <IconButton
               color="inherit"
-              onClick={event => {
-                openAccountPopperHandler(event.currentTarget);
+              className={classes.cancelSearchButton}
+              onClick={() => {
+                setIsInMobileSearch(false);
               }}
             >
-              <AccountIcon />
+              <ArrowBackIcon />
             </IconButton>
-          </Hidden>
-          <MenuListPopper
-            isOpen={Boolean(accountPopperAnchorEl)}
-            anchorEl={accountPopperAnchorEl}
-            onClose={closeAccountPopperHandler}
-          >
-            <MenuList className={classes.menuList}>
-              <MenuItem onClick={onSignoutUser}>
-                <Typography>Signout</Typography>
-              </MenuItem>
-            </MenuList>
-          </MenuListPopper>
-        </div>
+            <SearchBar />
+          </div>
+        )}
       </Toolbar>
     </MuiAppBar>
   );
