@@ -39,25 +39,25 @@ export default function NewButtonSpeedDial({
       open={isOpen}
       direction="up"
     >
-      <SpeedDialAction
-        icon={<ItemIcon />}
-        tooltipTitle="New Item"
-        onClick={() => {
-          onClose();
-          onOpenSelectTemplatePage();
-        }}
-      />
       {isInFolder && (
         <SpeedDialAction
-          icon={<FolderIcon />}
-          tooltipTitle="New Folder"
+          icon={<ItemIcon />}
+          tooltipTitle="New Item"
           onClick={() => {
             onClose();
-            onOpenNewFolderDialog();
+            onOpenSelectTemplatePage();
           }}
-          className={classes.speedDialAction}
         />
       )}
+      <SpeedDialAction
+        icon={<FolderIcon />}
+        tooltipTitle="New Folder"
+        onClick={() => {
+          onClose();
+          onOpenNewFolderDialog();
+        }}
+        className={classes.speedDialAction}
+      />
     </SpeedDial>
   );
 }
