@@ -9,7 +9,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 
 const useStyles = makeStyles(theme => ({
   speedDial: {
-    position: 'absolute',
+    position: 'fixed',
     '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
       bottom: theme.spacing(2),
       right: theme.spacing(2)
