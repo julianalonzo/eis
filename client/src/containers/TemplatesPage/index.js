@@ -11,15 +11,20 @@ import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import Templates from '../../components/Templates';
 import TemplateMoreActionsMenuListPopper from '../../components/Templates/TemplateMoreActionsMenuListPopper';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import { Add as AddIcon } from '@material-ui/icons';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Fab, Typography, useMediaQuery } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   pageHeading: {
     marginBottom: theme.spacing(3),
     display: 'flex',
     justifyContent: 'space-between'
+  },
+  floatingActionButton: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2)
   }
 }));
 
@@ -30,7 +35,9 @@ function TemplatesPage({
   onFetchTemplates,
   onRemoveTemplate
 }) {
+  const theme = useTheme();
   const classes = useStyles();
+  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const history = useHistory();
 
@@ -80,22 +87,32 @@ function TemplatesPage({
   return (
     <>
       {templates.length > 0 && (
-        <Box className={classes.pageHeading}>
-          <Box>
+        <div className={classes.pageHeading}>
+          <div>
             <Typography variant="h6" className={classes.pageHeading}>
               My Templates
             </Typography>
-          </Box>
-          <Box>
-            <Button
-              variant="contained"
-              color="primary"
-              component={NewTemplatePageLink}
-            >
-              <AddIcon /> New Template
-            </Button>
-          </Box>
-        </Box>
+          </div>
+          <div>
+            {matchesSm ? (
+              <Fab
+                className={classes.floatingActionButton}
+                color="primary"
+                component={NewTemplatePageLink}
+              >
+                <AddIcon />
+              </Fab>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                component={NewTemplatePageLink}
+              >
+                <AddIcon /> New Template
+              </Button>
+            )}
+          </div>
+        </div>
       )}
       <Templates
         templates={templates}
@@ -130,7 +147,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TemplatesPage);
+export default connect(mapStateToProps, mapDispatchToProps)(TemplatesPage);

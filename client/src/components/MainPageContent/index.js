@@ -18,9 +18,9 @@ import MainPageToolBar from './MainPageToolBar';
 import MoveDialog from '../MoveDialog';
 import NewButtonMenuListPopper from '../NewButtonMenuListPopper';
 import NewFolderDialog from '../NewFolderDialog';
+import NewButtonSpeedDial from './NewButtonSpeedDial';
 
 import Hidden from '@material-ui/core/Hidden';
-import NewButtonSpeedDial from './NewButtonSpeedDial';
 
 function MainPageContent({
   folders,
