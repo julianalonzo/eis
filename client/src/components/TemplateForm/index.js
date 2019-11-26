@@ -13,9 +13,7 @@ import PropertiesForm from '../PropertiesForm';
 import TemplateDetailsForm from '../TemplateDetailsForm';
 
 import { makeStyles } from '@material-ui/styles';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
-import { Typography } from '@material-ui/core';
+import { Grid, Hidden, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   pageHeading: {
@@ -79,8 +77,10 @@ export default function TemplateForm({
         return (
           <form onSubmit={handleSubmit}>
             <Grid container>
-              <Grid item md={2} />
-              <Grid item xs={12} md={8} className={classes.formContainer}>
+              <Hidden smDown>
+                <Grid item md={2} />
+              </Hidden>
+              <Grid item sm={12} md={8}>
                 <Typography variant="h6" className={classes.pageHeading}>
                   {title}
                 </Typography>
@@ -118,7 +118,7 @@ export default function TemplateForm({
                     onRemoveAttachment={removeAttachmentHandler}
                   />
                 </FormPaper>
-                <Box className={classes.actionButtonsContainer}>
+                <div className={classes.actionButtonsContainer}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -127,9 +127,11 @@ export default function TemplateForm({
                   >
                     {submitting ? 'Saving Template...' : 'Save Template'}
                   </Button>
-                </Box>
+                </div>
               </Grid>
-              <Grid item md={2} />
+              <Hidden smDown>
+                <Grid item md={2} />
+              </Hidden>
             </Grid>
           </form>
         );

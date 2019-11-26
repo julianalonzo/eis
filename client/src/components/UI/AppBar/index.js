@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center'
   },
   cancelSearchButton: {
-    marginRight: theme.spacing(1)
+    marginLeft: theme.spacing(1)
   }
 }));
 
@@ -162,6 +162,7 @@ function AppBar({ onSignoutUser }) {
           </>
         ) : (
           <div className={classes.mobileSearchContainer}>
+            <SearchBar />
             <IconButton
               color="inherit"
               className={classes.cancelSearchButton}
@@ -171,7 +172,6 @@ function AppBar({ onSignoutUser }) {
             >
               <CloseIcon />
             </IconButton>
-            <SearchBar />
           </div>
         )}
       </Toolbar>

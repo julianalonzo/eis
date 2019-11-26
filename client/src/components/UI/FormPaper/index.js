@@ -21,7 +21,7 @@ export default function FormPaper({ title, subtitle, children }) {
   return (
     <Paper className={classes.root}>
       <Grid container spacing={4}>
-        <Grid item sm={12} md={5}>
+        <Grid item xs={12} sm={12} md={5}>
           <Typography variant="h6" color="textSecondary">
             {title}
           </Typography>
@@ -29,7 +29,7 @@ export default function FormPaper({ title, subtitle, children }) {
             {subtitle}
           </Typography>
         </Grid>
-        <Grid item sm={12} md={7}>
+        <Grid item xs={12} sm={12} md={7}>
           {children}
         </Grid>
       </Grid>

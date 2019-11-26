@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-import { Form } from "react-final-form";
+import { Form } from 'react-final-form';
 
-import Button from "../UI/Button";
-import Dialog from "../UI/Dialog";
-import DialogTitle from "../UI/Dialog/DialogTitle";
-import DialogContent from "../UI/Dialog/DialogContent";
-import DialogActions from "../UI/Dialog/DialogActions";
-import TemplateDetailsForm from "../TemplateDetailsForm";
+import Button from '../UI/Button';
+import Dialog from '../UI/Dialog';
+import DialogTitle from '../UI/Dialog/DialogTitle';
+import DialogContent from '../UI/Dialog/DialogContent';
+import DialogActions from '../UI/Dialog/DialogActions';
+import TemplateDetailsForm from '../TemplateDetailsForm';
 
 function EditTemplateDetailsDialogForm({
   isOpen,
@@ -30,7 +30,7 @@ function EditTemplateDetailsDialogForm({
   const submitHandler = async values => {
     const updatedTemplateData = {
       templateName: values.templateName,
-      templateDescription: values.templateDescription || ""
+      templateDescription: values.templateDescription || ''
     };
 
     await onSubmit(updatedTemplateData, [], []);
@@ -48,7 +48,7 @@ function EditTemplateDetailsDialogForm({
 
         return (
           <form onSubmit={handleSubmit}>
-            <Dialog isOpen={isOpen} onClose={onClose}>
+            <Dialog isOpen={isOpen} onClose={onClose} fullWidth responsive>
               <DialogTitle onClose={onClose}>Edit Template Details</DialogTitle>
               <DialogContent>
                 <TemplateDetailsForm />
@@ -58,7 +58,7 @@ function EditTemplateDetailsDialogForm({
                   Cancel
                 </Button>
                 <Button color="primary" type="submit" disabled={submitting}>
-                  {submitting ? "Saving..." : "Save"}
+                  {submitting ? 'Saving...' : 'Save'}
                 </Button>
               </DialogActions>
             </Dialog>

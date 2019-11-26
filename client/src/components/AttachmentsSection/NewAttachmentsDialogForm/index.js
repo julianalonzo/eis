@@ -11,7 +11,6 @@ import DialogActions from '../../UI/Dialog/DialogActions';
 import EmptyAttachmentsIllustration from '../../../assets/illustrations/upload.svg';
 
 import { makeStyles } from '@material-ui/styles';
-import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   centered: {
@@ -49,10 +48,16 @@ export default function NewAttachmentsDialogForm({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} maxWidth="sm" fullWidth={true}>
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      responsive
+    >
       <DialogTitle onClose={onClose}>New Attachments</DialogTitle>
       <DialogContent>
-        <Box className={attachmentsForm.length === 0 ? classes.centered : null}>
+        <div className={attachmentsForm.length === 0 ? classes.centered : null}>
           {attachmentsForm.length === 0 ? (
             <img
               src={EmptyAttachmentsIllustration}
@@ -65,7 +70,7 @@ export default function NewAttachmentsDialogForm({
             onAddAttachments={addAttachmentsHandler}
             onRemoveAttachment={removeAttachmentHandler}
           />
-        </Box>
+        </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={submitting}>

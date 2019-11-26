@@ -9,8 +9,7 @@ import Dialog from '../UI/Dialog';
 import DialogActions from '../UI/Dialog/DialogActions';
 import DialogContent from '../UI/Dialog/DialogContent';
 import DialogTitle from '../UI/Dialog/DialogTitle';
-
-import TextField from '@material-ui/core/TextField';
+import TextField from '../UI/TextField';
 
 export default function NewFolderDialog({
   isOpen,
@@ -41,20 +40,14 @@ export default function NewFolderDialog({
 
         return (
           <form onSubmit={handleSubmit}>
-            <Dialog
-              isOpen={isOpen}
-              onClose={onClose}
-              maxWidth="sm"
-              fullWidth={true}
-            >
+            <Dialog isOpen={isOpen} onClose={onClose} fullWidth>
               <DialogTitle onClose={onClose}>New Folder</DialogTitle>
               <DialogContent>
                 <Field name="name" validate={isRequired}>
                   {({ input, meta }) => {
                     return (
                       <TextField
-                        margin="dense"
-                        variant="outlined"
+                        label="Name"
                         fullWidth
                         {...input}
                         error={meta.error && meta.touched}

@@ -54,10 +54,10 @@ export default function PropertiesForm({ onPropertyAdded }) {
             ) : null}
             <Grid item xs={12}>
               <Button
+                variant="outlined"
                 onClick={() => {
                   onPropertyAdded('properties', { name: '', value: '' });
                 }}
-                variant="outlined"
                 color="secondary"
               >
                 <AddIcon className={classes.buttonIcon} /> New Property

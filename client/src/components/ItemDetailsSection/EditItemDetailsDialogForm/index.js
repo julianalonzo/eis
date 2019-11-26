@@ -58,7 +58,7 @@ function EditItemDetailsDialogForm({
 
         return (
           <form onSubmit={handleSubmit}>
-            <Dialog isOpen={isOpen} onClose={onClose}>
+            <Dialog isOpen={isOpen} onClose={onClose} fullWidth responsive>
               <DialogTitle onClose={onClose}>Edit Item</DialogTitle>
               <DialogContent>
                 <ItemDetailsForm

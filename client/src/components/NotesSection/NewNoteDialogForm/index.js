@@ -9,8 +9,7 @@ import Dialog from '../../UI/Dialog';
 import DialogActions from '../../UI/Dialog/DialogActions';
 import DialogContent from '../../UI/Dialog/DialogContent';
 import DialogTitle from '../../UI/Dialog/DialogTitle';
-
-import TextField from '@material-ui/core/TextField';
+import TextField from '../../UI/TextField';
 
 export default function NewNoteDialogForm({
   isOpen,
@@ -52,8 +51,7 @@ export default function NewNoteDialogForm({
                   {({ input, meta }) => {
                     return (
                       <TextField
-                        variant="outlined"
-                        margin="dense"
+                        label="Message"
                         fullWidth
                         multiline
                         rows={4}

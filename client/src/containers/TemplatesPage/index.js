@@ -13,7 +13,7 @@ import TemplateMoreActionsMenuListPopper from '../../components/Templates/Templa
 
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { Add as AddIcon } from '@material-ui/icons';
-import { Box, Fab, Typography, useMediaQuery } from '@material-ui/core';
+import { Fab, Typography, useMediaQuery } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   pageHeading: {

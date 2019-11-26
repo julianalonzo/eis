@@ -9,8 +9,7 @@ import Dialog from '../../UI/Dialog';
 import DialogActions from '../../UI/Dialog/DialogActions';
 import DialogContent from '../../UI/Dialog/DialogContent';
 import DialogTitle from '../../UI/Dialog/DialogTitle';
-
-import TextField from '@material-ui/core/TextField';
+import TextField from '../../UI/TextField';
 
 export default function EditPropertyDialogForm({
   isOpen,
@@ -45,12 +44,7 @@ export default function EditPropertyDialogForm({
 
         return (
           <form onSubmit={handleSubmit}>
-            <Dialog
-              isOpen={isOpen}
-              onClose={onClose}
-              maxWidth="sm"
-              fullWidth={true}
-            >
+            <Dialog isOpen={isOpen} onClose={onClose} fullWidth>
               <DialogTitle onClose={onClose}>Edit Property</DialogTitle>
               <DialogContent>
                 <Field name="name" validate={isRequired}>
@@ -58,8 +52,6 @@ export default function EditPropertyDialogForm({
                     return (
                       <TextField
                         label="Property Name"
-                        variant="outlined"
-                        margin="dense"
                         fullWidth
                         {...input}
                         error={meta.error && meta.touched}
@@ -73,13 +65,7 @@ export default function EditPropertyDialogForm({
                 <Field name="value">
                   {({ input, meta }) => {
                     return (
-                      <TextField
-                        label="Default Value"
-                        variant="outlined"
-                        margin="dense"
-                        fullWidth
-                        {...input}
-                      />
+                      <TextField label="Default Value" fullWidth {...input} />
                     );
                   }}
                 </Field>
