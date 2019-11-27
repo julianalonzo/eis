@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { Breadcrumbs as MuiBreadcrumbs, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { Home as HomeIcon } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   link: {
@@ -12,6 +13,14 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       textDecoration: 'underline'
     }
+  },
+  homeContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  homeIcon: {
+    marginRight: theme.spacing(0.5),
+    marginTop: theme.spacing(-0.25)
   }
 }));
 
@@ -37,7 +46,12 @@ export default function Breadcrumbs({ breadcrumbs, disabled = false }) {
   }
 
   return (
-    <MuiBreadcrumbs maxItems={4}>
+    <MuiBreadcrumbs maxItems={4} className={classes.root}>
+      <Link className={classes.link} to="/">
+        <div className={classes.homeContainer}>
+          <HomeIcon className={classes.homeIcon} /> Home
+        </div>
+      </Link>
       {breadcrumbs.map((breadcrumb, index) => {
         if (index + 1 < breadcrumbs.length) {
           return (
