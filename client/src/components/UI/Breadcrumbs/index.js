@@ -47,11 +47,19 @@ export default function Breadcrumbs({ breadcrumbs, disabled = false }) {
 
   return (
     <MuiBreadcrumbs maxItems={4} className={classes.root}>
-      <Link className={classes.link} to="/">
-        <div className={classes.homeContainer}>
-          <HomeIcon className={classes.homeIcon} /> Home
-        </div>
-      </Link>
+      {breadcrumbs.length > 0 ? (
+        <Link className={classes.link} to="/">
+          <div className={classes.homeContainer}>
+            <HomeIcon className={classes.homeIcon} /> Home
+          </div>
+        </Link>
+      ) : (
+        <Typography color="textPrimary">
+          <div className={classes.homeContainer}>
+            <HomeIcon className={classes.homeIcon} /> Home
+          </div>
+        </Typography>
+      )}
       {breadcrumbs.map((breadcrumb, index) => {
         if (index + 1 < breadcrumbs.length) {
           return (
