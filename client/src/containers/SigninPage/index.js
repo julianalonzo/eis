@@ -14,21 +14,27 @@ import LoginIllustration from '../../assets/illustrations/login.svg';
 import Button from '../../components/UI/Button';
 import TextField from '../../components/UI/TextField';
 
-import { Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import { Hidden, Typography, useMediaQuery } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     height: '100vh',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       backgroundColor: '#e8eaf6',
       backgroundImage: `url("${LoginIllustration}")`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
-      backgroundPositionX: '30vw',
-      backgroundPositionY: 'bottom',
-      backgroundAttachment: 'fixed'
+      backgroundPositionX: '20vw',
+      backgroundPositionY: 'top',
+      backgroundAttachment: 'fixed',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    [theme.breakpoints.up('md')]: {
+      display: 'block'
     },
     [theme.breakpoints.up('xl')]: {
       display: 'flex',
@@ -39,21 +45,35 @@ const useStyles = makeStyles(theme => ({
   formContainer: {
     padding: theme.spacing(3, 2),
     backgroundColor: theme.palette.background.paper,
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(4, 3),
+      width: '80vw',
+      minHeight: '300px',
+      borderRadius: '25px',
+      boxShadow: theme.shadows[24]
+    },
     [theme.breakpoints.up('md')]: {
       padding: theme.spacing(6, 4),
       position: 'fixed',
       width: '40vw',
-      height: '100vh'
+      minHeight: '100vh',
+      borderRadius: '0'
     },
     [theme.breakpoints.up('xl')]: {
       width: '500px',
-      height: '500px',
+      minHeight: '500px',
       borderRadius: '25px',
       boxShadow: theme.shadows[24]
     }
   },
   greetingWrapper: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(4),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(2)
+    },
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center'
+    }
   },
   greetText: {
     fontWeight: theme.typography.fontWeightMedium,
@@ -69,7 +89,13 @@ const useStyles = makeStyles(theme => ({
     }
   },
   noAccountWrapper: {
-    marginBottom: theme.spacing(6)
+    marginBottom: theme.spacing(6),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(2)
+    },
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center'
+    }
   },
   noAccountText: {
     [theme.breakpoints.down('sm')]: {
@@ -81,16 +107,34 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary[500]
   },
   textField: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(1)
+    }
   },
   forgotPasswordWrapper: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(4),
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center',
+      marginTop: theme.spacing(4)
+    }
   },
   forgotPasswordLink: {
     color: theme.palette.text.secondary
   },
   actionWrapper: {
-    textAlign: 'right'
+    textAlign: 'right',
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center',
+      marginTop: theme.spacing(4)
+    }
+  },
+  mobileIllustrationContainer: {
+    textAlign: 'center',
+    marginBottom: theme.spacing(2)
+  },
+  mobileIllustration: {
+    width: '200px'
   }
 }));
 
@@ -99,7 +143,9 @@ function SigninPage({
   authenticatingUser,
   isAuthenticated
 }) {
+  const theme = useTheme();
   const classes = useStyles();
+  const matchesXsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
   const history = useHistory();
 
@@ -151,14 +197,25 @@ function SigninPage({
                 <Typography variant="h4" className={classes.greetText}>
                   Welcome back
                 </Typography>
-                <Typography
-                  variant="body1"
-                  className={classes.subtitle}
-                  color="textSecondary"
-                >
-                  Signin your account to continue managing your inventory
-                </Typography>
+                <Hidden smDown>
+                  <Typography
+                    variant="body1"
+                    className={classes.subtitle}
+                    color="textSecondary"
+                  >
+                    Signin your account to continue managing your inventory
+                  </Typography>
+                </Hidden>
               </div>
+              <Hidden smUp>
+                <div className={classes.mobileIllustrationContainer}>
+                  <img
+                    src={LoginIllustration}
+                    alt="Sign In Illustration"
+                    className={classes.mobileIllustration}
+                  />
+                </div>
+              </Hidden>
               <div className={classes.noAccountWrapper}>
                 <Typography
                   variant="body2"
@@ -211,26 +268,41 @@ function SigninPage({
                     );
                   }}
                 </Field>
-                <div className={classes.forgotPasswordWrapper}>
-                  <Typography variant="body2">
-                    <Link
-                      to="/forgot-password"
-                      className={classes.forgotPasswordLink}
-                    >
-                      Forgot password?
-                    </Link>
-                  </Typography>
-                </div>
+                <Hidden xsDown>
+                  <div className={classes.forgotPasswordWrapper}>
+                    <Typography variant="body2">
+                      <Link
+                        to="/forgot-password"
+                        className={classes.forgotPasswordLink}
+                      >
+                        Forgot password?
+                      </Link>
+                    </Typography>
+                  </div>
+                </Hidden>
                 <div className={classes.actionWrapper}>
                   <Button
                     type="submit"
                     color="primary"
                     variant="contained"
                     disabled={authenticatingUser}
+                    fullWidth={matchesXsDown}
                   >
                     {authenticatingUser ? 'Signing in...' : 'Sign in'}
                   </Button>
                 </div>
+                <Hidden smUp>
+                  <div className={classes.forgotPasswordWrapper}>
+                    <Typography variant="body2">
+                      <Link
+                        to="/forgot-password"
+                        className={classes.forgotPasswordLink}
+                      >
+                        Forgot password?
+                      </Link>
+                    </Typography>
+                  </div>
+                </Hidden>
               </form>
             </div>
           </div>

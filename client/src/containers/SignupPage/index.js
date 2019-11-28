@@ -9,25 +9,75 @@ import { Form, Field } from 'react-final-form';
 import { Link, useHistory } from 'react-router-dom';
 import validator from 'validator';
 
-import Button from '../../components/UI/Button';
+import RegisterIllustration from '../../assets/illustrations/register.svg';
 
-import { TextField, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import Button from '../../components/UI/Button';
+import TextField from '../../components/UI/TextField';
+
+import { Hidden, Typography, useMediaQuery } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(6, 2),
-    width: '500px',
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-      padding: theme.spacing(3, 0)
+    backgroundColor: theme.palette.background.paper,
+    height: '100vh',
+    [theme.breakpoints.up('sm')]: {
+      backgroundColor: '#e8eaf6',
+      backgroundImage: `url("${RegisterIllustration}")`,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundPositionX: '20vw',
+      backgroundPositionY: 'top',
+      backgroundAttachment: 'fixed',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    [theme.breakpoints.up('md')]: {
+      display: 'block'
+    },
+    [theme.breakpoints.up('xl')]: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
+  },
+  formContainer: {
+    padding: theme.spacing(3, 2),
+    backgroundColor: theme.palette.background.paper,
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(4, 3),
+      width: '80vw',
+      minHeight: '400px',
+      borderRadius: '25px',
+      boxShadow: theme.shadows[24]
+    },
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(6, 4),
+      position: 'fixed',
+      width: '40vw',
+      minHeight: '100vh',
+      borderRadius: '0'
+    },
+    [theme.breakpoints.up('xl')]: {
+      width: '500px',
+      minHeight: '500px',
+      borderRadius: '25px',
+      boxShadow: theme.shadows[24]
     }
   },
   greetingWrapper: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(4),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(2)
+    },
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center'
+    }
   },
   greetText: {
     fontWeight: theme.typography.fontWeightMedium,
+    color: '#1a237e',
     marginBottom: theme.spacing(0.75),
     [theme.breakpoints.down('sm')]: {
       fontSize: theme.typography.h5.fontSize
@@ -39,23 +89,49 @@ const useStyles = makeStyles(theme => ({
     }
   },
   accountExistsWrapper: {
-    marginBottom: theme.spacing(6)
+    marginBottom: theme.spacing(6),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(2)
+    },
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center'
+    }
+  },
+  accountExistsText: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.body2.fontSize
+    }
   },
   link: {
     fontWeight: theme.typography.fontWeightMedium,
     color: theme.palette.primary[500]
   },
   textField: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(1)
+    }
   },
   actionWrapper: {
     textAlign: 'right',
-    marginTop: theme.spacing(4)
+    marginTop: theme.spacing(4),
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center'
+    }
+  },
+  mobileIllustrationContainer: {
+    textAlign: 'center',
+    marginBottom: theme.spacing(2)
+  },
+  mobileIllustration: {
+    width: '200px'
   }
 }));
 
 function SignupPage({ onRegisterUser, registeringUser, isAuthenticated }) {
+  const theme = useTheme();
   const classes = useStyles();
+  const matchesXsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
   const history = useHistory();
 
@@ -112,99 +188,117 @@ function SignupPage({ onRegisterUser, registeringUser, isAuthenticated }) {
       render={({ handleSubmit }) => {
         return (
           <div className={classes.root}>
-            <div className={classes.greetingWrapper}>
-              <Typography variant="h4" className={classes.greetText}>
-                Welcome to EIS
-              </Typography>
-              <Typography
-                variant="body1"
-                className={classes.subtitle}
-                color="textSecondary"
-              >
-                Let's get you all set up so you can start managing your
-                inventory!
-              </Typography>
-            </div>
-            <div className={classes.accountExistsWrapper}>
-              <Typography variant="body2" color="textSecondary">
-                Already have an account?{' '}
-                <Link to="/signin" className={classes.link}>
-                  Sign in
-                </Link>{' '}
-                instead.
-              </Typography>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <Field name="email">
-                {({ input, meta }) => {
-                  return (
-                    <TextField
-                      {...input}
-                      label="Email"
-                      variant="outlined"
-                      className={classes.textField}
-                      fullWidth
-                      error={
-                        (meta.error && meta.touched) ||
-                        (meta.submitError && !meta.dirtySinceLastSubmit)
-                      }
-                      helperText={
-                        (meta.error && meta.touched) ||
-                        (meta.submitError && !meta.dirtySinceLastSubmit)
-                          ? meta.error || meta.submitError
-                          : null
-                      }
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="password">
-                {({ input, meta }) => {
-                  return (
-                    <TextField
-                      {...input}
-                      type="password"
-                      label="Password"
-                      variant="outlined"
-                      className={classes.textField}
-                      fullWidth
-                      error={meta.error && meta.touched}
-                      helperText={
-                        meta.error && meta.touched ? meta.error : null
-                      }
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="confirmPassword">
-                {({ input, meta }) => {
-                  return (
-                    <TextField
-                      {...input}
-                      type="password"
-                      label="Confirm password"
-                      variant="outlined"
-                      className={classes.textField}
-                      fullWidth
-                      error={meta.error && meta.touched}
-                      helperText={
-                        meta.error && meta.touched ? meta.error : null
-                      }
-                    />
-                  );
-                }}
-              </Field>
-              <div className={classes.actionWrapper}>
-                <Button
-                  type="submit"
-                  color="primary"
-                  variant="contained"
-                  disabled={registeringUser}
-                >
-                  {registeringUser ? 'Creating User...' : 'Create account'}
-                </Button>
+            <div className={classes.formContainer}>
+              <div className={classes.greetingWrapper}>
+                <Typography variant="h4" className={classes.greetText}>
+                  Welcome to EIS
+                </Typography>
+                <Hidden smDown>
+                  <Typography
+                    variant="body1"
+                    className={classes.subtitle}
+                    color="textSecondary"
+                  >
+                    Let's get you all set up so you can start managing your
+                    inventory!
+                  </Typography>
+                </Hidden>
               </div>
-            </form>
+              <Hidden smUp>
+                <div className={classes.mobileIllustrationContainer}>
+                  <img
+                    src={RegisterIllustration}
+                    alt="Register Illustration"
+                    className={classes.mobileIllustration}
+                  />
+                </div>
+              </Hidden>
+              <div className={classes.accountExistsWrapper}>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  className={classes.accountExistsText}
+                >
+                  Already have an account?{' '}
+                  <Link to="/signin" className={classes.link}>
+                    Sign in
+                  </Link>{' '}
+                  instead.
+                </Typography>
+              </div>
+              <form onSubmit={handleSubmit}>
+                <Field name="email">
+                  {({ input, meta }) => {
+                    return (
+                      <TextField
+                        {...input}
+                        label="Email"
+                        variant="outlined"
+                        className={classes.textField}
+                        fullWidth
+                        error={
+                          (meta.error && meta.touched) ||
+                          (meta.submitError && !meta.dirtySinceLastSubmit)
+                        }
+                        helperText={
+                          (meta.error && meta.touched) ||
+                          (meta.submitError && !meta.dirtySinceLastSubmit)
+                            ? meta.error || meta.submitError
+                            : null
+                        }
+                      />
+                    );
+                  }}
+                </Field>
+                <Field name="password">
+                  {({ input, meta }) => {
+                    return (
+                      <TextField
+                        {...input}
+                        type="password"
+                        label="Password"
+                        variant="outlined"
+                        className={classes.textField}
+                        fullWidth
+                        error={meta.error && meta.touched}
+                        helperText={
+                          meta.error && meta.touched ? meta.error : null
+                        }
+                      />
+                    );
+                  }}
+                </Field>
+                <Field name="confirmPassword">
+                  {({ input, meta }) => {
+                    return (
+                      <TextField
+                        {...input}
+                        type="password"
+                        label="Confirm password"
+                        variant="outlined"
+                        className={classes.textField}
+                        fullWidth
+                        error={meta.error && meta.touched}
+                        helperText={
+                          meta.error && meta.touched ? meta.error : null
+                        }
+                      />
+                    );
+                  }}
+                </Field>
+                <div className={classes.actionWrapper}>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    disabled={registeringUser}
+                    fullWidth={matchesXsDown}
+                  >
+                    {registeringUser ? 'Creating User...' : 'Create account'}
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
         );
       }}
