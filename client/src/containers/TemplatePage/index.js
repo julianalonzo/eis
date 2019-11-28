@@ -1,34 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-import { connect } from "react-redux";
-import * as actions from "../../store/actions";
-import { useParams } from "react-router-dom";
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions';
+import { useParams } from 'react-router-dom';
 
-import useDialogState from "../../hooks/useDialogState";
+import useDialogState from '../../hooks/useDialogState';
 
-import AttachmentsSection from "../../components/AttachmentsSection";
-import EditTemplateDetailsDialogForm from "../../components/EditTemplateDetailsDialogForm";
-import ItemDetailsSection from "../../components/ItemDetailsSection";
-import LoadingIndicator from "../../components/UI/LoadingIndicator";
-import PropertiesSection from "../../components/PropertiesSection";
+import AttachmentsSection from '../../components/AttachmentsSection';
+import EditTemplateDetailsDialogForm from '../../components/EditTemplateDetailsDialogForm';
+import ItemDetailsSection from '../../components/ItemDetailsSection';
+import LoadingIndicator from '../../components/UI/LoadingIndicator';
+import PropertiesSection from '../../components/PropertiesSection';
 
-import { Grid, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+import { Container, Grid, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   sectionGridItem: {
     marginBottom: theme.spacing(6)
   },
   smallLink: {
-    textDecoration: "underline",
+    textDecoration: 'underline',
     color: theme.palette.text.hint,
-    "&:hover": {
+    '&:hover': {
       color: theme.palette.grey[800],
-      cursor: "pointer"
+      cursor: 'pointer'
     }
   },
   italicized: {
-    fontStyle: "italic"
+    fontStyle: 'italic'
   }
 }));
 
@@ -85,27 +85,27 @@ function TemplatePage({
       attachment => attachment._id
     );
 
-    formData.append("templateName", updatedTemplate.templateName);
+    formData.append('templateName', updatedTemplate.templateName);
     formData.append(
-      "templateDescription",
-      updatedTemplate.templateDescription || ""
+      'templateDescription',
+      updatedTemplate.templateDescription || ''
     );
-    formData.append("name", updatedTemplate.item.name);
-    formData.append("category", updatedTemplate.item.category || "");
-    formData.append("condition", updatedTemplate.item.condition || "");
-    formData.append("thumbnails", JSON.stringify(thumbnailIds));
-    formData.append("attachments", JSON.stringify(attachmentIds));
+    formData.append('name', updatedTemplate.item.name);
+    formData.append('category', updatedTemplate.item.category || '');
+    formData.append('condition', updatedTemplate.item.condition || '');
+    formData.append('thumbnails', JSON.stringify(thumbnailIds));
+    formData.append('attachments', JSON.stringify(attachmentIds));
     formData.append(
-      "properties",
+      'properties',
       JSON.stringify(updatedTemplate.item.properties)
     );
 
     for (const newThumbnail of newThumbnails) {
-      formData.append("newThumbnails", newThumbnail);
+      formData.append('newThumbnails', newThumbnail);
     }
 
     for (const newAttachment of newAttachments) {
-      formData.append("newAttachments", newAttachment);
+      formData.append('newAttachments', newAttachment);
     }
 
     await onUpdateTemplate(templateId, formData);
@@ -116,7 +116,7 @@ function TemplatePage({
   }
 
   return (
-    <>
+    <Container maxWidth="xl">
       <Grid container spacing={4}>
         <Grid item xs={12} md={8} lg={7}>
           <Grid container>
@@ -129,7 +129,7 @@ function TemplatePage({
               >
                 {template.description
                   ? template.description
-                  : "(No description provided)"}
+                  : '(No description provided)'}
               </Typography>
               <Typography
                 variant="caption"
@@ -170,7 +170,7 @@ function TemplatePage({
         submitting={updatingTemplate}
         template={template}
       />
-    </>
+    </Container>
   );
 }
 
@@ -191,7 +191,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TemplatePage);
+export default connect(mapStateToProps, mapDispatchToProps)(TemplatePage);

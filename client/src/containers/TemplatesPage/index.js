@@ -13,7 +13,7 @@ import TemplateMoreActionsMenuListPopper from '../../components/Templates/Templa
 
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { Add as AddIcon } from '@material-ui/icons';
-import { Fab, Typography, useMediaQuery } from '@material-ui/core';
+import { Container, Fab, Typography, useMediaQuery } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   pageHeading: {
@@ -85,7 +85,7 @@ function TemplatesPage({
   }
 
   return (
-    <>
+    <Container maxWidth="xl">
       {templates.length > 0 && (
         <div className={classes.pageHeading}>
           <div>
@@ -128,7 +128,7 @@ function TemplatesPage({
         onOpenTemplatePage={openTemplatePageHandler}
         onRemoveTemplate={onRemoveTemplate}
       />
-    </>
+    </Container>
   );
 }
 

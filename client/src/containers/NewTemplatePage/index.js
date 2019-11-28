@@ -6,6 +6,8 @@ import { useHistory } from 'react-router-dom';
 
 import TemplateForm from '../../components/TemplateForm';
 
+import { Container } from '@material-ui/core';
+
 function NewTemplatePage({ onCreateTemplate, creatingTemplate }) {
   const history = useHistory();
 
@@ -45,12 +47,14 @@ function NewTemplatePage({ onCreateTemplate, creatingTemplate }) {
   };
 
   return (
-    <TemplateForm
-      title="New Template"
-      onSubmit={createTemplateHandler}
-      submitting={creatingTemplate}
-      initialValues={{}}
-    />
+    <Container maxWidth="xl">
+      <TemplateForm
+        title="New Template"
+        onSubmit={createTemplateHandler}
+        submitting={creatingTemplate}
+        initialValues={{}}
+      />
+    </Container>
   );
 }
 
@@ -66,7 +70,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NewTemplatePage);
+export default connect(mapStateToProps, mapDispatchToProps)(NewTemplatePage);

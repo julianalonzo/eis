@@ -9,6 +9,8 @@ import { withRouter } from 'react-router-dom';
 import LoadingIndicator from '../../components/UI/LoadingIndicator';
 import NewItemForm from '../../components/NewItemForm';
 
+import { Container } from '@material-ui/core';
+
 function NewItemPage({
   location,
   onFetchTemplate,
@@ -92,11 +94,13 @@ function NewItemPage({
   }
 
   return (
-    <NewItemForm
-      initialValues={template ? { ...template.item } : {}}
-      onSubmit={createItemHandler}
-      submitting={creatingItem}
-    />
+    <Container maxWidth="xl">
+      <NewItemForm
+        initialValues={template ? { ...template.item } : {}}
+        onSubmit={createItemHandler}
+        submitting={creatingItem}
+      />
+    </Container>
   );
 }
 

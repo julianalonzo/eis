@@ -12,7 +12,7 @@ import NotesSection from '../../components/NotesSection';
 import PropertiesSection from '../../components/PropertiesSection';
 
 import { makeStyles } from '@material-ui/styles';
-import Grid from '@material-ui/core/Grid';
+import { Container, Grid } from '@material-ui/core/';
 
 const useStyles = makeStyles(theme => ({
   sectionGridItem: {
@@ -81,54 +81,56 @@ function ItemPage({
   }
 
   return (
-    <Grid container spacing={4}>
-      <Grid item xs={12}>
-        <Breadcrumbs
-          breadcrumbs={item.folderHierarchy
-            .map(folder => {
-              return {
-                link: `/folders/${folder._id}`,
-                label: folder.name
-              };
-            })
-            .concat({
-              label: item.name
-            })}
-        />
-      </Grid>
-      <Grid item xs={12} md={8} lg={7}>
-        <Grid container>
-          <Grid item xs={12} className={classes.sectionGridItem}>
-            <ItemDetailsSection
-              item={item}
-              onUpdate={updateItemHandler}
-              updating={updatingItem}
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.sectionGridItem}>
-            <PropertiesSection
-              properties={item.properties}
-              onUpdate={updateItemHandler}
-              updating={updatingItem}
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.sectionGridItem}>
-            <AttachmentsSection
-              attachments={item.attachments}
-              onUpdate={updateItemHandler}
-              updating={updatingItem}
-            />
+    <Container maxWidth="xl">
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Breadcrumbs
+            breadcrumbs={item.folderHierarchy
+              .map(folder => {
+                return {
+                  link: `/folders/${folder._id}`,
+                  label: folder.name
+                };
+              })
+              .concat({
+                label: item.name
+              })}
+          />
+        </Grid>
+        <Grid item xs={12} md={8} lg={7}>
+          <Grid container>
+            <Grid item xs={12} className={classes.sectionGridItem}>
+              <ItemDetailsSection
+                item={item}
+                onUpdate={updateItemHandler}
+                updating={updatingItem}
+              />
+            </Grid>
+            <Grid item xs={12} className={classes.sectionGridItem}>
+              <PropertiesSection
+                properties={item.properties}
+                onUpdate={updateItemHandler}
+                updating={updatingItem}
+              />
+            </Grid>
+            <Grid item xs={12} className={classes.sectionGridItem}>
+              <AttachmentsSection
+                attachments={item.attachments}
+                onUpdate={updateItemHandler}
+                updating={updatingItem}
+              />
+            </Grid>
           </Grid>
         </Grid>
+        <Grid item xs={12} md={8} lg={4}>
+          <NotesSection
+            notes={item.notes}
+            onUpdate={updateItemHandler}
+            updating={updatingItem}
+          />
+        </Grid>
       </Grid>
-      <Grid item xs={12} md={8} lg={4}>
-        <NotesSection
-          notes={item.notes}
-          onUpdate={updateItemHandler}
-          updating={updatingItem}
-        />
-      </Grid>
-    </Grid>
+    </Container>
   );
 }
 

@@ -15,7 +15,7 @@ import NewFolderDialog from '../../components/NewFolderDialog';
 import NoFoldersllustration from '../../assets/illustrations/select_folder.svg';
 
 import { makeStyles } from '@material-ui/styles';
-import { CssBaseline, Drawer, Hidden } from '@material-ui/core/';
+import { Container, CssBaseline, Drawer, Hidden } from '@material-ui/core';
 
 const drawerWidth = 300;
 
@@ -85,7 +85,7 @@ function MainPage({
 
   if (folders.length === 0) {
     return (
-      <>
+      <Container maxWidth="xl">
         <IllustrationPlaceholder
           title="No folders yet"
           subtitle="Create your first folder to start using EIS"
@@ -101,31 +101,33 @@ function MainPage({
           submitting={creatingFolder}
           onSubmit={createFolderHandler}
         />
-      </>
+      </Container>
     );
   }
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Hidden smDown>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{ paper: classes.drawerPaper }}
-        >
-          <div className={classes.toolbar} />
-          <FoldersTreeView
-            folders={folders}
-            onOpenFolder={openFolderHandler}
-            currentFolder={folderId}
-          />
-        </Drawer>
-      </Hidden>
-      <main className={classes.content}>
-        <MainPageContent />
-      </main>
-    </div>
+    <Container maxWidth="xl">
+      <div className={classes.root}>
+        <CssBaseline />
+        <Hidden smDown>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{ paper: classes.drawerPaper }}
+          >
+            <div className={classes.toolbar} />
+            <FoldersTreeView
+              folders={folders}
+              onOpenFolder={openFolderHandler}
+              currentFolder={folderId}
+            />
+          </Drawer>
+        </Hidden>
+        <main className={classes.content}>
+          <MainPageContent />
+        </main>
+      </div>
+    </Container>
   );
 }
 
