@@ -109,7 +109,7 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginBottom: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
-      marginBottom: theme.spacing(1)
+      marginBottom: theme.spacing(0)
     }
   },
   forgotPasswordWrapper: {
