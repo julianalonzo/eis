@@ -7,6 +7,7 @@ import usePopperState from '../../../hooks/usePopperState';
 
 import { Link } from 'react-router-dom';
 
+import AppLogo from '../../../assets/eis-logo.svg';
 import MenuListPopper from '../../UI/MenuListPopper';
 import SearchBar from './SearchBar';
 
@@ -68,6 +69,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center'
   },
+  logo: {
+    width: theme.spacing(5)
+  },
   mobileSearchContainer: {
     display: 'flex',
     width: '100%',
@@ -110,13 +114,9 @@ function AppBar({ onSignoutUser }) {
         {!isInMobileSearch ? (
           <>
             <div className={classes.appTitleNavContainer}>
-              <div className={classes.appTitle}>
-                <Typography variant="h6" color="inherit">
-                  <Link to="/" className={classes.link}>
-                    EIS
-                  </Link>
-                </Typography>
-              </div>
+              <Link to="/" className={classes.link}>
+                <img src={AppLogo} alt="EIS" className={classes.logo} />
+              </Link>
             </div>
             <Hidden smDown>
               <div className={classes.grow} />
