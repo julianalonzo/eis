@@ -130,13 +130,6 @@ const useStyles = makeStyles(theme => ({
       marginTop: theme.spacing(4)
     }
   },
-  mobileIllustrationContainer: {
-    textAlign: 'center',
-    marginBottom: theme.spacing(2)
-  },
-  mobileIllustration: {
-    width: '200px'
-  },
   logo: {
     width: theme.spacing(8),
     marginBottom: theme.spacing(2)
@@ -213,15 +206,6 @@ function SigninPage({
                   </Typography>
                 </Hidden>
               </div>
-              <Hidden smUp>
-                <div className={classes.mobileIllustrationContainer}>
-                  <img
-                    src={LoginIllustration}
-                    alt="Sign In Illustration"
-                    className={classes.mobileIllustration}
-                  />
-                </div>
-              </Hidden>
               <div className={classes.noAccountWrapper}>
                 <Typography
                   variant="body2"
