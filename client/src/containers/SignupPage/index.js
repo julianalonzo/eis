@@ -9,6 +9,7 @@ import { Form, Field } from 'react-final-form';
 import { Link, useHistory } from 'react-router-dom';
 import validator from 'validator';
 
+import Logo from '../../assets/eis-logo.svg';
 import RegisterIllustration from '../../assets/illustrations/register.svg';
 
 import Button from '../../components/UI/Button';
@@ -53,7 +54,7 @@ const useStyles = makeStyles(theme => ({
       boxShadow: theme.shadows[24]
     },
     [theme.breakpoints.up('md')]: {
-      padding: theme.spacing(6, 4),
+      padding: theme.spacing(4),
       position: 'fixed',
       width: '40vw',
       minHeight: '100vh',
@@ -125,6 +126,10 @@ const useStyles = makeStyles(theme => ({
   },
   mobileIllustration: {
     width: '150px'
+  },
+  logo: {
+    width: theme.spacing(8),
+    marginBottom: theme.spacing(2)
   }
 }));
 
@@ -190,6 +195,7 @@ function SignupPage({ onRegisterUser, registeringUser, isAuthenticated }) {
           <div className={classes.root}>
             <div className={classes.formContainer}>
               <div className={classes.greetingWrapper}>
+                <img src={Logo} alt="EIS" className={classes.logo} />
                 <Typography variant="h4" className={classes.greetText}>
                   Welcome to EIS
                 </Typography>
