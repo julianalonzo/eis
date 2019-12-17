@@ -37,6 +37,8 @@ EIS allows users to add supporting information of an item through *notes* and *a
 important message such as a message informing the user how an item was broken or who borrowed the equipment.
 Attachments are relevant files associated to an item. These files may be software license, receipts, and images.
 
+![Item Management Demo](screenshots/itemManagement.gif)
+
 ---
 
 ### Folder Organization
@@ -44,13 +46,19 @@ EIS organizes items into folders in order to keep related records together. Nest
 in order to support different ways to organize items. EIS also enables users to move items and folders into another
 folder in case an item was moved or a different folder organization is adopted.
 
+![Folder Organization Demo](screenshots/folderOrganization.gif)
+
 ---
 
 ### Templates
 EIS provides users a way to create item templates for items that have standard fields (e.g., properties, attachments, 
 and notes). These templates may be used to pre-populate fields when creating new items into different folders. 
 
+![Templates Demo](screenshots/templates.gif)
+
 ---
 
 ### Search
 EIS is capable of searching for items by id, name, category, condition, properties, and notes. 
+
+![Search Demo](screenshots/search.gif)
