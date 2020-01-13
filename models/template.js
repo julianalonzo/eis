@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const templateSchema = new Schema({
@@ -9,12 +9,12 @@ const templateSchema = new Schema({
   },
   description: {
     type: String,
-    default: "",
+    default: '',
     trim: true
   },
   item: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Item",
+    ref: 'Item',
     required: true
   },
   shown: {
@@ -24,20 +24,20 @@ const templateSchema = new Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   }
 });
 
 templateSchema.index(
   {
-    _id: "text",
-    name: "text",
-    description: "text"
+    _id: 'text',
+    name: 'text',
+    description: 'text'
   },
-  { name: "template_text_index" }
+  { name: 'template_text_index' }
 );
 
-const Template = mongoose.model("Template", templateSchema);
+const Template = mongoose.model('Template', templateSchema);
 
 module.exports = Template;

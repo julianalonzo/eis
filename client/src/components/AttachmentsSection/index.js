@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import useDialogState from "../../hooks/useDialogState";
-import usePopperState from "../../hooks/usePopperState";
+import useDialogState from '../../hooks/useDialogState';
+import usePopperState from '../../hooks/usePopperState';
 
-import Attachments from "./Attachments";
-import AttachmentMoreActionsMenuListPopper from "./Attachments/AttachmentMoreActionsMenuListPopper";
-import NewAttachmentsDialogForm from "./NewAttachmentsDialogForm";
-import SectionPaper from "../UI/SectionPaper";
-import TextPlaceholder from "../UI/TextPlaceholder";
+import Attachments from './Attachments';
+import AttachmentMoreActionsMenuListPopper from './Attachments/AttachmentMoreActionsMenuListPopper';
+import NewAttachmentsDialogForm from './NewAttachmentsDialogForm';
+import SectionPaper from '../UI/SectionPaper';
+import TextPlaceholder from '../UI/TextPlaceholder';
 
-import { Add as AddIcon } from "@material-ui/icons";
+import { Add as AddIcon } from '@material-ui/icons';
 
 function AttachmentsSection({ attachments, onUpdate, updating }) {
   const [activeAttachment, setActiveAttachment] = useState({});

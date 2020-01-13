@@ -1,6 +1,6 @@
-import * as actionTypes from "./actionTypes";
+import * as actionTypes from './actionTypes';
 
-import axios from "axios";
+import axios from 'axios';
 
 export const registerUserStart = () => {
   return {
@@ -26,7 +26,7 @@ export const registerUser = user => {
     dispatch(registerUserStart());
 
     try {
-      const response = await axios.post("/api/users/register", user);
+      const response = await axios.post('/api/users/register', user);
       dispatch(registerUserSuccess());
 
       return response.data;

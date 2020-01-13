@@ -1,6 +1,6 @@
-import * as actionTypes from "./actionTypes";
+import * as actionTypes from './actionTypes';
 
-import axios from "axios";
+import axios from 'axios';
 
 export const fetchFoldersStart = () => {
   return {
@@ -28,7 +28,7 @@ export const fetchFolders = () => {
 
     let response = null;
     try {
-      response = await axios.get("/api/folders");
+      response = await axios.get('/api/folders');
       dispatch(fetchFoldersSuccess(response.data.folders));
     } catch (error) {
       response = error;

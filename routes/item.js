@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const isAuthenticated = require("../auth/isAuthenticated");
+const isAuthenticated = require('../auth/isAuthenticated');
 
-const upload = require("../util/fileStorage");
+const upload = require('../util/fileStorage');
 
 const {
   getItemsValidator,
@@ -11,22 +11,22 @@ const {
   createItemValidator,
   updateItemValidator,
   deleteItemValidator
-} = require("../validator_sanitizer/item");
+} = require('../validator_sanitizer/item');
 
-const itemController = require("../controllers/item");
+const itemController = require('../controllers/item');
 
 /**
  * GET /api/items
  * Gets all shown or searched/filtered items in the collection
  */
-router.get("/", isAuthenticated, getItemsValidator, itemController.getItems);
+router.get('/', isAuthenticated, getItemsValidator, itemController.getItems);
 
 /**
  * GET /api/items/{itemId}
  * Gets an item based on the id provided
  */
 router.get(
-  "/:itemId",
+  '/:itemId',
   isAuthenticated,
   getItemValidator,
   itemController.getItem
@@ -37,10 +37,10 @@ router.get(
  * Creates a new item
  */
 router.post(
-  "/",
+  '/',
   upload.fields([
-    { name: "newThumbnails", maxCount: 3 },
-    { name: "newAttachments", maxCount: 10 }
+    { name: 'newThumbnails', maxCount: 3 },
+    { name: 'newAttachments', maxCount: 10 }
   ]),
   isAuthenticated,
   createItemValidator,
@@ -52,10 +52,10 @@ router.post(
  * Updates an existing item
  */
 router.put(
-  "/:itemId",
+  '/:itemId',
   upload.fields([
-    { name: "newThumbnails", maxCount: 3 },
-    { name: "newAttachments", maxCount: 10 }
+    { name: 'newThumbnails', maxCount: 3 },
+    { name: 'newAttachments', maxCount: 10 }
   ]),
   isAuthenticated,
   updateItemValidator,
@@ -67,7 +67,7 @@ router.put(
  * Permanently deletes an item
  */
 router.delete(
-  "/:itemId",
+  '/:itemId',
   isAuthenticated,
   deleteItemValidator,
   itemController.deleteItem

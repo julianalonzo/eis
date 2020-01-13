@@ -5,7 +5,7 @@ export {
   createItem,
   updateItem,
   resetItem
-} from "./item";
+} from './item';
 
 export {
   fetchTemplates,
@@ -15,7 +15,7 @@ export {
   createTemplate,
   updateTemplate,
   removeTemplate
-} from "./template";
+} from './template';
 
 export {
   fetchFolders,
@@ -27,8 +27,8 @@ export {
   moveFolder,
   deleteItem,
   moveItem
-} from "./folder";
+} from './folder';
 
-export { registerUser } from "./user";
+export { registerUser } from './user';
 
-export { authenticateUser, setUser, signoutUser } from "./auth";
+export { authenticateUser, setUser, signoutUser } from './auth';

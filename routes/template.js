@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const isAuthenticated = require("../auth/isAuthenticated");
+const isAuthenticated = require('../auth/isAuthenticated');
 
-const upload = require("../util/fileStorage");
+const upload = require('../util/fileStorage');
 
 const {
   getTemplatesValidator,
@@ -11,16 +11,16 @@ const {
   createTemplateValidator,
   updateTemplateValidator,
   deleteTemplateValidator
-} = require("../validator_sanitizer/template");
+} = require('../validator_sanitizer/template');
 
-const templateController = require("../controllers/template");
+const templateController = require('../controllers/template');
 
 /**
  * GET /api/templates
  * Gets all shown or searched/filtered templates
  */
 router.get(
-  "/",
+  '/',
   isAuthenticated,
   getTemplatesValidator,
   templateController.getTemplates
@@ -31,7 +31,7 @@ router.get(
  * Gets a template based on the id provided
  */
 router.get(
-  "/:templateId",
+  '/:templateId',
   isAuthenticated,
   getTemplateValidator,
   templateController.getTemplate
@@ -42,10 +42,10 @@ router.get(
  * Creates a new template
  */
 router.post(
-  "/",
+  '/',
   upload.fields([
-    { name: "newThumbnails", maxCount: 3 },
-    { name: "newAttachments", maxCount: 10 }
+    { name: 'newThumbnails', maxCount: 3 },
+    { name: 'newAttachments', maxCount: 10 }
   ]),
   isAuthenticated,
   createTemplateValidator,
@@ -57,10 +57,10 @@ router.post(
  * Updates an existing template
  */
 router.put(
-  "/:templateId",
+  '/:templateId',
   upload.fields([
-    { name: "newThumbnails", maxCount: 3 },
-    { name: "newAttachments", maxCount: 10 }
+    { name: 'newThumbnails', maxCount: 3 },
+    { name: 'newAttachments', maxCount: 10 }
   ]),
   isAuthenticated,
   updateTemplateValidator,
@@ -72,7 +72,7 @@ router.put(
  * Permanently deletes a template
  */
 router.delete(
-  "/:templateId",
+  '/:templateId',
   isAuthenticated,
   deleteTemplateValidator,
   templateController.deleteTemplate

@@ -1,10 +1,10 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const { saveFileToBucket } = require("../modules/s3_upload");
-const { toArray } = require("../util/helperFunctions");
+const { saveFileToBucket } = require('../modules/s3_upload');
+const { toArray } = require('../util/helperFunctions');
 
-const File = require("../models/file");
+const File = require('../models/file');
 
 /**
  *
@@ -45,7 +45,7 @@ async function saveFile(userId, type, uploadedFile) {
     user: userId
   });
 
-  const fileTemporaryPath = path.join(__dirname, "..", "tmp", file.filename);
+  const fileTemporaryPath = path.join(__dirname, '..', 'tmp', file.filename);
   fs.unlinkSync(fileTemporaryPath);
 
   const savedFile = await file.save();

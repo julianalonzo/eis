@@ -1,9 +1,9 @@
-import * as actionTypes from "./actionTypes";
+import * as actionTypes from './actionTypes';
 
-import axios from "axios";
-import jwt_decode from "jwt-decode";
+import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
-import setAuthToken from "../../util/setAuthToken";
+import setAuthToken from '../../util/setAuthToken';
 
 export const authenticateUserStart = () => {
   return {
@@ -30,10 +30,10 @@ export const authenticateUser = user => {
     dispatch(authenticateUserStart());
 
     try {
-      const response = await axios.post("/api/users/login", user);
+      const response = await axios.post('/api/users/login', user);
 
       const { token } = response.data;
-      localStorage.setItem("eisToken", token);
+      localStorage.setItem('eisToken', token);
       setAuthToken(token);
 
       const decodedToken = jwt_decode(token);
@@ -56,7 +56,7 @@ export const setUser = user => {
 
 export const signoutUser = () => {
   return dispatch => {
-    localStorage.removeItem("eisToken");
+    localStorage.removeItem('eisToken');
     setAuthToken(false);
 
     dispatch(setUser(null));

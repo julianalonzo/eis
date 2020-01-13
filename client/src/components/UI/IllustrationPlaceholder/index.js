@@ -1,18 +1,18 @@
-import React from "react";
+import React from 'react';
 
-import Button from "../Button";
-import DefaultIllustration from "../../../assets/illustrations/default.svg";
+import Button from '../Button';
+import DefaultIllustration from '../../../assets/illustrations/default.svg';
 
-import { makeStyles } from "@material-ui/styles";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import { makeStyles } from '@material-ui/styles';
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: "10vh"
+    marginTop: '10vh'
   },
   headerContainer: {
     paddingLeft: theme.spacing(8),
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(3)
   },
   centeredWrapper: {
-    textAlign: "center"
+    textAlign: 'center'
   },
   image: props => ({
     width: props.illustrationSize
@@ -52,24 +52,24 @@ export default function IllustrationPlaceholder({
   let illustrationSize;
 
   switch (size) {
-    case "sm":
-      illustrationSize = "300px";
+    case 'sm':
+      illustrationSize = '300px';
       break;
-    case "md":
-      illustrationSize = "400px";
+    case 'md':
+      illustrationSize = '400px';
       break;
-    case "lg":
-      illustrationSize = "500px";
+    case 'lg':
+      illustrationSize = '500px';
       break;
     default:
-      illustrationSize = "300px";
+      illustrationSize = '300px';
   }
 
   const classes = useStyles({ illustrationSize });
 
   return (
     <Grid container className={classes.root}>
-      {variant === "illustration" ? (
+      {variant === 'illustration' ? (
         <Grid item xs={12} className={classes.headerContainer}>
           {title ? (
             <Typography className={classes.header}>{title}</Typography>
@@ -86,7 +86,7 @@ export default function IllustrationPlaceholder({
           <img src={sourceImage} alt={alt} className={classes.image} />
         </Box>
       </Grid>
-      {variant === "placeholder" ? (
+      {variant === 'placeholder' ? (
         <Grid item xs={12}>
           <Box className={classes.centeredWrapper}>
             {title ? <Typography variant="h5">{title}</Typography> : null}
@@ -122,7 +122,7 @@ IllustrationPlaceholder.propTypes = {
 
 IllustrationPlaceholder.defaultProps = {
   sourceImage: DefaultIllustration,
-  alt: "Illustration",
-  size: "sm",
-  variant: "placeholder"
+  alt: 'Illustration',
+  size: 'sm',
+  variant: 'placeholder'
 };

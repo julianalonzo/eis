@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const fileSchema = new Schema({
@@ -6,10 +6,10 @@ const fileSchema = new Schema({
   mimetype: { type: String, required: true },
   filename: { type: String, required: true },
   path: { type: String, required: true },
-  type: { type: String, required: true, enum: ["thumbnail", "attachment"] },
+  type: { type: String, required: true, enum: ['thumbnail', 'attachment'] },
   size: { type: Number, required: true },
   dateUploaded: { type: Date, required: true, default: Date.now },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
-module.exports = mongoose.model("File", fileSchema);
+module.exports = mongoose.model('File', fileSchema);

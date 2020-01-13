@@ -1,10 +1,10 @@
-require("dotenv").config("../.env");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+require('dotenv').config('../.env');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const { validationResult } = require("express-validator");
+const { validationResult } = require('express-validator');
 
-const User = require("../models/user");
+const User = require('../models/user');
 
 /**
  * Creates a new user
@@ -70,7 +70,7 @@ async function loginUser(req, res) {
       try {
         // Token is valid for 1 day
         const token = await jwt.sign(payload, process.env.SECRET_OR_KEY, {
-          expiresIn: "7d"
+          expiresIn: '7d'
         });
 
         return res.status(200).json({
@@ -80,17 +80,17 @@ async function loginUser(req, res) {
         return res.status(500).json({
           status: 500,
           userMessage:
-            "There was a problem in generating a token. Please try again."
+            'There was a problem in generating a token. Please try again.'
         });
       }
     } else {
       return res.status(401).json({
-        errors: [{ param: "password", msg: "Incorrect password" }]
+        errors: [{ param: 'password', msg: 'Incorrect password' }]
       });
     }
   } else {
     return res.status(404).json({
-      errors: [{ param: "email", msg: "User does not exist" }]
+      errors: [{ param: 'email', msg: 'User does not exist' }]
     });
   }
 }

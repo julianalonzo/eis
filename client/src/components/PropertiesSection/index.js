@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import useDialogState from "../../hooks/useDialogState";
-import usePopperState from "../../hooks/usePopperState";
+import useDialogState from '../../hooks/useDialogState';
+import usePopperState from '../../hooks/usePopperState';
 
-import EditPropertyDialogForm from "./EditPropertyDialogForm";
-import Properties from "./Properties";
-import PropertyMoreActionsMenuListPopper from "./PropertyMoreActionsMenuListPopper";
-import SectionPaper from "../UI/SectionPaper";
-import TextPlaceholder from "../UI/TextPlaceholder";
+import EditPropertyDialogForm from './EditPropertyDialogForm';
+import Properties from './Properties';
+import PropertyMoreActionsMenuListPopper from './PropertyMoreActionsMenuListPopper';
+import SectionPaper from '../UI/SectionPaper';
+import TextPlaceholder from '../UI/TextPlaceholder';
 
-import { Add as AddIcon } from "@material-ui/icons";
-import NewPropertyDialogForm from "./NewPropertyDialogForm";
+import { Add as AddIcon } from '@material-ui/icons';
+import NewPropertyDialogForm from './NewPropertyDialogForm';
 
 function PropertiesSection({ properties, onUpdate, updating }) {
   const [
